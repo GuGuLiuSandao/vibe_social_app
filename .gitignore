@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Local agent/tool state
+.aider.chat.history.md
+.aider.input.history
+.trae/
+
+# Environment files
+**/.env
+
+# Node.js
+**/node_modules/
+**/dist/
+npm-debug.log*
+
+# Go binaries / build outputs
+backend/bin/
+backend/api
+backend/test_chat_client
+
+# Logs and coverage
+*.log
+coverage/

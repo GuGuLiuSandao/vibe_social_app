@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+package social.chat;
+
+option go_package = "social_app/internal/proto/chat;chat";
+
+import "google/protobuf/timestamp.proto";
+
+// 会话类型
+enum ConversationType {
+  CONVERSATION_TYPE_UNSPECIFIED = 0;
+  CONVERSATION_TYPE_PRIVATE = 1; // 单聊
+  CONVERSATION_TYPE_GROUP = 2;   // 群聊
+}
+
+// 消息类型
+enum MessageType {
+  MESSAGE_TYPE_UNSPECIFIED = 0;
+  MESSAGE_TYPE_TEXT = 1;
+  MESSAGE_TYPE_IMAGE = 2;
+  MESSAGE_TYPE_SYSTEM = 3;
+}
+
+// 基础会话结构
+message Conversation {
+  uint64 id = 1;
+  ConversationType type = 2;
+  string name = 3;      // 群聊名称，单聊时可为空或对方昵称
+  string avatar = 4;    // 群聊头像，单聊时可为空或对方头像
+  Message last_message = 5;
+  uint32 unread_count = 6;
+  google.protobuf.Timestamp updated_at = 7; // 排序用，通常是 last_message.created_at
+}
+
+message SenderInfo {
+  uint64 id = 1;
+  string username = 2;
+  string nickname = 3;
+  string avatar = 4;
+}
+
+// 基础消息结构
+message Message {
+  uint64 id = 1;
+  uint64 local_id = 7; // 会话内唯一ID
+  uint64 conversation_id = 2;
+  uint64 sender_id = 3;
+  string content = 4;
+  MessageType type = 5;
+  google.protobuf.Timestamp created_at = 6;
+  SenderInfo sender = 8;
+}
+
+// ----------------------
+// 请求与响应定义
+// ----------------------
+
+// 1. 发送消息
+message SendMessageRequest {
+  uint64 conversation_id = 1; // 发送到哪个会话
+  string content = 2;
+  MessageType type = 3;
+}
+
+message SendMessageResponse {
+  Message message = 1; // 返回发送成功的完整消息对象（含ID和时间）
+}
+
+// 2. 获取会话列表 (支持分页)
+message GetConversationListRequest {
+  uint32 page_size = 1;   // 每页数量，默认 20
+  string page_token = 2;  // 分页游标，第一页传空
+}
+
+message GetConversationListResponse {
+  repeated Conversation conversations = 1;
+  string next_page_token = 2; // 下一页游标，为空表示无更多数据
+}
+
+// 3. 获取消息列表 (支持分页)
+message GetMessageListRequest {
+  uint64 conversation_id = 1;
+  uint32 page_size = 2;   // 每页数量，默认 50
+  string page_token = 3;  // 分页游标，第一页传空
+}
+
+message GetMessageListResponse {
+  repeated Message messages = 1;
+  string next_page_token = 2; // 下一页游标
+}
+
+// 4. 标记已读
+message MarkAsReadRequest {
+  uint64 conversation_id = 1;
+  repeated uint64 message_ids = 2; // 要标记为已读的消息ID列表 (通常是最新的一条，表示之前的都已读，或者是具体的ID列表)
+                                   // 简化起见，通常传最后一条读取的消息ID，服务端将 <= 该ID的消息标记为已读
+                                   // 这里我们采用：传入最后一条阅读的消息ID
+  uint64 last_read_message_id = 3; 
+}
+
+message MarkAsReadResponse {
+  uint64 conversation_id = 1;
+  uint32 unread_count = 2;
+}
+
+// 5. 创建会话 (单聊或群聊)
+message CreateConversationRequest {
+  ConversationType type = 1;
+  repeated uint64 participant_ids = 2; // 成员ID列表 (不包含自己，或者包含也可以，后端处理)
+  string name = 3; // 群聊名称 (仅群聊有效)
+  string avatar = 4; // 群聊头像 (仅群聊有效)
+}
+
+message CreateConversationResponse {
+  Conversation conversation = 1;
+}
+
+// 6. 消息推送 (服务端 -> 客户端)
+message MessagePush {
+  Message message = 1;
+}
+
+message ConversationPush {
+  Conversation conversation = 1;
+}
+
+// ----------------------
+// 统一载荷
+// ----------------------
+message ChatPayload {
+  oneof payload {
+    SendMessageRequest send_message = 1;
+    SendMessageResponse send_message_response = 2;
+
+    GetConversationListRequest get_conversation_list = 3;
+    GetConversationListResponse get_conversation_list_response = 4;
+
+    GetMessageListRequest get_message_list = 5;
+    GetMessageListResponse get_message_list_response = 6;
+
+    MarkAsReadRequest mark_as_read = 7;
+    MarkAsReadResponse mark_as_read_response = 8;
+    
+    CreateConversationRequest create_conversation = 9;
+    CreateConversationResponse create_conversation_response = 10;
+
+    MessagePush message_push = 11; // 新消息推送
+    ConversationPush conversation_push = 12; // 新会话推送
+  }
+}

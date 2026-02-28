@@ -1,0 +1,9 @@
+.git
+**/.DS_Store
+**/node_modules
+**/.env
+backend/bin
+backend/api
+backend/test_chat_client
+frontend/dist
+frontend/node_modules

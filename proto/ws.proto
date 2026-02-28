@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package social;
+
+import "account/account.proto";
+import "chat/chat.proto";
+import "relation/relation.proto";
+
+option go_package = "social_app/internal/proto;proto";
+
+enum WsMessageType {
+  WS_MESSAGE_TYPE_UNSPECIFIED = 0;
+  WS_TYPE_PING = 1;
+  WS_TYPE_AUTH = 2;
+  WS_TYPE_PONG = 101;
+  WS_TYPE_AUTH_RESPONSE = 102;
+  WS_TYPE_ERROR = 103;
+  WS_TYPE_ACCOUNT_SEARCH_USER = 104;
+  WS_TYPE_ACCOUNT_SEARCH_USER_RESPONSE = 105;
+  WS_TYPE_ACCOUNT_UPDATE_PROFILE = 106;
+  WS_TYPE_ACCOUNT_UPDATE_PROFILE_RESPONSE = 107;
+  WS_TYPE_ACCOUNT_UPLOAD_AVATAR = 108;
+  WS_TYPE_ACCOUNT_UPLOAD_AVATAR_RESPONSE = 109;
+  
+  // Chat Module Types
+  WS_TYPE_CHAT_SEND_MESSAGE = 201;
+  WS_TYPE_CHAT_GET_CONVERSATION_LIST = 202;
+  WS_TYPE_CHAT_GET_MESSAGE_LIST = 203;
+  WS_TYPE_CHAT_MARK_AS_READ = 204;
+  WS_TYPE_CHAT_CREATE_CONVERSATION = 205;
+  
+  // Chat Module Responses
+  WS_TYPE_CHAT_SEND_MESSAGE_RESPONSE = 301;
+  WS_TYPE_CHAT_GET_CONVERSATION_LIST_RESPONSE = 302;
+  WS_TYPE_CHAT_GET_MESSAGE_LIST_RESPONSE = 303;
+  WS_TYPE_CHAT_MARK_AS_READ_RESPONSE = 304;
+  WS_TYPE_CHAT_CREATE_CONVERSATION_RESPONSE = 305;
+  
+  // Chat Module Push
+  WS_TYPE_CHAT_MESSAGE_PUSH = 401;
+  WS_TYPE_CHAT_CONVERSATION_PUSH = 402;
+  
+  // Relation Module Types (Replaces Contact)
+  WS_TYPE_RELATION_FOLLOW = 501;
+  WS_TYPE_RELATION_UNFOLLOW = 502;
+  WS_TYPE_RELATION_GET_FOLLOWING = 503;
+  WS_TYPE_RELATION_GET_FOLLOWERS = 504;
+  WS_TYPE_RELATION_GET_FRIENDS = 505;
+  
+  // Relation Module Responses
+  WS_TYPE_RELATION_FOLLOW_RESPONSE = 601;
+  WS_TYPE_RELATION_UNFOLLOW_RESPONSE = 602;
+  WS_TYPE_RELATION_GET_FOLLOWING_RESPONSE = 603;
+  WS_TYPE_RELATION_GET_FOLLOWERS_RESPONSE = 604;
+  WS_TYPE_RELATION_GET_FRIENDS_RESPONSE = 605;
+  
+  // Relation Module Push
+  WS_TYPE_RELATION_PUSH = 701;
+}
+
+message WsError {
+  int32 code = 1;
+  string message = 2;
+}
+
+message WsMessage {
+  int64 request_id = 1;
+  WsMessageType type = 2;
+  int64 timestamp = 3;
+
+  oneof payload {
+    social.account.AccountPayload account = 10;
+    social.chat.ChatPayload chat = 11;
+    social.relation.RelationPayload relation = 12;
+    WsError error = 13;
+  }
+}

@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package social.relation;
+
+import "common/error_code.proto";
+import "account/account.proto";
+
+option go_package = "social_app/internal/proto/relation;relation";
+
+// Relation represents a user relationship (following)
+message Relation {
+  social.account.User user = 1; // The user I am following (or who follows me)
+  int64 created_at = 2; // timestamp
+}
+
+// FollowRequest requests to follow a user
+message FollowRequest {
+  uint64 target_uid = 1;
+}
+
+message FollowResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+}
+
+// UnfollowRequest requests to unfollow a user
+message UnfollowRequest {
+  uint64 target_uid = 1;
+}
+
+message UnfollowResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+}
+
+// GetFollowingRequest retrieves the list of users I follow
+message GetFollowingRequest {}
+
+message GetFollowingResponse {
+  repeated Relation following_list = 1;
+}
+
+// GetFollowersResponse retrieves the list of users following me
+message GetFollowersRequest {}
+
+message GetFollowersResponse {
+  repeated Relation follower_list = 1;
+}
+
+// GetFriendsRequest retrieves the list of mutual friends (bidirectional follow)
+message GetFriendsRequest {
+  int32 page_size = 1;
+  string cursor = 2; // e.g., "created_at" of the last item
+}
+
+message GetFriendsResponse {
+  repeated Relation friend_list = 1;
+  string next_cursor = 2;
+}
+
+// RelationPayload wraps all relation related messages
+message RelationPayload {
+  oneof payload {
+    FollowRequest follow = 1;
+    FollowResponse follow_response = 2;
+    UnfollowRequest unfollow = 3;
+    UnfollowResponse unfollow_response = 4;
+    GetFollowingRequest get_following = 5;
+    GetFollowingResponse get_following_response = 6;
+    GetFollowersRequest get_followers = 7;
+    GetFollowersResponse get_followers_response = 8;
+    RelationPush relation_push = 9;
+    GetFriendsRequest get_friends = 10;
+    GetFriendsResponse get_friends_response = 11;
+  }
+}
+
+message RelationPush {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_FOLLOWED = 1; // Someone followed me
+    TYPE_UNFOLLOWED = 2; // Someone unfollowed me (optional, maybe not needed to push)
+  }
+  Type type = 1;
+  social.account.User user = 2; // The user who performed the action
+  int64 timestamp = 3;
+}

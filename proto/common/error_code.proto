@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package social;
+
+option go_package = "social_app/internal/proto/common;common";
+
+enum ErrorCode {
+  ERROR_CODE_UNSPECIFIED = 0;
+  ERROR_CODE_OK = 1;
+  ERROR_CODE_UNAUTHORIZED = 2;
+  ERROR_CODE_NOT_FOUND = 3;
+  ERROR_CODE_INVALID_ARGUMENT = 4;
+  ERROR_CODE_INTERNAL = 5;
+}

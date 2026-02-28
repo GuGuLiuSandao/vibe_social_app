@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package social.account;
+
+import "common/error_code.proto";
+
+option go_package = "social_app/internal/proto/account;account";
+
+message User {
+  uint64 id = 1;
+  string username = 2;
+  string email = 3;
+  string nickname = 4;
+  string avatar = 5;
+  string bio = 6;
+}
+
+message RegisterRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message RegisterResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+  string token = 3;
+  User user = 4;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  uint64 uid = 3;
+}
+
+message LoginResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+  string token = 3;
+  User user = 4;
+}
+
+message AuthRequest {
+  string token = 1;
+  uint64 uid = 2;
+}
+
+message AuthResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+  User user = 3;
+}
+
+message UpdateProfileRequest {
+  string nickname = 1;
+  string avatar = 2;
+  string bio = 3;
+}
+
+message UpdateProfileResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+  User user = 3;
+}
+
+message UploadAvatarRequest {
+  string filename = 1;
+  bytes data = 2;
+}
+
+message UploadAvatarResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+  string url = 3;
+}
+
+message Ping {}
+
+message Pong {}
+
+message SearchUserRequest {
+  string query = 1;
+}
+
+message SearchUserResponse {
+  repeated User users = 1;
+}
+
+message AccountPayload {
+  oneof payload {
+    Ping ping = 1;
+    Pong pong = 2;
+    AuthRequest auth = 3;
+    AuthResponse auth_response = 4;
+    SearchUserRequest search_user = 5;
+    SearchUserResponse search_user_response = 6;
+    UpdateProfileRequest update_profile = 7;
+    UpdateProfileResponse update_profile_response = 8;
+    UploadAvatarRequest upload_avatar = 9;
+    UploadAvatarResponse upload_avatar_response = 10;
+  }
+}

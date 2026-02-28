@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package social.common;
+
+option go_package = "social_app/internal/proto/common;common";
+
+import "common/error_code.proto";
+
+message UploadFileResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+  string url = 3;
+}
