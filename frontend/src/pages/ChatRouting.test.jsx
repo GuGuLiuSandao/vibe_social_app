@@ -5,17 +5,6 @@ import Chat from "./Chat";
 import Login from "./Login";
 import { setLastUid } from "../lib/storage";
 
-vi.mock("../lib/api", async () => {
-  const actual = await vi.importActual("../lib/api");
-  return {
-    ...actual,
-    loginWithUid: vi.fn(async () => ({
-      token: "wl-token",
-      user: { id: 10000000, username: "whitelist_10000000", email: "whitelist@local" },
-    })),
-  };
-});
-
 const LocationDisplay = () => {
   const location = useLocation();
   return <div>{location.pathname}{location.search}</div>;
@@ -37,15 +26,26 @@ describe("Chat routing", () => {
       },
     };
     globalThis.localStorage.clear();
+    globalThis.WebSocket = vi.fn(() => ({
+      onopen: null,
+      onerror: null,
+      onclose: null,
+      onmessage: null,
+      close: vi.fn(),
+      send: vi.fn(),
+      readyState: 1,
+    }));
   });
 
   it("redirects to last uid when missing in url", async () => {
     setLastUid(10000000);
+    globalThis.localStorage.setItem("token:10000000", "test-token");
     render(
       <MemoryRouter initialEntries={["/chat"]}>
         <LocationDisplay />
         <Routes>
           <Route path="/chat" element={<Chat />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </MemoryRouter>
     );
@@ -55,7 +55,7 @@ describe("Chat routing", () => {
     );
   });
 
-  it("redirects to login when non-whitelist uid has no token", async () => {
+  it("redirects to login when uid has no token", async () => {
     render(
       <MemoryRouter initialEntries={["/chat?uid=1"]}>
         <LocationDisplay />
@@ -66,6 +66,6 @@ describe("Chat routing", () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(screen.getByText("/login")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getAllByText("/login").length).toBeGreaterThan(0));
   });
 });

@@ -35,10 +35,21 @@ import {
   CreateConversationRequestSchema,
   GetConversationListRequestSchema,
   GetMessageListRequestSchema,
+  GetTopicRoomListRequestSchema,
+  GetTopicRoomMembersRequestSchema,
+  JoinTopicRoomRequestSchema,
+  LeaveTopicRoomRequestSchema,
   MarkAsReadRequestSchema,
   MessageType,
+  SendTopicRoomMessageRequestSchema,
   SendMessageRequestSchema,
 } from "../proto/chat/chat_pb";
+
+const CONVERSATION_TYPE_PRIVATE =
+  ConversationType.PRIVATE ?? ConversationType.CONVERSATION_TYPE_PRIVATE ?? 1;
+const CONVERSATION_TYPE_GROUP =
+  ConversationType.GROUP ?? ConversationType.CONVERSATION_TYPE_GROUP ?? 2;
+const MESSAGE_TYPE_TEXT = MessageType.TEXT ?? MessageType.MESSAGE_TYPE_TEXT ?? 1;
 
 function toIdString(value) {
   if (value === null || value === undefined) return "";
@@ -126,6 +137,11 @@ export default function Chat() {
   const [messages, setMessages] = useState({});
   const [activeConvId, setActiveConvId] = useState("");
   const activeConvIdRef = useRef(activeConvId);
+  const [topicRooms, setTopicRooms] = useState([]);
+  const [topicMessages, setTopicMessages] = useState({});
+  const [activeTopicRoomId, setActiveTopicRoomId] = useState("");
+  const activeTopicRoomIdRef = useRef(activeTopicRoomId);
+  const [topicMembers, setTopicMembers] = useState([]);
   const messagesEndRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState("messages");
@@ -136,7 +152,9 @@ export default function Chat() {
   const [inputText, setInputText] = useState("");
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [createTargetId, setCreateTargetId] = useState("");
+  const [createGroupName, setCreateGroupName] = useState("");
+  const [createGroupAvatar, setCreateGroupAvatar] = useState("");
+  const [createGroupMemberIds, setCreateGroupMemberIds] = useState([]);
 
   const [followModalOpen, setFollowModalOpen] = useState(false);
   const [followTargetId, setFollowTargetId] = useState("");
@@ -144,6 +162,41 @@ export default function Chat() {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [profileForm, setProfileForm] = useState({ nickname: "", avatar: "", bio: "" });
   const fileInputRef = useRef(null);
+
+  const friendCandidates = useMemo(() => {
+    const followingMap = new Map();
+    followingList.forEach((item) => {
+      const memberId = toIdString(item.user?.id);
+      if (!memberId) return;
+      followingMap.set(memberId, item.user || {});
+    });
+
+    const friends = [];
+    followersList.forEach((item) => {
+      const memberId = toIdString(item.user?.id);
+      if (!memberId || !followingMap.has(memberId)) return;
+      const followingUser = followingMap.get(memberId) || {};
+      const followerUser = item.user || {};
+      friends.push({
+        id: memberId,
+        nickname: followerUser.nickname || followingUser.nickname || "",
+        username: followerUser.username || followingUser.username || "",
+        avatar: followerUser.avatar || followingUser.avatar || "",
+      });
+    });
+
+    friends.sort((a, b) => {
+      const left = a.nickname || a.username || a.id;
+      const right = b.nickname || b.username || b.id;
+      return left.localeCompare(right);
+    });
+    return friends;
+  }, [followersList, followingList]);
+
+  const friendIdSet = useMemo(
+    () => new Set(friendCandidates.map((item) => toIdString(item.id))),
+    [friendCandidates],
+  );
 
   const nextRequestId = () => {
     requestCounterRef.current += 1n;
@@ -214,6 +267,10 @@ export default function Chat() {
   }, [activeConvId]);
 
   useEffect(() => {
+    activeTopicRoomIdRef.current = activeTopicRoomId;
+  }, [activeTopicRoomId]);
+
+  useEffect(() => {
     let cancelled = false;
 
     const loadUser = async () => {
@@ -261,15 +318,6 @@ export default function Chat() {
         }
       }
 
-      if (!token) {
-        setAuthError("需要登录");
-        setAuthStatus("error");
-        if (!whitelist) {
-          navigate("/login", { replace: true });
-        }
-        return;
-      }
-
       setAuthError("");
       setAuthStatus("authenticated");
     };
@@ -303,6 +351,29 @@ export default function Chat() {
     target.send(encodeWsMessage(wsMsg));
   };
 
+  const sendGetTopicRoomList = (socket) => {
+    const target = socket || wsRef.current;
+    if (!target || target.readyState !== WebSocket.OPEN) return;
+
+    const req = create(GetTopicRoomListRequestSchema, {});
+    const payload = create(ChatPayloadSchema, {
+      payload: {
+        case: "getTopicRoomList",
+        value: req,
+      },
+    });
+    const wsMsg = create(WsMessageSchema, {
+      requestId: BigInt(Date.now()),
+      type: WsMessageType.WS_TYPE_CHAT_GET_TOPIC_ROOM_LIST,
+      timestamp: BigInt(Date.now()),
+      payload: {
+        case: "chat",
+        value: payload,
+      },
+    });
+    target.send(encodeWsMessage(wsMsg));
+  };
+
   const sendChatWsRequest = (type, payloadCase, payloadValue) => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
     const payload = create(ChatPayloadSchema, {
@@ -321,6 +392,53 @@ export default function Chat() {
       },
     });
     wsRef.current.send(encodeWsMessage(wsMsg));
+  };
+
+  const addTopicMessage = (message) => {
+    const roomId = toIdString(message?.roomId);
+    if (!roomId) return;
+    setTopicMessages((prev) => {
+      const current = prev[roomId] || [];
+      if (current.some((item) => toIdString(item.id) === toIdString(message.id))) {
+        return prev;
+      }
+      return {
+        ...prev,
+        [roomId]: [...current, message],
+      };
+    });
+  };
+
+  const leaveTopicRoom = (roomId) => {
+    const targetRoomId = roomId || activeTopicRoomIdRef.current;
+    if (!targetRoomId) return;
+    const req = create(LeaveTopicRoomRequestSchema, {
+      roomId: targetRoomId,
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_LEAVE_TOPIC_ROOM,
+      "leaveTopicRoom",
+      req,
+    );
+    setActiveTopicRoomId("");
+    setTopicMembers([]);
+  };
+
+  const resetCreateConversationForm = () => {
+    setCreateGroupName("");
+    setCreateGroupAvatar("");
+    setCreateGroupMemberIds([]);
+  };
+
+  const openCreateConversationModal = () => {
+    setRequestError("");
+    setCreateModalOpen(true);
+    resetCreateConversationForm();
+  };
+
+  const closeCreateConversationModal = () => {
+    setCreateModalOpen(false);
+    resetCreateConversationForm();
   };
 
   const addMessage = (msg) => {
@@ -370,7 +488,7 @@ export default function Chat() {
         case "getConversationListResponse": {
           const list = payload.value?.conversations || [];
           setConversations(list);
-          if (!activeConvIdRef.current && list.length > 0) {
+          if (!activeConvIdRef.current && !activeTopicRoomIdRef.current && list.length > 0) {
             setActiveConvId(toIdString(list[0].id));
           }
           break;
@@ -427,8 +545,7 @@ export default function Chat() {
             ...prev.filter((item) => toIdString(item.id) !== toIdString(conv.id)),
           ]);
           setActiveConvId(toIdString(conv.id));
-          setCreateModalOpen(false);
-          setCreateTargetId("");
+          closeCreateConversationModal();
           setActiveTab("messages");
           break;
         }
@@ -440,6 +557,89 @@ export default function Chat() {
               toIdString(conv.id) === responseConvId ? { ...conv, unreadCount } : conv,
             ),
           );
+          break;
+        }
+        case "getTopicRoomListResponse": {
+          const list = payload.value?.rooms || [];
+          setTopicRooms(list);
+          const joinedRoomId = payload.value?.joinedRoomId;
+          if (joinedRoomId) {
+            setActiveTopicRoomId(joinedRoomId);
+            setActiveConvId("");
+            const memberReq = create(GetTopicRoomMembersRequestSchema, {
+              roomId: joinedRoomId,
+            });
+            sendChatWsRequest(
+              WsMessageType.WS_TYPE_CHAT_GET_TOPIC_ROOM_MEMBERS,
+              "getTopicRoomMembers",
+              memberReq,
+            );
+          }
+          break;
+        }
+        case "joinTopicRoomResponse": {
+          const room = payload.value?.room;
+          const roomId = toIdString(room?.id);
+          if (!roomId) return;
+
+          const recentMessages = payload.value?.recentMessages || [];
+          const members = payload.value?.members || [];
+          setActiveTopicRoomId(roomId);
+          setActiveConvId("");
+          setTopicMembers(members);
+          setTopicMessages((prev) => ({ ...prev, [roomId]: recentMessages }));
+          setTopicRooms((prev) => {
+            const exists = prev.some((item) => toIdString(item.id) === roomId);
+            if (!exists) {
+              return [...prev, room];
+            }
+            return prev.map((item) =>
+              toIdString(item.id) === roomId
+                ? { ...item, onlineCount: room.onlineCount }
+                : item,
+            );
+          });
+          break;
+        }
+        case "leaveTopicRoomResponse": {
+          const roomId = toIdString(payload.value?.roomId);
+          if (roomId && roomId === activeTopicRoomIdRef.current) {
+            setActiveTopicRoomId("");
+            setTopicMembers([]);
+          }
+          break;
+        }
+        case "sendTopicRoomMessageResponse": {
+          const topicMessage = payload.value?.message;
+          if (topicMessage) {
+            addTopicMessage(topicMessage);
+          }
+          break;
+        }
+        case "getTopicRoomMembersResponse": {
+          const roomId = toIdString(payload.value?.roomId);
+          if (roomId && roomId === activeTopicRoomIdRef.current) {
+            setTopicMembers(payload.value?.members || []);
+          }
+          break;
+        }
+        case "topicRoomMessagePush": {
+          const topicMessage = payload.value?.message;
+          if (!topicMessage) return;
+          addTopicMessage(topicMessage);
+          break;
+        }
+        case "topicRoomMembersPush": {
+          const roomId = toIdString(payload.value?.roomId);
+          const onlineCount = Number(payload.value?.onlineCount || 0);
+          setTopicRooms((prev) =>
+            prev.map((room) =>
+              toIdString(room.id) === roomId ? { ...room, onlineCount } : room,
+            ),
+          );
+          if (roomId === activeTopicRoomIdRef.current) {
+            setTopicMembers(payload.value?.members || []);
+          }
           break;
         }
         default:
@@ -503,6 +703,7 @@ export default function Chat() {
       setRequestError("");
       socket.send(encodeWsMessage(buildAccountPing()));
       sendGetConversationList(socket);
+      sendGetTopicRoomList(socket);
       socket.send(encodeWsMessage(buildGetFollowingRequest()));
       socket.send(encodeWsMessage(buildGetFollowersRequest()));
 
@@ -553,6 +754,8 @@ export default function Chat() {
 
     socket.onclose = () => {
       setWsState("disconnected");
+      setActiveTopicRoomId("");
+      setTopicMembers([]);
       rejectAllPendingRequests("连接已关闭");
     };
 
@@ -572,6 +775,10 @@ export default function Chat() {
   }, [messages, activeConvId]);
 
   const handleSelectConversation = (conv) => {
+    if (activeTopicRoomIdRef.current) {
+      leaveTopicRoom(activeTopicRoomIdRef.current);
+    }
+
     const convId = toIdString(conv.id);
     setActiveTab("messages");
     setActiveConvId(convId);
@@ -599,27 +806,105 @@ export default function Chat() {
     }
   };
 
+  const handleSelectTopicRoom = (room) => {
+    const roomId = toIdString(room?.id);
+    if (!roomId) return;
+
+    setActiveTab("messages");
+    setActiveConvId("");
+
+    if (activeTopicRoomIdRef.current === roomId) {
+      const memberReq = create(GetTopicRoomMembersRequestSchema, {
+        roomId,
+      });
+      sendChatWsRequest(
+        WsMessageType.WS_TYPE_CHAT_GET_TOPIC_ROOM_MEMBERS,
+        "getTopicRoomMembers",
+        memberReq,
+      );
+      return;
+    }
+
+    const req = create(JoinTopicRoomRequestSchema, {
+      roomId,
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_JOIN_TOPIC_ROOM,
+      "joinTopicRoom",
+      req,
+    );
+  };
+
   const handleSendMessage = (event) => {
     event.preventDefault();
-    if (!inputText.trim() || !activeConvId) return;
+    const trimmed = inputText.trim();
+    if (!trimmed) return;
+
+    if (activeTopicRoomId) {
+      const req = create(SendTopicRoomMessageRequestSchema, {
+        roomId: activeTopicRoomId,
+        content: trimmed,
+      });
+      sendChatWsRequest(
+        WsMessageType.WS_TYPE_CHAT_SEND_TOPIC_ROOM_MESSAGE,
+        "sendTopicRoomMessage",
+        req,
+      );
+      setInputText("");
+      return;
+    }
+
+    if (!activeConvId) return;
     const req = create(SendMessageRequestSchema, {
       conversationId: toIdBigInt(activeConvId),
-      content: inputText.trim(),
-      type: MessageType.MESSAGE_TYPE_TEXT,
+      content: trimmed,
+      type: MESSAGE_TYPE_TEXT,
     });
     sendChatWsRequest(WsMessageType.WS_TYPE_CHAT_SEND_MESSAGE, "sendMessage", req);
     setInputText("");
   };
 
-  const handleCreateConversation = () => {
-    const normalized = parseUid(createTargetId);
+  const startPrivateConversation = (targetId) => {
+    const normalized = parseUid(targetId);
     if (!normalized) {
       setRequestError("请输入有效的目标 UID");
       return;
     }
+    setRequestError("");
+    setActiveTab("messages");
     const req = create(CreateConversationRequestSchema, {
-      type: ConversationType.CONVERSATION_TYPE_PRIVATE,
+      type: CONVERSATION_TYPE_PRIVATE,
       participantIds: [toIdBigInt(normalized)],
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_CREATE_CONVERSATION,
+      "createConversation",
+      req,
+    );
+  };
+
+  const handleCreateConversation = () => {
+    const groupName = createGroupName.trim();
+    if (!groupName) {
+      setRequestError("请输入群聊名称");
+      return;
+    }
+
+    const selfUid = toIdString(uid);
+    const participantIDs = Array.from(new Set(createGroupMemberIds)).filter(
+      (item) => item && item !== selfUid && friendIdSet.has(item),
+    );
+
+    if (participantIDs.length < 2) {
+      setRequestError("请至少选择 2 位好友（不包含自己）");
+      return;
+    }
+
+    const req = create(CreateConversationRequestSchema, {
+      type: CONVERSATION_TYPE_GROUP,
+      participantIds: participantIDs.map((id) => toIdBigInt(id)),
+      name: groupName,
+      avatar: createGroupAvatar.trim(),
     });
     sendChatWsRequest(
       WsMessageType.WS_TYPE_CHAT_CREATE_CONVERSATION,
@@ -661,6 +946,14 @@ export default function Chat() {
       });
     }
     setProfileModalOpen(true);
+  };
+
+  const toggleCreateGroupMember = (memberId) => {
+    setCreateGroupMemberIds((prev) =>
+      prev.includes(memberId)
+        ? prev.filter((item) => item !== memberId)
+        : [...prev, memberId],
+    );
   };
 
   const handleFileUpload = async (event) => {
@@ -754,15 +1047,23 @@ export default function Chat() {
   const relationList = relationTab === "following" ? followingList : followersList;
   const activeMessages = activeConvId ? messages[activeConvId] || [] : [];
   const activeConv = conversations.find((conv) => toIdString(conv.id) === activeConvId) || null;
+  const activeTopicRoom = topicRooms.find((room) => toIdString(room.id) === activeTopicRoomId) || null;
+  const activeTopicMessages = activeTopicRoomId ? topicMessages[activeTopicRoomId] || [] : [];
   const wsLabel = {
     connecting: "连接中",
     connected: "在线",
     disconnected: "离线",
     error: "异常",
   }[wsState] || "未知";
+  const privateConversations = conversations.filter(
+    (conv) => Number(conv.type) === Number(CONVERSATION_TYPE_PRIVATE),
+  );
+  const groupConversations = conversations.filter(
+    (conv) => Number(conv.type) === Number(CONVERSATION_TYPE_GROUP),
+  );
   const conversationGroups = [
-    { id: "pinned", label: "置顶私信", items: conversations.slice(0, 3) },
-    { id: "recent", label: "最近消息", items: conversations.slice(3) },
+    { id: "group", label: "群聊", items: groupConversations },
+    { id: "private", label: "私聊", items: privateConversations },
   ].filter((group) => group.items.length > 0);
   const unreadTotal = conversations.reduce((count, conv) => count + Number(conv.unreadCount || 0), 0);
 
@@ -788,7 +1089,14 @@ export default function Chat() {
   followersList.forEach((item) =>
     addMember(item.user?.id, item.user?.nickname || item.user?.username, item.user?.avatar, "粉丝"),
   );
-  const memberPanelList = Array.from(memberMap.values()).slice(0, 16);
+  const defaultMemberPanelList = Array.from(memberMap.values()).slice(0, 16);
+  const topicMemberPanelList = topicMembers.map((member) => ({
+    id: toIdString(member.id),
+    name: member.nickname || member.username || `UID ${toIdString(member.id)}`,
+    avatar: member.avatar || "",
+    badge: "在线",
+  }));
+  const memberPanelList = activeTopicRoomId ? topicMemberPanelList : defaultMemberPanelList;
 
   return (
     <div className="flex h-screen flex-col bg-[#1e1f22] text-slate-100 md:flex-row">
@@ -820,7 +1128,12 @@ export default function Chat() {
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab("contacts")}
+          onClick={() => {
+            if (activeTopicRoomIdRef.current) {
+              leaveTopicRoom(activeTopicRoomIdRef.current);
+            }
+            setActiveTab("contacts");
+          }}
           className={`h-11 w-11 rounded-2xl border border-[#3d4047] text-[11px] font-semibold transition md:mb-2 md:h-12 md:w-12 ${
             activeTab === "contacts"
               ? "bg-[#5865f2] text-white"
@@ -839,15 +1152,15 @@ export default function Chat() {
         <div className="border-b discord-divider px-4 py-3">
           <div className="flex items-center justify-between gap-2">
             <h2 className="font-display text-sm font-bold uppercase tracking-wider text-slate-200">
-              {activeTab === "messages" ? "Direct Messages" : "Relations"}
+              {activeTab === "messages" ? "Conversations" : "Relations"}
             </h2>
             {activeTab === "messages" ? (
               <button
                 type="button"
-                onClick={() => setCreateModalOpen(true)}
+                onClick={openCreateConversationModal}
                 className="rounded-md border border-[#42454d] bg-[#35373c] px-2 py-1 text-xs text-slate-200 transition hover:bg-[#464952]"
               >
-                + 私聊
+                + 群聊
               </button>
             ) : (
               <button
@@ -864,9 +1177,55 @@ export default function Chat() {
 
         {activeTab === "messages" ? (
           <div className="flex-1 overflow-y-auto px-2 pb-2 pt-1">
+            <div className="mb-2">
+              <div className="flex items-center justify-between px-2 py-1">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                  官方社区
+                </p>
+                <span className="text-[11px] text-slate-500">{topicRooms.length}</span>
+              </div>
+              {topicRooms.map((room) => {
+                const roomId = toIdString(room.id);
+                const selected = roomId === activeTopicRoomId;
+                return (
+                  <button
+                    key={roomId}
+                    type="button"
+                    onClick={() => handleSelectTopicRoom(room)}
+                    className={`mb-1 flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition ${
+                      selected
+                        ? "bg-[#404249] shadow-[inset_3px_0_0_0_#5865f2]"
+                        : "hover:bg-[#35373c]"
+                    }`}
+                  >
+                    <div
+                      className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#232428] text-xs font-bold text-white"
+                    >
+                      {room.icon ? (
+                        <img src={room.icon} alt="icon" className="h-full w-full object-cover" />
+                      ) : (
+                        getInitials(room.name || roomId)
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-slate-100">
+                        {room.name || roomId}
+                      </p>
+                      <p className="truncate text-xs text-slate-400">
+                        {room.description || "官方话题聊天室"}
+                      </p>
+                    </div>
+                    <span className="rounded-full border border-[#41444d] bg-[#232428] px-2 py-0.5 text-[10px] text-slate-300">
+                      {room.onlineCount || 0}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
             {conversations.length === 0 ? (
               <div className="rounded-lg border border-[#3a3d43] bg-[#232428] p-3 text-sm text-slate-400">
-                还没有会话，点击右上角创建私聊。
+                还没有会话，点击右上角创建私聊或群聊。
               </div>
             ) : null}
             {conversationGroups.map((group) => (
@@ -880,6 +1239,7 @@ export default function Chat() {
                 {group.items.map((conv) => {
                   const convId = toIdString(conv.id);
                   const selected = convId === activeConvId;
+                  const isGroup = Number(conv.type) === Number(CONVERSATION_TYPE_GROUP);
                   return (
                     <button
                       key={convId}
@@ -906,9 +1266,16 @@ export default function Chat() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="truncate text-sm font-semibold text-slate-100">
-                            {conv.name || `会话 ${convId}`}
-                          </p>
+                          <div className="flex min-w-0 items-center gap-1.5">
+                            <p className="truncate text-sm font-semibold text-slate-100">
+                              {conv.name || `会话 ${convId}`}
+                            </p>
+                            {isGroup ? (
+                              <span className="shrink-0 rounded border border-[#4f545c] bg-[#232428] px-1.5 py-0.5 text-[10px] text-slate-400">
+                                群
+                              </span>
+                            ) : null}
+                          </div>
                           <span className="text-[11px] text-slate-400">{formatTime(conv.updatedAt)}</span>
                         </div>
                         <p className="truncate text-xs text-slate-400">
@@ -963,6 +1330,10 @@ export default function Chat() {
                 const isFollowing = followingList.some(
                   (item) => toIdString(item.user?.id) === rid,
                 );
+                const isFollower = followersList.some(
+                  (item) => toIdString(item.user?.id) === rid,
+                );
+                const isFriend = isFollowing && isFollower;
                 return (
                   <div
                     key={rid}
@@ -996,12 +1367,21 @@ export default function Chat() {
                     <div className="mt-2 flex gap-2">
                       <DiscordSecondaryButton
                         className="!h-8 !text-xs"
-                        onClick={() => {
-                          setCreateTargetId(rid);
-                          setCreateModalOpen(true);
-                        }}
+                        onClick={() => startPrivateConversation(rid)}
                       >
                         发消息
+                      </DiscordSecondaryButton>
+                      <DiscordSecondaryButton
+                        className={`!h-8 !text-xs ${
+                          isFriend
+                            ? ""
+                            : "!cursor-not-allowed !border-[#3d4047] !bg-[#232428] !text-slate-500 hover:!bg-[#232428]"
+                        }`}
+                        disabled={!isFriend}
+                        title={isFriend ? "创建好友群聊" : "仅可邀请互关好友"}
+                        onClick={openCreateConversationModal}
+                      >
+                        拉群
                       </DiscordSecondaryButton>
                       {relationTab === "following" ? (
                         <DiscordSecondaryButton
@@ -1042,16 +1422,20 @@ export default function Chat() {
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold text-slate-100">
                   {activeTab === "messages"
-                    ? activeConv?.name || "选择一个会话开始聊天"
+                    ? activeTopicRoom
+                      ? activeTopicRoom.name || "官方聊天室"
+                      : activeConv?.name || "选择一个会话开始聊天"
                     : relationTab === "following"
                       ? "My Following"
                       : "My Followers"}
                 </p>
                 <p className="truncate text-xs text-slate-400">
                   {activeTab === "messages"
-                    ? activeConvId
-                      ? `频道 ID: ${activeConvId}`
-                      : "尚未选择私聊频道"
+                      ? activeTopicRoomId
+                      ? `官方话题 · 在线 ${activeTopicRoom?.onlineCount || topicMembers.length}`
+                      : activeConvId
+                      ? `${Number(activeConv?.type) === Number(CONVERSATION_TYPE_GROUP) ? "群聊" : "私聊"} · 频道 ID: ${activeConvId}`
+                      : "尚未选择会话"
                     : `${relationList.length} users`}
                 </p>
               </div>
@@ -1074,8 +1458,16 @@ export default function Chat() {
           </header>
 
           {requestError ? (
-            <div className="border-b border-[#5f2a33] bg-[#3b1f24] px-4 py-2 text-xs text-[#ffb4bf]">
-              {requestError}
+            <div className="flex items-center justify-between gap-3 border-b border-[#5f2a33] bg-[#3b1f24] px-4 py-2">
+              <p className="min-w-0 text-xs text-[#ffb4bf]">{requestError}</p>
+              <button
+                type="button"
+                onClick={() => setRequestError("")}
+                aria-label="关闭提示"
+                className="shrink-0 rounded border border-[#7a3b47] px-1.5 py-0.5 text-[11px] font-semibold text-[#ffb4bf] transition hover:bg-[#4a252d]"
+              >
+                ×
+              </button>
             </div>
           ) : null}
 
@@ -1083,6 +1475,78 @@ export default function Chat() {
             <div className="flex flex-1 items-center justify-center px-4 text-sm text-slate-400">
               左侧可查看并管理关系链路。
             </div>
+          ) : activeTopicRoomId ? (
+            <>
+              <div className="flex-1 overflow-y-auto px-4 py-4">
+                {activeTopicMessages.length === 0 ? (
+                  <div className="rounded-xl border border-[#3a3d43] bg-[#2b2d31] p-4 text-sm text-slate-400">
+                    还没有消息，来发第一条话题消息吧。
+                  </div>
+                ) : null}
+                {activeTopicMessages.map((msg) => {
+                  const self = toIdString(msg.senderId) === toIdString(user?.id);
+                  const senderName =
+                    msg.sender?.nickname ||
+                    msg.sender?.username ||
+                    (self ? user?.nickname || user?.username : "Unknown");
+                  const senderAvatar = msg.sender?.avatar || (self ? user?.avatar : "");
+                  return (
+                    <div
+                      key={toIdString(msg.id)}
+                      className={`chat-message-row group relative mb-2 flex gap-3 px-2 py-1 ${
+                        self ? "flex-row-reverse" : ""
+                      }`}
+                    >
+                      <div
+                        className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                        style={{
+                          backgroundColor: senderAvatar ? "transparent" : getAvatarColor(msg.senderId),
+                          overflow: "hidden",
+                        }}
+                      >
+                        {senderAvatar ? (
+                          <img src={senderAvatar} alt="avatar" className="h-full w-full object-cover" />
+                        ) : (
+                          getInitials(senderName)
+                        )}
+                      </div>
+                      <div className={`max-w-[80%] ${self ? "items-end" : "items-start"} flex flex-col`}>
+                        <div className="chat-message-meta mb-1 text-xs">
+                          {senderName} · {formatTime(msg.createdAt)}
+                        </div>
+                        <div
+                          className={`chat-message-bubble ${
+                            self ? "chat-message-bubble-self" : "chat-message-bubble-other"
+                          }`}
+                        >
+                          {msg.content}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div ref={messagesEndRef} />
+              </div>
+              <div className="border-t discord-divider px-4 py-3">
+                <form onSubmit={handleSendMessage} className="flex gap-2">
+                  <textarea
+                    value={inputText}
+                    onChange={(event) => setInputText(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !event.shiftKey) {
+                        event.preventDefault();
+                        handleSendMessage(event);
+                      }
+                    }}
+                    placeholder={`聊聊 ${activeTopicRoom?.name || "这个话题"}`}
+                    className="h-11 min-h-[44px] flex-1 resize-none rounded-md border border-[#3f4248] bg-[#383a40] px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-[#5865f2]"
+                  />
+                  <DiscordButton type="submit" className="!h-11 !min-w-[88px]">
+                    发送
+                  </DiscordButton>
+                </form>
+              </div>
+            </>
           ) : activeConvId ? (
             <>
               <div className="flex-1 overflow-y-auto px-4 py-4">
@@ -1101,7 +1565,7 @@ export default function Chat() {
                   return (
                     <div
                       key={toIdString(msg.id)}
-                      className={`group relative mb-2 flex gap-3 rounded-md px-2 py-1 transition hover:bg-[#2f3136] ${
+                      className={`chat-message-row group relative mb-2 flex gap-3 px-2 py-1 ${
                         self ? "flex-row-reverse" : ""
                       }`}
                     >
@@ -1119,12 +1583,12 @@ export default function Chat() {
                         )}
                       </div>
                       <div className={`max-w-[80%] ${self ? "items-end" : "items-start"} flex flex-col`}>
-                        <div className="mb-1 text-xs text-slate-400">
+                        <div className="chat-message-meta mb-1 text-xs">
                           {senderName} · {formatTime(msg.createdAt)}
                         </div>
                         <div
-                          className={`rounded-2xl px-3 py-2 text-sm leading-6 ${
-                            self ? "bg-[#5865f2] text-white" : "bg-[#383a40] text-slate-100"
+                          className={`chat-message-bubble ${
+                            self ? "chat-message-bubble-self" : "chat-message-bubble-other"
                           }`}
                         >
                           {msg.content}
@@ -1172,7 +1636,7 @@ export default function Chat() {
               <div>
                 <div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-[#3a3d43]" />
                 <p className="font-display text-xl font-bold text-slate-100">Welcome to Social Chat</p>
-                <p className="mt-1 text-sm text-slate-400">从左侧选择会话，或创建一个新的私聊。</p>
+                <p className="mt-1 text-sm text-slate-400">从左侧进入官方话题聊天室，或创建一个新的私聊/群聊。</p>
               </div>
             </div>
           )}
@@ -1180,7 +1644,9 @@ export default function Chat() {
 
         <aside className="hidden w-[260px] shrink-0 border-l discord-divider bg-[#2b2d31] xl:flex xl:flex-col">
           <div className="border-b discord-divider px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">成员列表</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              {activeTopicRoomId ? "聊天室在线成员" : "成员列表"}
+            </p>
             <p className="mt-1 text-xs text-slate-500">当前可见 {memberPanelList.length} 人</p>
           </div>
           <div className="flex-1 overflow-y-auto px-2 py-2">
@@ -1213,37 +1679,128 @@ export default function Chat() {
             ))}
           </div>
           <div className="border-t discord-divider px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-500">关系快照</p>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
-                <p className="text-[10px] text-slate-500">Following</p>
-                <p className="mt-1 font-semibold text-slate-100">{followingList.length}</p>
-              </div>
-              <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
-                <p className="text-[10px] text-slate-500">Followers</p>
-                <p className="mt-1 font-semibold text-slate-100">{followersList.length}</p>
-              </div>
-            </div>
+            {activeTopicRoomId ? (
+              <>
+                <p className="text-[11px] uppercase tracking-wider text-slate-500">聊天室状态</p>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
+                    <p className="text-[10px] text-slate-500">在线人数</p>
+                    <p className="mt-1 font-semibold text-slate-100">{activeTopicRoom?.onlineCount || 0}</p>
+                  </div>
+                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
+                    <p className="text-[10px] text-slate-500">聊天室总数</p>
+                    <p className="mt-1 font-semibold text-slate-100">{topicRooms.length}</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-[11px] uppercase tracking-wider text-slate-500">关系快照</p>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
+                    <p className="text-[10px] text-slate-500">Following</p>
+                    <p className="mt-1 font-semibold text-slate-100">{followingList.length}</p>
+                  </div>
+                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
+                    <p className="text-[10px] text-slate-500">Followers</p>
+                    <p className="mt-1 font-semibold text-slate-100">{followersList.length}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </aside>
       </main>
 
       {createModalOpen ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/65 p-4">
-          <div className="discord-surface w-full max-w-md rounded-xl p-5">
-            <h3 className="font-display text-xl font-bold text-white">新建私聊</h3>
-            <p className="mt-1 text-sm text-slate-400">输入目标用户 UID 发起会话。</p>
-            <DiscordInput
-              className="mt-4"
-              value={createTargetId}
-              onChange={(event) => setCreateTargetId(event.target.value)}
-              placeholder="例如 20000001"
-            />
+          <div className="discord-surface w-full max-w-4xl rounded-xl p-5">
+            <h3 className="font-display text-xl font-bold text-white">创建群聊</h3>
+            <p className="mt-1 text-sm text-slate-400">
+              填写群信息，并从右侧好友列表中勾选成员。
+            </p>
+
+            <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,360px)]">
+              <div className="space-y-3">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-300">群聊名称</label>
+                  <DiscordInput
+                    value={createGroupName}
+                    onChange={(event) => setCreateGroupName(event.target.value)}
+                    placeholder="例如 产品讨论组"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-300">群头像 URL（可选）</label>
+                  <DiscordInput
+                    value={createGroupAvatar}
+                    onChange={(event) => setCreateGroupAvatar(event.target.value)}
+                    placeholder="https://..."
+                  />
+                </div>
+                <div className="rounded-md border border-[#3f4248] bg-[#232428] px-3 py-2 text-xs text-slate-400">
+                  需选择至少 2 位好友（不包含自己）才能创建群聊。
+                </div>
+              </div>
+
+              <div className="min-h-0 rounded-md border border-[#3f4248] bg-[#1e1f22]">
+                <div className="flex items-center justify-between border-b border-[#2a2c30] px-3 py-2">
+                  <label className="block text-xs font-semibold text-slate-300">群成员（仅好友）</label>
+                  <span className="text-[11px] text-slate-400">已选 {createGroupMemberIds.length} 人</span>
+                </div>
+                <div className="max-h-72 overflow-y-auto">
+                  {friendCandidates.length === 0 ? (
+                    <p className="px-3 py-4 text-xs text-slate-400">
+                      暂无可邀请好友，请先与对方互相关注。
+                    </p>
+                  ) : (
+                    friendCandidates.map((member) => {
+                      const memberId = toIdString(member.id);
+                      const selected = createGroupMemberIds.includes(memberId);
+                      const memberName = member.nickname || member.username || `UID ${memberId}`;
+                      return (
+                        <label
+                          key={memberId}
+                          className={`flex cursor-pointer items-center gap-2 border-b border-[#2a2c30] px-3 py-2 transition last:border-b-0 ${
+                            selected ? "bg-[#2a315a]" : "hover:bg-[#2a2c30]"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selected}
+                            onChange={() => toggleCreateGroupMember(memberId)}
+                            className="h-4 w-4 accent-[#5865f2]"
+                          />
+                          <div
+                            className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full text-[10px] font-bold text-white"
+                            style={{
+                              backgroundColor: member.avatar ? "transparent" : getAvatarColor(memberId),
+                            }}
+                          >
+                            {member.avatar ? (
+                              <img src={member.avatar} alt="avatar" className="h-full w-full object-cover" />
+                            ) : (
+                              getInitials(memberName)
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate text-xs font-semibold text-slate-100">
+                              {memberName}
+                            </p>
+                            <p className="truncate text-[11px] text-slate-400">UID: {memberId}</p>
+                          </div>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
-              <DiscordSecondaryButton onClick={() => setCreateModalOpen(false)}>
+              <DiscordSecondaryButton onClick={closeCreateConversationModal}>
                 取消
               </DiscordSecondaryButton>
-              <DiscordButton onClick={handleCreateConversation}>开始聊天</DiscordButton>
+              <DiscordButton onClick={handleCreateConversation}>创建群聊</DiscordButton>
             </div>
           </div>
         </div>

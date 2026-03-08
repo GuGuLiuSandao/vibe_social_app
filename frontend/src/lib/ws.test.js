@@ -11,7 +11,7 @@ import {
 } from "./ws";
 
 describe("ws url builder", () => {
-  it("builds whitelist url without token", () => {
+  it("builds url without token", () => {
     expect(buildWsUrl(20000001, "")).toBe("ws://localhost:8080/ws?uid=20000001");
   });
 
