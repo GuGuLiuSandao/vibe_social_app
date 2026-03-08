@@ -1027,6 +1027,810 @@ func (x *ConversationPush) GetConversation() *Conversation {
 	return nil
 }
 
+type TopicRoom struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Icon          string                 `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
+	OnlineCount   uint32                 `protobuf:"varint,5,opt,name=online_count,json=onlineCount,proto3" json:"online_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TopicRoom) Reset() {
+	*x = TopicRoom{}
+	mi := &file_chat_chat_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TopicRoom) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TopicRoom) ProtoMessage() {}
+
+func (x *TopicRoom) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TopicRoom.ProtoReflect.Descriptor instead.
+func (*TopicRoom) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *TopicRoom) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *TopicRoom) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *TopicRoom) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *TopicRoom) GetIcon() string {
+	if x != nil {
+		return x.Icon
+	}
+	return ""
+}
+
+func (x *TopicRoom) GetOnlineCount() uint32 {
+	if x != nil {
+		return x.OnlineCount
+	}
+	return 0
+}
+
+type TopicRoomMessage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	RoomId        string                 `protobuf:"bytes,2,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	SenderId      uint64                 `protobuf:"varint,3,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
+	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Sender        *SenderInfo            `protobuf:"bytes,6,opt,name=sender,proto3" json:"sender,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TopicRoomMessage) Reset() {
+	*x = TopicRoomMessage{}
+	mi := &file_chat_chat_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TopicRoomMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TopicRoomMessage) ProtoMessage() {}
+
+func (x *TopicRoomMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TopicRoomMessage.ProtoReflect.Descriptor instead.
+func (*TopicRoomMessage) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *TopicRoomMessage) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *TopicRoomMessage) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+func (x *TopicRoomMessage) GetSenderId() uint64 {
+	if x != nil {
+		return x.SenderId
+	}
+	return 0
+}
+
+func (x *TopicRoomMessage) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *TopicRoomMessage) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *TopicRoomMessage) GetSender() *SenderInfo {
+	if x != nil {
+		return x.Sender
+	}
+	return nil
+}
+
+type TopicRoomMember struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Username      string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	Nickname      string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
+	Avatar        string                 `protobuf:"bytes,4,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TopicRoomMember) Reset() {
+	*x = TopicRoomMember{}
+	mi := &file_chat_chat_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TopicRoomMember) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TopicRoomMember) ProtoMessage() {}
+
+func (x *TopicRoomMember) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TopicRoomMember.ProtoReflect.Descriptor instead.
+func (*TopicRoomMember) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *TopicRoomMember) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *TopicRoomMember) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *TopicRoomMember) GetNickname() string {
+	if x != nil {
+		return x.Nickname
+	}
+	return ""
+}
+
+func (x *TopicRoomMember) GetAvatar() string {
+	if x != nil {
+		return x.Avatar
+	}
+	return ""
+}
+
+type GetTopicRoomListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTopicRoomListRequest) Reset() {
+	*x = GetTopicRoomListRequest{}
+	mi := &file_chat_chat_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTopicRoomListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTopicRoomListRequest) ProtoMessage() {}
+
+func (x *GetTopicRoomListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTopicRoomListRequest.ProtoReflect.Descriptor instead.
+func (*GetTopicRoomListRequest) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{18}
+}
+
+type GetTopicRoomListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Rooms         []*TopicRoom           `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty"`
+	JoinedRoomId  string                 `protobuf:"bytes,2,opt,name=joined_room_id,json=joinedRoomId,proto3" json:"joined_room_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTopicRoomListResponse) Reset() {
+	*x = GetTopicRoomListResponse{}
+	mi := &file_chat_chat_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTopicRoomListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTopicRoomListResponse) ProtoMessage() {}
+
+func (x *GetTopicRoomListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTopicRoomListResponse.ProtoReflect.Descriptor instead.
+func (*GetTopicRoomListResponse) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetTopicRoomListResponse) GetRooms() []*TopicRoom {
+	if x != nil {
+		return x.Rooms
+	}
+	return nil
+}
+
+func (x *GetTopicRoomListResponse) GetJoinedRoomId() string {
+	if x != nil {
+		return x.JoinedRoomId
+	}
+	return ""
+}
+
+type JoinTopicRoomRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinTopicRoomRequest) Reset() {
+	*x = JoinTopicRoomRequest{}
+	mi := &file_chat_chat_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinTopicRoomRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinTopicRoomRequest) ProtoMessage() {}
+
+func (x *JoinTopicRoomRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinTopicRoomRequest.ProtoReflect.Descriptor instead.
+func (*JoinTopicRoomRequest) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *JoinTopicRoomRequest) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+type JoinTopicRoomResponse struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Room           *TopicRoom             `protobuf:"bytes,1,opt,name=room,proto3" json:"room,omitempty"`
+	RecentMessages []*TopicRoomMessage    `protobuf:"bytes,2,rep,name=recent_messages,json=recentMessages,proto3" json:"recent_messages,omitempty"`
+	Members        []*TopicRoomMember     `protobuf:"bytes,3,rep,name=members,proto3" json:"members,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *JoinTopicRoomResponse) Reset() {
+	*x = JoinTopicRoomResponse{}
+	mi := &file_chat_chat_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinTopicRoomResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinTopicRoomResponse) ProtoMessage() {}
+
+func (x *JoinTopicRoomResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinTopicRoomResponse.ProtoReflect.Descriptor instead.
+func (*JoinTopicRoomResponse) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *JoinTopicRoomResponse) GetRoom() *TopicRoom {
+	if x != nil {
+		return x.Room
+	}
+	return nil
+}
+
+func (x *JoinTopicRoomResponse) GetRecentMessages() []*TopicRoomMessage {
+	if x != nil {
+		return x.RecentMessages
+	}
+	return nil
+}
+
+func (x *JoinTopicRoomResponse) GetMembers() []*TopicRoomMember {
+	if x != nil {
+		return x.Members
+	}
+	return nil
+}
+
+type LeaveTopicRoomRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LeaveTopicRoomRequest) Reset() {
+	*x = LeaveTopicRoomRequest{}
+	mi := &file_chat_chat_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LeaveTopicRoomRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LeaveTopicRoomRequest) ProtoMessage() {}
+
+func (x *LeaveTopicRoomRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LeaveTopicRoomRequest.ProtoReflect.Descriptor instead.
+func (*LeaveTopicRoomRequest) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *LeaveTopicRoomRequest) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+type LeaveTopicRoomResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LeaveTopicRoomResponse) Reset() {
+	*x = LeaveTopicRoomResponse{}
+	mi := &file_chat_chat_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LeaveTopicRoomResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LeaveTopicRoomResponse) ProtoMessage() {}
+
+func (x *LeaveTopicRoomResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LeaveTopicRoomResponse.ProtoReflect.Descriptor instead.
+func (*LeaveTopicRoomResponse) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *LeaveTopicRoomResponse) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+type SendTopicRoomMessageRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendTopicRoomMessageRequest) Reset() {
+	*x = SendTopicRoomMessageRequest{}
+	mi := &file_chat_chat_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendTopicRoomMessageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendTopicRoomMessageRequest) ProtoMessage() {}
+
+func (x *SendTopicRoomMessageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendTopicRoomMessageRequest.ProtoReflect.Descriptor instead.
+func (*SendTopicRoomMessageRequest) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *SendTopicRoomMessageRequest) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+func (x *SendTopicRoomMessageRequest) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type SendTopicRoomMessageResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       *TopicRoomMessage      `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendTopicRoomMessageResponse) Reset() {
+	*x = SendTopicRoomMessageResponse{}
+	mi := &file_chat_chat_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendTopicRoomMessageResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendTopicRoomMessageResponse) ProtoMessage() {}
+
+func (x *SendTopicRoomMessageResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendTopicRoomMessageResponse.ProtoReflect.Descriptor instead.
+func (*SendTopicRoomMessageResponse) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *SendTopicRoomMessageResponse) GetMessage() *TopicRoomMessage {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
+type GetTopicRoomMembersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTopicRoomMembersRequest) Reset() {
+	*x = GetTopicRoomMembersRequest{}
+	mi := &file_chat_chat_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTopicRoomMembersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTopicRoomMembersRequest) ProtoMessage() {}
+
+func (x *GetTopicRoomMembersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTopicRoomMembersRequest.ProtoReflect.Descriptor instead.
+func (*GetTopicRoomMembersRequest) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *GetTopicRoomMembersRequest) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+type GetTopicRoomMembersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	Members       []*TopicRoomMember     `protobuf:"bytes,2,rep,name=members,proto3" json:"members,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTopicRoomMembersResponse) Reset() {
+	*x = GetTopicRoomMembersResponse{}
+	mi := &file_chat_chat_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTopicRoomMembersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTopicRoomMembersResponse) ProtoMessage() {}
+
+func (x *GetTopicRoomMembersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTopicRoomMembersResponse.ProtoReflect.Descriptor instead.
+func (*GetTopicRoomMembersResponse) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *GetTopicRoomMembersResponse) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+func (x *GetTopicRoomMembersResponse) GetMembers() []*TopicRoomMember {
+	if x != nil {
+		return x.Members
+	}
+	return nil
+}
+
+type TopicRoomMessagePush struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       *TopicRoomMessage      `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TopicRoomMessagePush) Reset() {
+	*x = TopicRoomMessagePush{}
+	mi := &file_chat_chat_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TopicRoomMessagePush) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TopicRoomMessagePush) ProtoMessage() {}
+
+func (x *TopicRoomMessagePush) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TopicRoomMessagePush.ProtoReflect.Descriptor instead.
+func (*TopicRoomMessagePush) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *TopicRoomMessagePush) GetMessage() *TopicRoomMessage {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
+type TopicRoomMembersPush struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	Members       []*TopicRoomMember     `protobuf:"bytes,2,rep,name=members,proto3" json:"members,omitempty"`
+	OnlineCount   uint32                 `protobuf:"varint,3,opt,name=online_count,json=onlineCount,proto3" json:"online_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TopicRoomMembersPush) Reset() {
+	*x = TopicRoomMembersPush{}
+	mi := &file_chat_chat_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TopicRoomMembersPush) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TopicRoomMembersPush) ProtoMessage() {}
+
+func (x *TopicRoomMembersPush) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TopicRoomMembersPush.ProtoReflect.Descriptor instead.
+func (*TopicRoomMembersPush) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *TopicRoomMembersPush) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+func (x *TopicRoomMembersPush) GetMembers() []*TopicRoomMember {
+	if x != nil {
+		return x.Members
+	}
+	return nil
+}
+
+func (x *TopicRoomMembersPush) GetOnlineCount() uint32 {
+	if x != nil {
+		return x.OnlineCount
+	}
+	return 0
+}
+
 // ----------------------
 // 统一载荷
 // ----------------------
@@ -1046,6 +1850,18 @@ type ChatPayload struct {
 	//	*ChatPayload_CreateConversationResponse
 	//	*ChatPayload_MessagePush
 	//	*ChatPayload_ConversationPush
+	//	*ChatPayload_GetTopicRoomList
+	//	*ChatPayload_GetTopicRoomListResponse
+	//	*ChatPayload_JoinTopicRoom
+	//	*ChatPayload_JoinTopicRoomResponse
+	//	*ChatPayload_LeaveTopicRoom
+	//	*ChatPayload_LeaveTopicRoomResponse
+	//	*ChatPayload_SendTopicRoomMessage
+	//	*ChatPayload_SendTopicRoomMessageResponse
+	//	*ChatPayload_GetTopicRoomMembers
+	//	*ChatPayload_GetTopicRoomMembersResponse
+	//	*ChatPayload_TopicRoomMessagePush
+	//	*ChatPayload_TopicRoomMembersPush
 	Payload       isChatPayload_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1053,7 +1869,7 @@ type ChatPayload struct {
 
 func (x *ChatPayload) Reset() {
 	*x = ChatPayload{}
-	mi := &file_chat_chat_proto_msgTypes[15]
+	mi := &file_chat_chat_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1065,7 +1881,7 @@ func (x *ChatPayload) String() string {
 func (*ChatPayload) ProtoMessage() {}
 
 func (x *ChatPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_chat_chat_proto_msgTypes[15]
+	mi := &file_chat_chat_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1078,7 +1894,7 @@ func (x *ChatPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatPayload.ProtoReflect.Descriptor instead.
 func (*ChatPayload) Descriptor() ([]byte, []int) {
-	return file_chat_chat_proto_rawDescGZIP(), []int{15}
+	return file_chat_chat_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *ChatPayload) GetPayload() isChatPayload_Payload {
@@ -1196,6 +2012,114 @@ func (x *ChatPayload) GetConversationPush() *ConversationPush {
 	return nil
 }
 
+func (x *ChatPayload) GetGetTopicRoomList() *GetTopicRoomListRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_GetTopicRoomList); ok {
+			return x.GetTopicRoomList
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetGetTopicRoomListResponse() *GetTopicRoomListResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_GetTopicRoomListResponse); ok {
+			return x.GetTopicRoomListResponse
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetJoinTopicRoom() *JoinTopicRoomRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_JoinTopicRoom); ok {
+			return x.JoinTopicRoom
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetJoinTopicRoomResponse() *JoinTopicRoomResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_JoinTopicRoomResponse); ok {
+			return x.JoinTopicRoomResponse
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetLeaveTopicRoom() *LeaveTopicRoomRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_LeaveTopicRoom); ok {
+			return x.LeaveTopicRoom
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetLeaveTopicRoomResponse() *LeaveTopicRoomResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_LeaveTopicRoomResponse); ok {
+			return x.LeaveTopicRoomResponse
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetSendTopicRoomMessage() *SendTopicRoomMessageRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_SendTopicRoomMessage); ok {
+			return x.SendTopicRoomMessage
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetSendTopicRoomMessageResponse() *SendTopicRoomMessageResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_SendTopicRoomMessageResponse); ok {
+			return x.SendTopicRoomMessageResponse
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetGetTopicRoomMembers() *GetTopicRoomMembersRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_GetTopicRoomMembers); ok {
+			return x.GetTopicRoomMembers
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetGetTopicRoomMembersResponse() *GetTopicRoomMembersResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_GetTopicRoomMembersResponse); ok {
+			return x.GetTopicRoomMembersResponse
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetTopicRoomMessagePush() *TopicRoomMessagePush {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_TopicRoomMessagePush); ok {
+			return x.TopicRoomMessagePush
+		}
+	}
+	return nil
+}
+
+func (x *ChatPayload) GetTopicRoomMembersPush() *TopicRoomMembersPush {
+	if x != nil {
+		if x, ok := x.Payload.(*ChatPayload_TopicRoomMembersPush); ok {
+			return x.TopicRoomMembersPush
+		}
+	}
+	return nil
+}
+
 type isChatPayload_Payload interface {
 	isChatPayload_Payload()
 }
@@ -1248,6 +2172,55 @@ type ChatPayload_ConversationPush struct {
 	ConversationPush *ConversationPush `protobuf:"bytes,12,opt,name=conversation_push,json=conversationPush,proto3,oneof"` // 新会话推送
 }
 
+type ChatPayload_GetTopicRoomList struct {
+	// Topic Room
+	GetTopicRoomList *GetTopicRoomListRequest `protobuf:"bytes,13,opt,name=get_topic_room_list,json=getTopicRoomList,proto3,oneof"`
+}
+
+type ChatPayload_GetTopicRoomListResponse struct {
+	GetTopicRoomListResponse *GetTopicRoomListResponse `protobuf:"bytes,14,opt,name=get_topic_room_list_response,json=getTopicRoomListResponse,proto3,oneof"`
+}
+
+type ChatPayload_JoinTopicRoom struct {
+	JoinTopicRoom *JoinTopicRoomRequest `protobuf:"bytes,15,opt,name=join_topic_room,json=joinTopicRoom,proto3,oneof"`
+}
+
+type ChatPayload_JoinTopicRoomResponse struct {
+	JoinTopicRoomResponse *JoinTopicRoomResponse `protobuf:"bytes,16,opt,name=join_topic_room_response,json=joinTopicRoomResponse,proto3,oneof"`
+}
+
+type ChatPayload_LeaveTopicRoom struct {
+	LeaveTopicRoom *LeaveTopicRoomRequest `protobuf:"bytes,17,opt,name=leave_topic_room,json=leaveTopicRoom,proto3,oneof"`
+}
+
+type ChatPayload_LeaveTopicRoomResponse struct {
+	LeaveTopicRoomResponse *LeaveTopicRoomResponse `protobuf:"bytes,18,opt,name=leave_topic_room_response,json=leaveTopicRoomResponse,proto3,oneof"`
+}
+
+type ChatPayload_SendTopicRoomMessage struct {
+	SendTopicRoomMessage *SendTopicRoomMessageRequest `protobuf:"bytes,19,opt,name=send_topic_room_message,json=sendTopicRoomMessage,proto3,oneof"`
+}
+
+type ChatPayload_SendTopicRoomMessageResponse struct {
+	SendTopicRoomMessageResponse *SendTopicRoomMessageResponse `protobuf:"bytes,20,opt,name=send_topic_room_message_response,json=sendTopicRoomMessageResponse,proto3,oneof"`
+}
+
+type ChatPayload_GetTopicRoomMembers struct {
+	GetTopicRoomMembers *GetTopicRoomMembersRequest `protobuf:"bytes,21,opt,name=get_topic_room_members,json=getTopicRoomMembers,proto3,oneof"`
+}
+
+type ChatPayload_GetTopicRoomMembersResponse struct {
+	GetTopicRoomMembersResponse *GetTopicRoomMembersResponse `protobuf:"bytes,22,opt,name=get_topic_room_members_response,json=getTopicRoomMembersResponse,proto3,oneof"`
+}
+
+type ChatPayload_TopicRoomMessagePush struct {
+	TopicRoomMessagePush *TopicRoomMessagePush `protobuf:"bytes,23,opt,name=topic_room_message_push,json=topicRoomMessagePush,proto3,oneof"`
+}
+
+type ChatPayload_TopicRoomMembersPush struct {
+	TopicRoomMembersPush *TopicRoomMembersPush `protobuf:"bytes,24,opt,name=topic_room_members_push,json=topicRoomMembersPush,proto3,oneof"`
+}
+
 func (*ChatPayload_SendMessage) isChatPayload_Payload() {}
 
 func (*ChatPayload_SendMessageResponse) isChatPayload_Payload() {}
@@ -1271,6 +2244,30 @@ func (*ChatPayload_CreateConversationResponse) isChatPayload_Payload() {}
 func (*ChatPayload_MessagePush) isChatPayload_Payload() {}
 
 func (*ChatPayload_ConversationPush) isChatPayload_Payload() {}
+
+func (*ChatPayload_GetTopicRoomList) isChatPayload_Payload() {}
+
+func (*ChatPayload_GetTopicRoomListResponse) isChatPayload_Payload() {}
+
+func (*ChatPayload_JoinTopicRoom) isChatPayload_Payload() {}
+
+func (*ChatPayload_JoinTopicRoomResponse) isChatPayload_Payload() {}
+
+func (*ChatPayload_LeaveTopicRoom) isChatPayload_Payload() {}
+
+func (*ChatPayload_LeaveTopicRoomResponse) isChatPayload_Payload() {}
+
+func (*ChatPayload_SendTopicRoomMessage) isChatPayload_Payload() {}
+
+func (*ChatPayload_SendTopicRoomMessageResponse) isChatPayload_Payload() {}
+
+func (*ChatPayload_GetTopicRoomMembers) isChatPayload_Payload() {}
+
+func (*ChatPayload_GetTopicRoomMembersResponse) isChatPayload_Payload() {}
+
+func (*ChatPayload_TopicRoomMessagePush) isChatPayload_Payload() {}
+
+func (*ChatPayload_TopicRoomMembersPush) isChatPayload_Payload() {}
 
 var File_chat_chat_proto protoreflect.FileDescriptor
 
@@ -1341,7 +2338,56 @@ const file_chat_chat_proto_rawDesc = "" +
 	"\vMessagePush\x12.\n" +
 	"\amessage\x18\x01 \x01(\v2\x14.social.chat.MessageR\amessage\"Q\n" +
 	"\x10ConversationPush\x12=\n" +
-	"\fconversation\x18\x01 \x01(\v2\x19.social.chat.ConversationR\fconversation\"\xa7\b\n" +
+	"\fconversation\x18\x01 \x01(\v2\x19.social.chat.ConversationR\fconversation\"\x88\x01\n" +
+	"\tTopicRoom\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x12\n" +
+	"\x04icon\x18\x04 \x01(\tR\x04icon\x12!\n" +
+	"\fonline_count\x18\x05 \x01(\rR\vonlineCount\"\xde\x01\n" +
+	"\x10TopicRoomMessage\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\aroom_id\x18\x02 \x01(\tR\x06roomId\x12\x1b\n" +
+	"\tsender_id\x18\x03 \x01(\x04R\bsenderId\x12\x18\n" +
+	"\acontent\x18\x04 \x01(\tR\acontent\x129\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12/\n" +
+	"\x06sender\x18\x06 \x01(\v2\x17.social.chat.SenderInfoR\x06sender\"q\n" +
+	"\x0fTopicRoomMember\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x1a\n" +
+	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
+	"\bnickname\x18\x03 \x01(\tR\bnickname\x12\x16\n" +
+	"\x06avatar\x18\x04 \x01(\tR\x06avatar\"\x19\n" +
+	"\x17GetTopicRoomListRequest\"n\n" +
+	"\x18GetTopicRoomListResponse\x12,\n" +
+	"\x05rooms\x18\x01 \x03(\v2\x16.social.chat.TopicRoomR\x05rooms\x12$\n" +
+	"\x0ejoined_room_id\x18\x02 \x01(\tR\fjoinedRoomId\"/\n" +
+	"\x14JoinTopicRoomRequest\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\"\xc3\x01\n" +
+	"\x15JoinTopicRoomResponse\x12*\n" +
+	"\x04room\x18\x01 \x01(\v2\x16.social.chat.TopicRoomR\x04room\x12F\n" +
+	"\x0frecent_messages\x18\x02 \x03(\v2\x1d.social.chat.TopicRoomMessageR\x0erecentMessages\x126\n" +
+	"\amembers\x18\x03 \x03(\v2\x1c.social.chat.TopicRoomMemberR\amembers\"0\n" +
+	"\x15LeaveTopicRoomRequest\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\"1\n" +
+	"\x16LeaveTopicRoomResponse\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\"P\n" +
+	"\x1bSendTopicRoomMessageRequest\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\x12\x18\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\"W\n" +
+	"\x1cSendTopicRoomMessageResponse\x127\n" +
+	"\amessage\x18\x01 \x01(\v2\x1d.social.chat.TopicRoomMessageR\amessage\"5\n" +
+	"\x1aGetTopicRoomMembersRequest\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\"n\n" +
+	"\x1bGetTopicRoomMembersResponse\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\x126\n" +
+	"\amembers\x18\x02 \x03(\v2\x1c.social.chat.TopicRoomMemberR\amembers\"O\n" +
+	"\x14TopicRoomMessagePush\x127\n" +
+	"\amessage\x18\x01 \x01(\v2\x1d.social.chat.TopicRoomMessageR\amessage\"\x8a\x01\n" +
+	"\x14TopicRoomMembersPush\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\x126\n" +
+	"\amembers\x18\x02 \x03(\v2\x1c.social.chat.TopicRoomMemberR\amembers\x12!\n" +
+	"\fonline_count\x18\x03 \x01(\rR\vonlineCount\"\xa7\x11\n" +
 	"\vChatPayload\x12D\n" +
 	"\fsend_message\x18\x01 \x01(\v2\x1f.social.chat.SendMessageRequestH\x00R\vsendMessage\x12V\n" +
 	"\x15send_message_response\x18\x02 \x01(\v2 .social.chat.SendMessageResponseH\x00R\x13sendMessageResponse\x12]\n" +
@@ -1356,7 +2402,19 @@ const file_chat_chat_proto_rawDesc = "" +
 	"\x1ccreate_conversation_response\x18\n" +
 	" \x01(\v2'.social.chat.CreateConversationResponseH\x00R\x1acreateConversationResponse\x12=\n" +
 	"\fmessage_push\x18\v \x01(\v2\x18.social.chat.MessagePushH\x00R\vmessagePush\x12L\n" +
-	"\x11conversation_push\x18\f \x01(\v2\x1d.social.chat.ConversationPushH\x00R\x10conversationPushB\t\n" +
+	"\x11conversation_push\x18\f \x01(\v2\x1d.social.chat.ConversationPushH\x00R\x10conversationPush\x12U\n" +
+	"\x13get_topic_room_list\x18\r \x01(\v2$.social.chat.GetTopicRoomListRequestH\x00R\x10getTopicRoomList\x12g\n" +
+	"\x1cget_topic_room_list_response\x18\x0e \x01(\v2%.social.chat.GetTopicRoomListResponseH\x00R\x18getTopicRoomListResponse\x12K\n" +
+	"\x0fjoin_topic_room\x18\x0f \x01(\v2!.social.chat.JoinTopicRoomRequestH\x00R\rjoinTopicRoom\x12]\n" +
+	"\x18join_topic_room_response\x18\x10 \x01(\v2\".social.chat.JoinTopicRoomResponseH\x00R\x15joinTopicRoomResponse\x12N\n" +
+	"\x10leave_topic_room\x18\x11 \x01(\v2\".social.chat.LeaveTopicRoomRequestH\x00R\x0eleaveTopicRoom\x12`\n" +
+	"\x19leave_topic_room_response\x18\x12 \x01(\v2#.social.chat.LeaveTopicRoomResponseH\x00R\x16leaveTopicRoomResponse\x12a\n" +
+	"\x17send_topic_room_message\x18\x13 \x01(\v2(.social.chat.SendTopicRoomMessageRequestH\x00R\x14sendTopicRoomMessage\x12s\n" +
+	" send_topic_room_message_response\x18\x14 \x01(\v2).social.chat.SendTopicRoomMessageResponseH\x00R\x1csendTopicRoomMessageResponse\x12^\n" +
+	"\x16get_topic_room_members\x18\x15 \x01(\v2'.social.chat.GetTopicRoomMembersRequestH\x00R\x13getTopicRoomMembers\x12p\n" +
+	"\x1fget_topic_room_members_response\x18\x16 \x01(\v2(.social.chat.GetTopicRoomMembersResponseH\x00R\x1bgetTopicRoomMembersResponse\x12Z\n" +
+	"\x17topic_room_message_push\x18\x17 \x01(\v2!.social.chat.TopicRoomMessagePushH\x00R\x14topicRoomMessagePush\x12Z\n" +
+	"\x17topic_room_members_push\x18\x18 \x01(\v2!.social.chat.TopicRoomMembersPushH\x00R\x14topicRoomMembersPushB\t\n" +
 	"\apayload*q\n" +
 	"\x10ConversationType\x12!\n" +
 	"\x1dCONVERSATION_TYPE_UNSPECIFIED\x10\x00\x12\x1d\n" +
@@ -1381,34 +2439,49 @@ func file_chat_chat_proto_rawDescGZIP() []byte {
 }
 
 var file_chat_chat_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_chat_chat_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_chat_chat_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
 var file_chat_chat_proto_goTypes = []any{
-	(ConversationType)(0),               // 0: social.chat.ConversationType
-	(MessageType)(0),                    // 1: social.chat.MessageType
-	(*Conversation)(nil),                // 2: social.chat.Conversation
-	(*SenderInfo)(nil),                  // 3: social.chat.SenderInfo
-	(*Message)(nil),                     // 4: social.chat.Message
-	(*SendMessageRequest)(nil),          // 5: social.chat.SendMessageRequest
-	(*SendMessageResponse)(nil),         // 6: social.chat.SendMessageResponse
-	(*GetConversationListRequest)(nil),  // 7: social.chat.GetConversationListRequest
-	(*GetConversationListResponse)(nil), // 8: social.chat.GetConversationListResponse
-	(*GetMessageListRequest)(nil),       // 9: social.chat.GetMessageListRequest
-	(*GetMessageListResponse)(nil),      // 10: social.chat.GetMessageListResponse
-	(*MarkAsReadRequest)(nil),           // 11: social.chat.MarkAsReadRequest
-	(*MarkAsReadResponse)(nil),          // 12: social.chat.MarkAsReadResponse
-	(*CreateConversationRequest)(nil),   // 13: social.chat.CreateConversationRequest
-	(*CreateConversationResponse)(nil),  // 14: social.chat.CreateConversationResponse
-	(*MessagePush)(nil),                 // 15: social.chat.MessagePush
-	(*ConversationPush)(nil),            // 16: social.chat.ConversationPush
-	(*ChatPayload)(nil),                 // 17: social.chat.ChatPayload
-	(*timestamppb.Timestamp)(nil),       // 18: google.protobuf.Timestamp
+	(ConversationType)(0),                // 0: social.chat.ConversationType
+	(MessageType)(0),                     // 1: social.chat.MessageType
+	(*Conversation)(nil),                 // 2: social.chat.Conversation
+	(*SenderInfo)(nil),                   // 3: social.chat.SenderInfo
+	(*Message)(nil),                      // 4: social.chat.Message
+	(*SendMessageRequest)(nil),           // 5: social.chat.SendMessageRequest
+	(*SendMessageResponse)(nil),          // 6: social.chat.SendMessageResponse
+	(*GetConversationListRequest)(nil),   // 7: social.chat.GetConversationListRequest
+	(*GetConversationListResponse)(nil),  // 8: social.chat.GetConversationListResponse
+	(*GetMessageListRequest)(nil),        // 9: social.chat.GetMessageListRequest
+	(*GetMessageListResponse)(nil),       // 10: social.chat.GetMessageListResponse
+	(*MarkAsReadRequest)(nil),            // 11: social.chat.MarkAsReadRequest
+	(*MarkAsReadResponse)(nil),           // 12: social.chat.MarkAsReadResponse
+	(*CreateConversationRequest)(nil),    // 13: social.chat.CreateConversationRequest
+	(*CreateConversationResponse)(nil),   // 14: social.chat.CreateConversationResponse
+	(*MessagePush)(nil),                  // 15: social.chat.MessagePush
+	(*ConversationPush)(nil),             // 16: social.chat.ConversationPush
+	(*TopicRoom)(nil),                    // 17: social.chat.TopicRoom
+	(*TopicRoomMessage)(nil),             // 18: social.chat.TopicRoomMessage
+	(*TopicRoomMember)(nil),              // 19: social.chat.TopicRoomMember
+	(*GetTopicRoomListRequest)(nil),      // 20: social.chat.GetTopicRoomListRequest
+	(*GetTopicRoomListResponse)(nil),     // 21: social.chat.GetTopicRoomListResponse
+	(*JoinTopicRoomRequest)(nil),         // 22: social.chat.JoinTopicRoomRequest
+	(*JoinTopicRoomResponse)(nil),        // 23: social.chat.JoinTopicRoomResponse
+	(*LeaveTopicRoomRequest)(nil),        // 24: social.chat.LeaveTopicRoomRequest
+	(*LeaveTopicRoomResponse)(nil),       // 25: social.chat.LeaveTopicRoomResponse
+	(*SendTopicRoomMessageRequest)(nil),  // 26: social.chat.SendTopicRoomMessageRequest
+	(*SendTopicRoomMessageResponse)(nil), // 27: social.chat.SendTopicRoomMessageResponse
+	(*GetTopicRoomMembersRequest)(nil),   // 28: social.chat.GetTopicRoomMembersRequest
+	(*GetTopicRoomMembersResponse)(nil),  // 29: social.chat.GetTopicRoomMembersResponse
+	(*TopicRoomMessagePush)(nil),         // 30: social.chat.TopicRoomMessagePush
+	(*TopicRoomMembersPush)(nil),         // 31: social.chat.TopicRoomMembersPush
+	(*ChatPayload)(nil),                  // 32: social.chat.ChatPayload
+	(*timestamppb.Timestamp)(nil),        // 33: google.protobuf.Timestamp
 }
 var file_chat_chat_proto_depIdxs = []int32{
 	0,  // 0: social.chat.Conversation.type:type_name -> social.chat.ConversationType
 	4,  // 1: social.chat.Conversation.last_message:type_name -> social.chat.Message
-	18, // 2: social.chat.Conversation.updated_at:type_name -> google.protobuf.Timestamp
+	33, // 2: social.chat.Conversation.updated_at:type_name -> google.protobuf.Timestamp
 	1,  // 3: social.chat.Message.type:type_name -> social.chat.MessageType
-	18, // 4: social.chat.Message.created_at:type_name -> google.protobuf.Timestamp
+	33, // 4: social.chat.Message.created_at:type_name -> google.protobuf.Timestamp
 	3,  // 5: social.chat.Message.sender:type_name -> social.chat.SenderInfo
 	1,  // 6: social.chat.SendMessageRequest.type:type_name -> social.chat.MessageType
 	4,  // 7: social.chat.SendMessageResponse.message:type_name -> social.chat.Message
@@ -1418,23 +2491,45 @@ var file_chat_chat_proto_depIdxs = []int32{
 	2,  // 11: social.chat.CreateConversationResponse.conversation:type_name -> social.chat.Conversation
 	4,  // 12: social.chat.MessagePush.message:type_name -> social.chat.Message
 	2,  // 13: social.chat.ConversationPush.conversation:type_name -> social.chat.Conversation
-	5,  // 14: social.chat.ChatPayload.send_message:type_name -> social.chat.SendMessageRequest
-	6,  // 15: social.chat.ChatPayload.send_message_response:type_name -> social.chat.SendMessageResponse
-	7,  // 16: social.chat.ChatPayload.get_conversation_list:type_name -> social.chat.GetConversationListRequest
-	8,  // 17: social.chat.ChatPayload.get_conversation_list_response:type_name -> social.chat.GetConversationListResponse
-	9,  // 18: social.chat.ChatPayload.get_message_list:type_name -> social.chat.GetMessageListRequest
-	10, // 19: social.chat.ChatPayload.get_message_list_response:type_name -> social.chat.GetMessageListResponse
-	11, // 20: social.chat.ChatPayload.mark_as_read:type_name -> social.chat.MarkAsReadRequest
-	12, // 21: social.chat.ChatPayload.mark_as_read_response:type_name -> social.chat.MarkAsReadResponse
-	13, // 22: social.chat.ChatPayload.create_conversation:type_name -> social.chat.CreateConversationRequest
-	14, // 23: social.chat.ChatPayload.create_conversation_response:type_name -> social.chat.CreateConversationResponse
-	15, // 24: social.chat.ChatPayload.message_push:type_name -> social.chat.MessagePush
-	16, // 25: social.chat.ChatPayload.conversation_push:type_name -> social.chat.ConversationPush
-	26, // [26:26] is the sub-list for method output_type
-	26, // [26:26] is the sub-list for method input_type
-	26, // [26:26] is the sub-list for extension type_name
-	26, // [26:26] is the sub-list for extension extendee
-	0,  // [0:26] is the sub-list for field type_name
+	33, // 14: social.chat.TopicRoomMessage.created_at:type_name -> google.protobuf.Timestamp
+	3,  // 15: social.chat.TopicRoomMessage.sender:type_name -> social.chat.SenderInfo
+	17, // 16: social.chat.GetTopicRoomListResponse.rooms:type_name -> social.chat.TopicRoom
+	17, // 17: social.chat.JoinTopicRoomResponse.room:type_name -> social.chat.TopicRoom
+	18, // 18: social.chat.JoinTopicRoomResponse.recent_messages:type_name -> social.chat.TopicRoomMessage
+	19, // 19: social.chat.JoinTopicRoomResponse.members:type_name -> social.chat.TopicRoomMember
+	18, // 20: social.chat.SendTopicRoomMessageResponse.message:type_name -> social.chat.TopicRoomMessage
+	19, // 21: social.chat.GetTopicRoomMembersResponse.members:type_name -> social.chat.TopicRoomMember
+	18, // 22: social.chat.TopicRoomMessagePush.message:type_name -> social.chat.TopicRoomMessage
+	19, // 23: social.chat.TopicRoomMembersPush.members:type_name -> social.chat.TopicRoomMember
+	5,  // 24: social.chat.ChatPayload.send_message:type_name -> social.chat.SendMessageRequest
+	6,  // 25: social.chat.ChatPayload.send_message_response:type_name -> social.chat.SendMessageResponse
+	7,  // 26: social.chat.ChatPayload.get_conversation_list:type_name -> social.chat.GetConversationListRequest
+	8,  // 27: social.chat.ChatPayload.get_conversation_list_response:type_name -> social.chat.GetConversationListResponse
+	9,  // 28: social.chat.ChatPayload.get_message_list:type_name -> social.chat.GetMessageListRequest
+	10, // 29: social.chat.ChatPayload.get_message_list_response:type_name -> social.chat.GetMessageListResponse
+	11, // 30: social.chat.ChatPayload.mark_as_read:type_name -> social.chat.MarkAsReadRequest
+	12, // 31: social.chat.ChatPayload.mark_as_read_response:type_name -> social.chat.MarkAsReadResponse
+	13, // 32: social.chat.ChatPayload.create_conversation:type_name -> social.chat.CreateConversationRequest
+	14, // 33: social.chat.ChatPayload.create_conversation_response:type_name -> social.chat.CreateConversationResponse
+	15, // 34: social.chat.ChatPayload.message_push:type_name -> social.chat.MessagePush
+	16, // 35: social.chat.ChatPayload.conversation_push:type_name -> social.chat.ConversationPush
+	20, // 36: social.chat.ChatPayload.get_topic_room_list:type_name -> social.chat.GetTopicRoomListRequest
+	21, // 37: social.chat.ChatPayload.get_topic_room_list_response:type_name -> social.chat.GetTopicRoomListResponse
+	22, // 38: social.chat.ChatPayload.join_topic_room:type_name -> social.chat.JoinTopicRoomRequest
+	23, // 39: social.chat.ChatPayload.join_topic_room_response:type_name -> social.chat.JoinTopicRoomResponse
+	24, // 40: social.chat.ChatPayload.leave_topic_room:type_name -> social.chat.LeaveTopicRoomRequest
+	25, // 41: social.chat.ChatPayload.leave_topic_room_response:type_name -> social.chat.LeaveTopicRoomResponse
+	26, // 42: social.chat.ChatPayload.send_topic_room_message:type_name -> social.chat.SendTopicRoomMessageRequest
+	27, // 43: social.chat.ChatPayload.send_topic_room_message_response:type_name -> social.chat.SendTopicRoomMessageResponse
+	28, // 44: social.chat.ChatPayload.get_topic_room_members:type_name -> social.chat.GetTopicRoomMembersRequest
+	29, // 45: social.chat.ChatPayload.get_topic_room_members_response:type_name -> social.chat.GetTopicRoomMembersResponse
+	30, // 46: social.chat.ChatPayload.topic_room_message_push:type_name -> social.chat.TopicRoomMessagePush
+	31, // 47: social.chat.ChatPayload.topic_room_members_push:type_name -> social.chat.TopicRoomMembersPush
+	48, // [48:48] is the sub-list for method output_type
+	48, // [48:48] is the sub-list for method input_type
+	48, // [48:48] is the sub-list for extension type_name
+	48, // [48:48] is the sub-list for extension extendee
+	0,  // [0:48] is the sub-list for field type_name
 }
 
 func init() { file_chat_chat_proto_init() }
@@ -1442,7 +2537,7 @@ func file_chat_chat_proto_init() {
 	if File_chat_chat_proto != nil {
 		return
 	}
-	file_chat_chat_proto_msgTypes[15].OneofWrappers = []any{
+	file_chat_chat_proto_msgTypes[30].OneofWrappers = []any{
 		(*ChatPayload_SendMessage)(nil),
 		(*ChatPayload_SendMessageResponse)(nil),
 		(*ChatPayload_GetConversationList)(nil),
@@ -1455,6 +2550,18 @@ func file_chat_chat_proto_init() {
 		(*ChatPayload_CreateConversationResponse)(nil),
 		(*ChatPayload_MessagePush)(nil),
 		(*ChatPayload_ConversationPush)(nil),
+		(*ChatPayload_GetTopicRoomList)(nil),
+		(*ChatPayload_GetTopicRoomListResponse)(nil),
+		(*ChatPayload_JoinTopicRoom)(nil),
+		(*ChatPayload_JoinTopicRoomResponse)(nil),
+		(*ChatPayload_LeaveTopicRoom)(nil),
+		(*ChatPayload_LeaveTopicRoomResponse)(nil),
+		(*ChatPayload_SendTopicRoomMessage)(nil),
+		(*ChatPayload_SendTopicRoomMessageResponse)(nil),
+		(*ChatPayload_GetTopicRoomMembers)(nil),
+		(*ChatPayload_GetTopicRoomMembersResponse)(nil),
+		(*ChatPayload_TopicRoomMessagePush)(nil),
+		(*ChatPayload_TopicRoomMembersPush)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1462,7 +2569,7 @@ func file_chat_chat_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_chat_chat_proto_rawDesc), len(file_chat_chat_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   16,
+			NumMessages:   31,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

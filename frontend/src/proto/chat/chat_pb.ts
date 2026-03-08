@@ -12,7 +12,7 @@ import type { Message as Message$1 } from "@bufbuild/protobuf";
  * Describes the file chat/chat.proto.
  */
 export const file_chat_chat: GenFile = /*@__PURE__*/
-  fileDesc("Cg9jaGF0L2NoYXQucHJvdG8SC3NvY2lhbC5jaGF0ItcBCgxDb252ZXJzYXRpb24SCgoCaWQYASABKAQSKwoEdHlwZRgCIAEoDjIdLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvblR5cGUSDAoEbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAkSKgoMbGFzdF9tZXNzYWdlGAUgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZRIUCgx1bnJlYWRfY291bnQYBiABKA0SLgoKdXBkYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiTAoKU2VuZGVySW5mbxIKCgJpZBgBIAEoBBIQCgh1c2VybmFtZRgCIAEoCRIQCghuaWNrbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAki5QEKB01lc3NhZ2USCgoCaWQYASABKAQSEAoIbG9jYWxfaWQYByABKAQSFwoPY29udmVyc2F0aW9uX2lkGAIgASgEEhEKCXNlbmRlcl9pZBgDIAEoBBIPCgdjb250ZW50GAQgASgJEiYKBHR5cGUYBSABKA4yGC5zb2NpYWwuY2hhdC5NZXNzYWdlVHlwZRIuCgpjcmVhdGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBInCgZzZW5kZXIYCCABKAsyFy5zb2NpYWwuY2hhdC5TZW5kZXJJbmZvImYKElNlbmRNZXNzYWdlUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAQSDwoHY29udGVudBgCIAEoCRImCgR0eXBlGAMgASgOMhguc29jaWFsLmNoYXQuTWVzc2FnZVR5cGUiPAoTU2VuZE1lc3NhZ2VSZXNwb25zZRIlCgdtZXNzYWdlGAEgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZSJDChpHZXRDb252ZXJzYXRpb25MaXN0UmVxdWVzdBIRCglwYWdlX3NpemUYASABKA0SEgoKcGFnZV90b2tlbhgCIAEoCSJoChtHZXRDb252ZXJzYXRpb25MaXN0UmVzcG9uc2USMAoNY29udmVyc2F0aW9ucxgBIAMoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbhIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiVwoVR2V0TWVzc2FnZUxpc3RSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBIRCglwYWdlX3NpemUYAiABKA0SEgoKcGFnZV90b2tlbhgDIAEoCSJZChZHZXRNZXNzYWdlTGlzdFJlc3BvbnNlEiYKCG1lc3NhZ2VzGAEgAygLMhQuc29jaWFsLmNoYXQuTWVzc2FnZRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiXwoRTWFya0FzUmVhZFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEhMKC21lc3NhZ2VfaWRzGAIgAygEEhwKFGxhc3RfcmVhZF9tZXNzYWdlX2lkGAMgASgEIkMKEk1hcmtBc1JlYWRSZXNwb25zZRIXCg9jb252ZXJzYXRpb25faWQYASABKAQSFAoMdW5yZWFkX2NvdW50GAIgASgNIn8KGUNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3QSKwoEdHlwZRgBIAEoDjIdLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvblR5cGUSFwoPcGFydGljaXBhbnRfaWRzGAIgAygEEgwKBG5hbWUYAyABKAkSDgoGYXZhdGFyGAQgASgJIk0KGkNyZWF0ZUNvbnZlcnNhdGlvblJlc3BvbnNlEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiI0CgtNZXNzYWdlUHVzaBIlCgdtZXNzYWdlGAEgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZSJDChBDb252ZXJzYXRpb25QdXNoEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiK8BgoLQ2hhdFBheWxvYWQSNwoMc2VuZF9tZXNzYWdlGAEgASgLMh8uc29jaWFsLmNoYXQuU2VuZE1lc3NhZ2VSZXF1ZXN0SAASQQoVc2VuZF9tZXNzYWdlX3Jlc3BvbnNlGAIgASgLMiAuc29jaWFsLmNoYXQuU2VuZE1lc3NhZ2VSZXNwb25zZUgAEkgKFWdldF9jb252ZXJzYXRpb25fbGlzdBgDIAEoCzInLnNvY2lhbC5jaGF0LkdldENvbnZlcnNhdGlvbkxpc3RSZXF1ZXN0SAASUgoeZ2V0X2NvbnZlcnNhdGlvbl9saXN0X3Jlc3BvbnNlGAQgASgLMiguc29jaWFsLmNoYXQuR2V0Q29udmVyc2F0aW9uTGlzdFJlc3BvbnNlSAASPgoQZ2V0X21lc3NhZ2VfbGlzdBgFIAEoCzIiLnNvY2lhbC5jaGF0LkdldE1lc3NhZ2VMaXN0UmVxdWVzdEgAEkgKGWdldF9tZXNzYWdlX2xpc3RfcmVzcG9uc2UYBiABKAsyIy5zb2NpYWwuY2hhdC5HZXRNZXNzYWdlTGlzdFJlc3BvbnNlSAASNgoMbWFya19hc19yZWFkGAcgASgLMh4uc29jaWFsLmNoYXQuTWFya0FzUmVhZFJlcXVlc3RIABJAChVtYXJrX2FzX3JlYWRfcmVzcG9uc2UYCCABKAsyHy5zb2NpYWwuY2hhdC5NYXJrQXNSZWFkUmVzcG9uc2VIABJFChNjcmVhdGVfY29udmVyc2F0aW9uGAkgASgLMiYuc29jaWFsLmNoYXQuQ3JlYXRlQ29udmVyc2F0aW9uUmVxdWVzdEgAEk8KHGNyZWF0ZV9jb252ZXJzYXRpb25fcmVzcG9uc2UYCiABKAsyJy5zb2NpYWwuY2hhdC5DcmVhdGVDb252ZXJzYXRpb25SZXNwb25zZUgAEjAKDG1lc3NhZ2VfcHVzaBgLIAEoCzIYLnNvY2lhbC5jaGF0Lk1lc3NhZ2VQdXNoSAASOgoRY29udmVyc2F0aW9uX3B1c2gYDCABKAsyHS5zb2NpYWwuY2hhdC5Db252ZXJzYXRpb25QdXNoSABCCQoHcGF5bG9hZCpxChBDb252ZXJzYXRpb25UeXBlEiEKHUNPTlZFUlNBVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAASHQoZQ09OVkVSU0FUSU9OX1RZUEVfUFJJVkFURRABEhsKF0NPTlZFUlNBVElPTl9UWVBFX0dST1VQEAIqcwoLTWVzc2FnZVR5cGUSHAoYTUVTU0FHRV9UWVBFX1VOU1BFQ0lGSUVEEAASFQoRTUVTU0FHRV9UWVBFX1RFWFQQARIWChJNRVNTQUdFX1RZUEVfSU1BR0UQAhIXChNNRVNTQUdFX1RZUEVfU1lTVEVNEANCJVojc29jaWFsX2FwcC9pbnRlcm5hbC9wcm90by9jaGF0O2NoYXRiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("Cg9jaGF0L2NoYXQucHJvdG8SC3NvY2lhbC5jaGF0ItcBCgxDb252ZXJzYXRpb24SCgoCaWQYASABKAQSKwoEdHlwZRgCIAEoDjIdLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvblR5cGUSDAoEbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAkSKgoMbGFzdF9tZXNzYWdlGAUgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZRIUCgx1bnJlYWRfY291bnQYBiABKA0SLgoKdXBkYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiTAoKU2VuZGVySW5mbxIKCgJpZBgBIAEoBBIQCgh1c2VybmFtZRgCIAEoCRIQCghuaWNrbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAki5QEKB01lc3NhZ2USCgoCaWQYASABKAQSEAoIbG9jYWxfaWQYByABKAQSFwoPY29udmVyc2F0aW9uX2lkGAIgASgEEhEKCXNlbmRlcl9pZBgDIAEoBBIPCgdjb250ZW50GAQgASgJEiYKBHR5cGUYBSABKA4yGC5zb2NpYWwuY2hhdC5NZXNzYWdlVHlwZRIuCgpjcmVhdGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBInCgZzZW5kZXIYCCABKAsyFy5zb2NpYWwuY2hhdC5TZW5kZXJJbmZvImYKElNlbmRNZXNzYWdlUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAQSDwoHY29udGVudBgCIAEoCRImCgR0eXBlGAMgASgOMhguc29jaWFsLmNoYXQuTWVzc2FnZVR5cGUiPAoTU2VuZE1lc3NhZ2VSZXNwb25zZRIlCgdtZXNzYWdlGAEgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZSJDChpHZXRDb252ZXJzYXRpb25MaXN0UmVxdWVzdBIRCglwYWdlX3NpemUYASABKA0SEgoKcGFnZV90b2tlbhgCIAEoCSJoChtHZXRDb252ZXJzYXRpb25MaXN0UmVzcG9uc2USMAoNY29udmVyc2F0aW9ucxgBIAMoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbhIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiVwoVR2V0TWVzc2FnZUxpc3RSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBIRCglwYWdlX3NpemUYAiABKA0SEgoKcGFnZV90b2tlbhgDIAEoCSJZChZHZXRNZXNzYWdlTGlzdFJlc3BvbnNlEiYKCG1lc3NhZ2VzGAEgAygLMhQuc29jaWFsLmNoYXQuTWVzc2FnZRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiXwoRTWFya0FzUmVhZFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEhMKC21lc3NhZ2VfaWRzGAIgAygEEhwKFGxhc3RfcmVhZF9tZXNzYWdlX2lkGAMgASgEIkMKEk1hcmtBc1JlYWRSZXNwb25zZRIXCg9jb252ZXJzYXRpb25faWQYASABKAQSFAoMdW5yZWFkX2NvdW50GAIgASgNIn8KGUNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3QSKwoEdHlwZRgBIAEoDjIdLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvblR5cGUSFwoPcGFydGljaXBhbnRfaWRzGAIgAygEEgwKBG5hbWUYAyABKAkSDgoGYXZhdGFyGAQgASgJIk0KGkNyZWF0ZUNvbnZlcnNhdGlvblJlc3BvbnNlEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiI0CgtNZXNzYWdlUHVzaBIlCgdtZXNzYWdlGAEgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZSJDChBDb252ZXJzYXRpb25QdXNoEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiJeCglUb3BpY1Jvb20SCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIMCgRpY29uGAQgASgJEhQKDG9ubGluZV9jb3VudBgFIAEoDSKsAQoQVG9waWNSb29tTWVzc2FnZRIKCgJpZBgBIAEoCRIPCgdyb29tX2lkGAIgASgJEhEKCXNlbmRlcl9pZBgDIAEoBBIPCgdjb250ZW50GAQgASgJEi4KCmNyZWF0ZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEicKBnNlbmRlchgGIAEoCzIXLnNvY2lhbC5jaGF0LlNlbmRlckluZm8iUQoPVG9waWNSb29tTWVtYmVyEgoKAmlkGAEgASgEEhAKCHVzZXJuYW1lGAIgASgJEhAKCG5pY2tuYW1lGAMgASgJEg4KBmF2YXRhchgEIAEoCSIZChdHZXRUb3BpY1Jvb21MaXN0UmVxdWVzdCJZChhHZXRUb3BpY1Jvb21MaXN0UmVzcG9uc2USJQoFcm9vbXMYASADKAsyFi5zb2NpYWwuY2hhdC5Ub3BpY1Jvb20SFgoOam9pbmVkX3Jvb21faWQYAiABKAkiJwoUSm9pblRvcGljUm9vbVJlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCSKkAQoVSm9pblRvcGljUm9vbVJlc3BvbnNlEiQKBHJvb20YASABKAsyFi5zb2NpYWwuY2hhdC5Ub3BpY1Jvb20SNgoPcmVjZW50X21lc3NhZ2VzGAIgAygLMh0uc29jaWFsLmNoYXQuVG9waWNSb29tTWVzc2FnZRItCgdtZW1iZXJzGAMgAygLMhwuc29jaWFsLmNoYXQuVG9waWNSb29tTWVtYmVyIigKFUxlYXZlVG9waWNSb29tUmVxdWVzdBIPCgdyb29tX2lkGAEgASgJIikKFkxlYXZlVG9waWNSb29tUmVzcG9uc2USDwoHcm9vbV9pZBgBIAEoCSI/ChtTZW5kVG9waWNSb29tTWVzc2FnZVJlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCRIPCgdjb250ZW50GAIgASgJIk4KHFNlbmRUb3BpY1Jvb21NZXNzYWdlUmVzcG9uc2USLgoHbWVzc2FnZRgBIAEoCzIdLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lc3NhZ2UiLQoaR2V0VG9waWNSb29tTWVtYmVyc1JlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCSJdChtHZXRUb3BpY1Jvb21NZW1iZXJzUmVzcG9uc2USDwoHcm9vbV9pZBgBIAEoCRItCgdtZW1iZXJzGAIgAygLMhwuc29jaWFsLmNoYXQuVG9waWNSb29tTWVtYmVyIkYKFFRvcGljUm9vbU1lc3NhZ2VQdXNoEi4KB21lc3NhZ2UYASABKAsyHS5zb2NpYWwuY2hhdC5Ub3BpY1Jvb21NZXNzYWdlImwKFFRvcGljUm9vbU1lbWJlcnNQdXNoEg8KB3Jvb21faWQYASABKAkSLQoHbWVtYmVycxgCIAMoCzIcLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lbWJlchIUCgxvbmxpbmVfY291bnQYAyABKA0isA0KC0NoYXRQYXlsb2FkEjcKDHNlbmRfbWVzc2FnZRgBIAEoCzIfLnNvY2lhbC5jaGF0LlNlbmRNZXNzYWdlUmVxdWVzdEgAEkEKFXNlbmRfbWVzc2FnZV9yZXNwb25zZRgCIAEoCzIgLnNvY2lhbC5jaGF0LlNlbmRNZXNzYWdlUmVzcG9uc2VIABJIChVnZXRfY29udmVyc2F0aW9uX2xpc3QYAyABKAsyJy5zb2NpYWwuY2hhdC5HZXRDb252ZXJzYXRpb25MaXN0UmVxdWVzdEgAElIKHmdldF9jb252ZXJzYXRpb25fbGlzdF9yZXNwb25zZRgEIAEoCzIoLnNvY2lhbC5jaGF0LkdldENvbnZlcnNhdGlvbkxpc3RSZXNwb25zZUgAEj4KEGdldF9tZXNzYWdlX2xpc3QYBSABKAsyIi5zb2NpYWwuY2hhdC5HZXRNZXNzYWdlTGlzdFJlcXVlc3RIABJIChlnZXRfbWVzc2FnZV9saXN0X3Jlc3BvbnNlGAYgASgLMiMuc29jaWFsLmNoYXQuR2V0TWVzc2FnZUxpc3RSZXNwb25zZUgAEjYKDG1hcmtfYXNfcmVhZBgHIAEoCzIeLnNvY2lhbC5jaGF0Lk1hcmtBc1JlYWRSZXF1ZXN0SAASQAoVbWFya19hc19yZWFkX3Jlc3BvbnNlGAggASgLMh8uc29jaWFsLmNoYXQuTWFya0FzUmVhZFJlc3BvbnNlSAASRQoTY3JlYXRlX2NvbnZlcnNhdGlvbhgJIAEoCzImLnNvY2lhbC5jaGF0LkNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3RIABJPChxjcmVhdGVfY29udmVyc2F0aW9uX3Jlc3BvbnNlGAogASgLMicuc29jaWFsLmNoYXQuQ3JlYXRlQ29udmVyc2F0aW9uUmVzcG9uc2VIABIwCgxtZXNzYWdlX3B1c2gYCyABKAsyGC5zb2NpYWwuY2hhdC5NZXNzYWdlUHVzaEgAEjoKEWNvbnZlcnNhdGlvbl9wdXNoGAwgASgLMh0uc29jaWFsLmNoYXQuQ29udmVyc2F0aW9uUHVzaEgAEkMKE2dldF90b3BpY19yb29tX2xpc3QYDSABKAsyJC5zb2NpYWwuY2hhdC5HZXRUb3BpY1Jvb21MaXN0UmVxdWVzdEgAEk0KHGdldF90b3BpY19yb29tX2xpc3RfcmVzcG9uc2UYDiABKAsyJS5zb2NpYWwuY2hhdC5HZXRUb3BpY1Jvb21MaXN0UmVzcG9uc2VIABI8Cg9qb2luX3RvcGljX3Jvb20YDyABKAsyIS5zb2NpYWwuY2hhdC5Kb2luVG9waWNSb29tUmVxdWVzdEgAEkYKGGpvaW5fdG9waWNfcm9vbV9yZXNwb25zZRgQIAEoCzIiLnNvY2lhbC5jaGF0LkpvaW5Ub3BpY1Jvb21SZXNwb25zZUgAEj4KEGxlYXZlX3RvcGljX3Jvb20YESABKAsyIi5zb2NpYWwuY2hhdC5MZWF2ZVRvcGljUm9vbVJlcXVlc3RIABJIChlsZWF2ZV90b3BpY19yb29tX3Jlc3BvbnNlGBIgASgLMiMuc29jaWFsLmNoYXQuTGVhdmVUb3BpY1Jvb21SZXNwb25zZUgAEksKF3NlbmRfdG9waWNfcm9vbV9tZXNzYWdlGBMgASgLMiguc29jaWFsLmNoYXQuU2VuZFRvcGljUm9vbU1lc3NhZ2VSZXF1ZXN0SAASVQogc2VuZF90b3BpY19yb29tX21lc3NhZ2VfcmVzcG9uc2UYFCABKAsyKS5zb2NpYWwuY2hhdC5TZW5kVG9waWNSb29tTWVzc2FnZVJlc3BvbnNlSAASSQoWZ2V0X3RvcGljX3Jvb21fbWVtYmVycxgVIAEoCzInLnNvY2lhbC5jaGF0LkdldFRvcGljUm9vbU1lbWJlcnNSZXF1ZXN0SAASUwofZ2V0X3RvcGljX3Jvb21fbWVtYmVyc19yZXNwb25zZRgWIAEoCzIoLnNvY2lhbC5jaGF0LkdldFRvcGljUm9vbU1lbWJlcnNSZXNwb25zZUgAEkQKF3RvcGljX3Jvb21fbWVzc2FnZV9wdXNoGBcgASgLMiEuc29jaWFsLmNoYXQuVG9waWNSb29tTWVzc2FnZVB1c2hIABJEChd0b3BpY19yb29tX21lbWJlcnNfcHVzaBgYIAEoCzIhLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lbWJlcnNQdXNoSABCCQoHcGF5bG9hZCpxChBDb252ZXJzYXRpb25UeXBlEiEKHUNPTlZFUlNBVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAASHQoZQ09OVkVSU0FUSU9OX1RZUEVfUFJJVkFURRABEhsKF0NPTlZFUlNBVElPTl9UWVBFX0dST1VQEAIqcwoLTWVzc2FnZVR5cGUSHAoYTUVTU0FHRV9UWVBFX1VOU1BFQ0lGSUVEEAASFQoRTUVTU0FHRV9UWVBFX1RFWFQQARIWChJNRVNTQUdFX1RZUEVfSU1BR0UQAhIXChNNRVNTQUdFX1RZUEVfU1lTVEVNEANCJVojc29jaWFsX2FwcC9pbnRlcm5hbC9wcm90by9jaGF0O2NoYXRiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * 基础会话结构
@@ -466,6 +466,352 @@ export const ConversationPushSchema: GenMessage<ConversationPush> = /*@__PURE__*
   messageDesc(file_chat_chat, 14);
 
 /**
+ * @generated from message social.chat.TopicRoom
+ */
+export type TopicRoom = Message$1<"social.chat.TopicRoom"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string description = 3;
+   */
+  description: string;
+
+  /**
+   * @generated from field: string icon = 4;
+   */
+  icon: string;
+
+  /**
+   * @generated from field: uint32 online_count = 5;
+   */
+  onlineCount: number;
+};
+
+/**
+ * Describes the message social.chat.TopicRoom.
+ * Use `create(TopicRoomSchema)` to create a new message.
+ */
+export const TopicRoomSchema: GenMessage<TopicRoom> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 15);
+
+/**
+ * @generated from message social.chat.TopicRoomMessage
+ */
+export type TopicRoomMessage = Message$1<"social.chat.TopicRoomMessage"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string room_id = 2;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: uint64 sender_id = 3;
+   */
+  senderId: bigint;
+
+  /**
+   * @generated from field: string content = 4;
+   */
+  content: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 5;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * @generated from field: social.chat.SenderInfo sender = 6;
+   */
+  sender?: SenderInfo;
+};
+
+/**
+ * Describes the message social.chat.TopicRoomMessage.
+ * Use `create(TopicRoomMessageSchema)` to create a new message.
+ */
+export const TopicRoomMessageSchema: GenMessage<TopicRoomMessage> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 16);
+
+/**
+ * @generated from message social.chat.TopicRoomMember
+ */
+export type TopicRoomMember = Message$1<"social.chat.TopicRoomMember"> & {
+  /**
+   * @generated from field: uint64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string username = 2;
+   */
+  username: string;
+
+  /**
+   * @generated from field: string nickname = 3;
+   */
+  nickname: string;
+
+  /**
+   * @generated from field: string avatar = 4;
+   */
+  avatar: string;
+};
+
+/**
+ * Describes the message social.chat.TopicRoomMember.
+ * Use `create(TopicRoomMemberSchema)` to create a new message.
+ */
+export const TopicRoomMemberSchema: GenMessage<TopicRoomMember> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 17);
+
+/**
+ * @generated from message social.chat.GetTopicRoomListRequest
+ */
+export type GetTopicRoomListRequest = Message$1<"social.chat.GetTopicRoomListRequest"> & {
+};
+
+/**
+ * Describes the message social.chat.GetTopicRoomListRequest.
+ * Use `create(GetTopicRoomListRequestSchema)` to create a new message.
+ */
+export const GetTopicRoomListRequestSchema: GenMessage<GetTopicRoomListRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 18);
+
+/**
+ * @generated from message social.chat.GetTopicRoomListResponse
+ */
+export type GetTopicRoomListResponse = Message$1<"social.chat.GetTopicRoomListResponse"> & {
+  /**
+   * @generated from field: repeated social.chat.TopicRoom rooms = 1;
+   */
+  rooms: TopicRoom[];
+
+  /**
+   * @generated from field: string joined_room_id = 2;
+   */
+  joinedRoomId: string;
+};
+
+/**
+ * Describes the message social.chat.GetTopicRoomListResponse.
+ * Use `create(GetTopicRoomListResponseSchema)` to create a new message.
+ */
+export const GetTopicRoomListResponseSchema: GenMessage<GetTopicRoomListResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 19);
+
+/**
+ * @generated from message social.chat.JoinTopicRoomRequest
+ */
+export type JoinTopicRoomRequest = Message$1<"social.chat.JoinTopicRoomRequest"> & {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+};
+
+/**
+ * Describes the message social.chat.JoinTopicRoomRequest.
+ * Use `create(JoinTopicRoomRequestSchema)` to create a new message.
+ */
+export const JoinTopicRoomRequestSchema: GenMessage<JoinTopicRoomRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 20);
+
+/**
+ * @generated from message social.chat.JoinTopicRoomResponse
+ */
+export type JoinTopicRoomResponse = Message$1<"social.chat.JoinTopicRoomResponse"> & {
+  /**
+   * @generated from field: social.chat.TopicRoom room = 1;
+   */
+  room?: TopicRoom;
+
+  /**
+   * @generated from field: repeated social.chat.TopicRoomMessage recent_messages = 2;
+   */
+  recentMessages: TopicRoomMessage[];
+
+  /**
+   * @generated from field: repeated social.chat.TopicRoomMember members = 3;
+   */
+  members: TopicRoomMember[];
+};
+
+/**
+ * Describes the message social.chat.JoinTopicRoomResponse.
+ * Use `create(JoinTopicRoomResponseSchema)` to create a new message.
+ */
+export const JoinTopicRoomResponseSchema: GenMessage<JoinTopicRoomResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 21);
+
+/**
+ * @generated from message social.chat.LeaveTopicRoomRequest
+ */
+export type LeaveTopicRoomRequest = Message$1<"social.chat.LeaveTopicRoomRequest"> & {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+};
+
+/**
+ * Describes the message social.chat.LeaveTopicRoomRequest.
+ * Use `create(LeaveTopicRoomRequestSchema)` to create a new message.
+ */
+export const LeaveTopicRoomRequestSchema: GenMessage<LeaveTopicRoomRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 22);
+
+/**
+ * @generated from message social.chat.LeaveTopicRoomResponse
+ */
+export type LeaveTopicRoomResponse = Message$1<"social.chat.LeaveTopicRoomResponse"> & {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+};
+
+/**
+ * Describes the message social.chat.LeaveTopicRoomResponse.
+ * Use `create(LeaveTopicRoomResponseSchema)` to create a new message.
+ */
+export const LeaveTopicRoomResponseSchema: GenMessage<LeaveTopicRoomResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 23);
+
+/**
+ * @generated from message social.chat.SendTopicRoomMessageRequest
+ */
+export type SendTopicRoomMessageRequest = Message$1<"social.chat.SendTopicRoomMessageRequest"> & {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: string content = 2;
+   */
+  content: string;
+};
+
+/**
+ * Describes the message social.chat.SendTopicRoomMessageRequest.
+ * Use `create(SendTopicRoomMessageRequestSchema)` to create a new message.
+ */
+export const SendTopicRoomMessageRequestSchema: GenMessage<SendTopicRoomMessageRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 24);
+
+/**
+ * @generated from message social.chat.SendTopicRoomMessageResponse
+ */
+export type SendTopicRoomMessageResponse = Message$1<"social.chat.SendTopicRoomMessageResponse"> & {
+  /**
+   * @generated from field: social.chat.TopicRoomMessage message = 1;
+   */
+  message?: TopicRoomMessage;
+};
+
+/**
+ * Describes the message social.chat.SendTopicRoomMessageResponse.
+ * Use `create(SendTopicRoomMessageResponseSchema)` to create a new message.
+ */
+export const SendTopicRoomMessageResponseSchema: GenMessage<SendTopicRoomMessageResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 25);
+
+/**
+ * @generated from message social.chat.GetTopicRoomMembersRequest
+ */
+export type GetTopicRoomMembersRequest = Message$1<"social.chat.GetTopicRoomMembersRequest"> & {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+};
+
+/**
+ * Describes the message social.chat.GetTopicRoomMembersRequest.
+ * Use `create(GetTopicRoomMembersRequestSchema)` to create a new message.
+ */
+export const GetTopicRoomMembersRequestSchema: GenMessage<GetTopicRoomMembersRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 26);
+
+/**
+ * @generated from message social.chat.GetTopicRoomMembersResponse
+ */
+export type GetTopicRoomMembersResponse = Message$1<"social.chat.GetTopicRoomMembersResponse"> & {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: repeated social.chat.TopicRoomMember members = 2;
+   */
+  members: TopicRoomMember[];
+};
+
+/**
+ * Describes the message social.chat.GetTopicRoomMembersResponse.
+ * Use `create(GetTopicRoomMembersResponseSchema)` to create a new message.
+ */
+export const GetTopicRoomMembersResponseSchema: GenMessage<GetTopicRoomMembersResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 27);
+
+/**
+ * @generated from message social.chat.TopicRoomMessagePush
+ */
+export type TopicRoomMessagePush = Message$1<"social.chat.TopicRoomMessagePush"> & {
+  /**
+   * @generated from field: social.chat.TopicRoomMessage message = 1;
+   */
+  message?: TopicRoomMessage;
+};
+
+/**
+ * Describes the message social.chat.TopicRoomMessagePush.
+ * Use `create(TopicRoomMessagePushSchema)` to create a new message.
+ */
+export const TopicRoomMessagePushSchema: GenMessage<TopicRoomMessagePush> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 28);
+
+/**
+ * @generated from message social.chat.TopicRoomMembersPush
+ */
+export type TopicRoomMembersPush = Message$1<"social.chat.TopicRoomMembersPush"> & {
+  /**
+   * @generated from field: string room_id = 1;
+   */
+  roomId: string;
+
+  /**
+   * @generated from field: repeated social.chat.TopicRoomMember members = 2;
+   */
+  members: TopicRoomMember[];
+
+  /**
+   * @generated from field: uint32 online_count = 3;
+   */
+  onlineCount: number;
+};
+
+/**
+ * Describes the message social.chat.TopicRoomMembersPush.
+ * Use `create(TopicRoomMembersPushSchema)` to create a new message.
+ */
+export const TopicRoomMembersPushSchema: GenMessage<TopicRoomMembersPush> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 29);
+
+/**
  * ----------------------
  * 统一载荷
  * ----------------------
@@ -552,6 +898,80 @@ export type ChatPayload = Message$1<"social.chat.ChatPayload"> & {
      */
     value: ConversationPush;
     case: "conversationPush";
+  } | {
+    /**
+     * Topic Room
+     *
+     * @generated from field: social.chat.GetTopicRoomListRequest get_topic_room_list = 13;
+     */
+    value: GetTopicRoomListRequest;
+    case: "getTopicRoomList";
+  } | {
+    /**
+     * @generated from field: social.chat.GetTopicRoomListResponse get_topic_room_list_response = 14;
+     */
+    value: GetTopicRoomListResponse;
+    case: "getTopicRoomListResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.JoinTopicRoomRequest join_topic_room = 15;
+     */
+    value: JoinTopicRoomRequest;
+    case: "joinTopicRoom";
+  } | {
+    /**
+     * @generated from field: social.chat.JoinTopicRoomResponse join_topic_room_response = 16;
+     */
+    value: JoinTopicRoomResponse;
+    case: "joinTopicRoomResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.LeaveTopicRoomRequest leave_topic_room = 17;
+     */
+    value: LeaveTopicRoomRequest;
+    case: "leaveTopicRoom";
+  } | {
+    /**
+     * @generated from field: social.chat.LeaveTopicRoomResponse leave_topic_room_response = 18;
+     */
+    value: LeaveTopicRoomResponse;
+    case: "leaveTopicRoomResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.SendTopicRoomMessageRequest send_topic_room_message = 19;
+     */
+    value: SendTopicRoomMessageRequest;
+    case: "sendTopicRoomMessage";
+  } | {
+    /**
+     * @generated from field: social.chat.SendTopicRoomMessageResponse send_topic_room_message_response = 20;
+     */
+    value: SendTopicRoomMessageResponse;
+    case: "sendTopicRoomMessageResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.GetTopicRoomMembersRequest get_topic_room_members = 21;
+     */
+    value: GetTopicRoomMembersRequest;
+    case: "getTopicRoomMembers";
+  } | {
+    /**
+     * @generated from field: social.chat.GetTopicRoomMembersResponse get_topic_room_members_response = 22;
+     */
+    value: GetTopicRoomMembersResponse;
+    case: "getTopicRoomMembersResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.TopicRoomMessagePush topic_room_message_push = 23;
+     */
+    value: TopicRoomMessagePush;
+    case: "topicRoomMessagePush";
+  } | {
+    /**
+     * @generated from field: social.chat.TopicRoomMembersPush topic_room_members_push = 24;
+     */
+    value: TopicRoomMembersPush;
+    case: "topicRoomMembersPush";
   } | { case: undefined; value?: undefined };
 };
 
@@ -560,7 +980,7 @@ export type ChatPayload = Message$1<"social.chat.ChatPayload"> & {
  * Use `create(ChatPayloadSchema)` to create a new message.
  */
 export const ChatPayloadSchema: GenMessage<ChatPayload> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 15);
+  messageDesc(file_chat_chat, 30);
 
 /**
  * 会话类型

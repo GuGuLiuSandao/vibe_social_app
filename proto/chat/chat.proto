@@ -125,6 +125,87 @@ message ConversationPush {
 }
 
 // ----------------------
+// 官方话题聊天室（固定房间 + 在线订阅）
+// ----------------------
+
+message TopicRoom {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string icon = 4;
+  uint32 online_count = 5;
+}
+
+message TopicRoomMessage {
+  string id = 1;
+  string room_id = 2;
+  uint64 sender_id = 3;
+  string content = 4;
+  google.protobuf.Timestamp created_at = 5;
+  SenderInfo sender = 6;
+}
+
+message TopicRoomMember {
+  uint64 id = 1;
+  string username = 2;
+  string nickname = 3;
+  string avatar = 4;
+}
+
+message GetTopicRoomListRequest {}
+
+message GetTopicRoomListResponse {
+  repeated TopicRoom rooms = 1;
+  string joined_room_id = 2;
+}
+
+message JoinTopicRoomRequest {
+  string room_id = 1;
+}
+
+message JoinTopicRoomResponse {
+  TopicRoom room = 1;
+  repeated TopicRoomMessage recent_messages = 2;
+  repeated TopicRoomMember members = 3;
+}
+
+message LeaveTopicRoomRequest {
+  string room_id = 1;
+}
+
+message LeaveTopicRoomResponse {
+  string room_id = 1;
+}
+
+message SendTopicRoomMessageRequest {
+  string room_id = 1;
+  string content = 2;
+}
+
+message SendTopicRoomMessageResponse {
+  TopicRoomMessage message = 1;
+}
+
+message GetTopicRoomMembersRequest {
+  string room_id = 1;
+}
+
+message GetTopicRoomMembersResponse {
+  string room_id = 1;
+  repeated TopicRoomMember members = 2;
+}
+
+message TopicRoomMessagePush {
+  TopicRoomMessage message = 1;
+}
+
+message TopicRoomMembersPush {
+  string room_id = 1;
+  repeated TopicRoomMember members = 2;
+  uint32 online_count = 3;
+}
+
+// ----------------------
 // 统一载荷
 // ----------------------
 message ChatPayload {
@@ -146,5 +227,19 @@ message ChatPayload {
 
     MessagePush message_push = 11; // 新消息推送
     ConversationPush conversation_push = 12; // 新会话推送
+
+    // Topic Room
+    GetTopicRoomListRequest get_topic_room_list = 13;
+    GetTopicRoomListResponse get_topic_room_list_response = 14;
+    JoinTopicRoomRequest join_topic_room = 15;
+    JoinTopicRoomResponse join_topic_room_response = 16;
+    LeaveTopicRoomRequest leave_topic_room = 17;
+    LeaveTopicRoomResponse leave_topic_room_response = 18;
+    SendTopicRoomMessageRequest send_topic_room_message = 19;
+    SendTopicRoomMessageResponse send_topic_room_message_response = 20;
+    GetTopicRoomMembersRequest get_topic_room_members = 21;
+    GetTopicRoomMembersResponse get_topic_room_members_response = 22;
+    TopicRoomMessagePush topic_room_message_push = 23;
+    TopicRoomMembersPush topic_room_members_push = 24;
   }
 }
