@@ -111,7 +111,12 @@ func (s *Server) HandleMessage(client *Client, message []byte) {
 		proto.WsMessageType_WS_TYPE_CHAT_GET_CONVERSATION_LIST,
 		proto.WsMessageType_WS_TYPE_CHAT_GET_MESSAGE_LIST,
 		proto.WsMessageType_WS_TYPE_CHAT_MARK_AS_READ,
-		proto.WsMessageType_WS_TYPE_CHAT_CREATE_CONVERSATION:
+		proto.WsMessageType_WS_TYPE_CHAT_CREATE_CONVERSATION,
+		proto.WsMessageType_WS_TYPE_CHAT_GET_TOPIC_ROOM_LIST,
+		proto.WsMessageType_WS_TYPE_CHAT_JOIN_TOPIC_ROOM,
+		proto.WsMessageType_WS_TYPE_CHAT_LEAVE_TOPIC_ROOM,
+		proto.WsMessageType_WS_TYPE_CHAT_SEND_TOPIC_ROOM_MESSAGE,
+		proto.WsMessageType_WS_TYPE_CHAT_GET_TOPIC_ROOM_MEMBERS:
 		if msg.GetChat() != nil {
 			response = s.handleChatMessage(client, &msg, msg.GetChat())
 		}
@@ -476,20 +481,51 @@ func (s *Server) handleChatMessage(client *Client, msg *proto.WsMessage, payload
 			return s.createErrorResponse(msg.RequestId, err.Error())
 		}
 
-		// Convert to proto
-		pbConv := &chatpb.Conversation{
-			Id:        conv.ID,
-			Type:      chatpb.ConversationType(conv.Type),
-			Name:      conv.Name,
-			Avatar:    conv.Avatar,
-			UpdatedAt: timestamppb.New(conv.UpdatedAt),
+		// Build creator view (keeps private conversation name/avatar consistent with conversation list).
+		pbConv, err := s.chatService.GetConversationForUser(conv.ID, uint64(client.ID))
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
 		}
-		// Note: CreateConversation returns model, we might need to populate extra fields or just return basic info
-		// For private chat, the name/avatar might need to be customized for the viewer, but here we return raw or let client handle.
-		// Actually, let's try to match GetConversationList logic for consistency if possible, or just return what we have.
 
-		// Push to other participants
-		// ... logic to push WS_TYPE_CHAT_CONVERSATION_PUSH ...
+		// Push new conversation to other participants.
+		participantIDs, err := s.chatService.GetConversationParticipantIDs(conv.ID)
+		if err != nil {
+			logger.Error("Failed to load participants for conversation %d: %v", conv.ID, err)
+		} else {
+			for _, participantID := range participantIDs {
+				if participantID == uint64(client.ID) {
+					continue
+				}
+
+				participantConv, err := s.chatService.GetConversationForUser(conv.ID, participantID)
+				if err != nil {
+					logger.Error("Failed to build conversation view for uid=%d conv=%d: %v", participantID, conv.ID, err)
+					continue
+				}
+
+				pushMsg := &proto.WsMessage{
+					Type:      proto.WsMessageType_WS_TYPE_CHAT_CONVERSATION_PUSH,
+					Timestamp: time.Now().UnixMilli(),
+					Payload: &proto.WsMessage_Chat{
+						Chat: &chatpb.ChatPayload{
+							Payload: &chatpb.ChatPayload_ConversationPush{
+								ConversationPush: &chatpb.ConversationPush{
+									Conversation: participantConv,
+								},
+							},
+						},
+					},
+				}
+
+				data, err := goproto.Marshal(pushMsg)
+				if err != nil {
+					logger.Error("Failed to marshal conversation push for uid=%d conv=%d: %v", participantID, conv.ID, err)
+					continue
+				}
+
+				s.SendToUser(uint(participantID), data)
+			}
+		}
 
 		return &proto.WsMessage{
 			RequestId: msg.RequestId,
@@ -522,6 +558,125 @@ func (s *Server) handleChatMessage(client *Client, msg *proto.WsMessage, payload
 						MarkAsReadResponse: &chatpb.MarkAsReadResponse{
 							ConversationId: req.ConversationId,
 							UnreadCount:    unreadCount,
+						},
+					},
+				},
+			},
+		}
+	}
+
+	if payload.GetGetTopicRoomList() != nil {
+		rooms, joinedRoomID := s.GetTopicRoomList(client.ID)
+		return &proto.WsMessage{
+			RequestId: msg.RequestId,
+			Type:      proto.WsMessageType_WS_TYPE_CHAT_GET_TOPIC_ROOM_LIST_RESPONSE,
+			Timestamp: time.Now().UnixMilli(),
+			Payload: &proto.WsMessage_Chat{
+				Chat: &chatpb.ChatPayload{
+					Payload: &chatpb.ChatPayload_GetTopicRoomListResponse{
+						GetTopicRoomListResponse: &chatpb.GetTopicRoomListResponse{
+							Rooms:        rooms,
+							JoinedRoomId: joinedRoomID,
+						},
+					},
+				},
+			},
+		}
+	}
+
+	if req := payload.GetJoinTopicRoom(); req != nil {
+		room, recentMessages, members, err := s.JoinTopicRoom(client.ID, req.RoomId)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+
+		return &proto.WsMessage{
+			RequestId: msg.RequestId,
+			Type:      proto.WsMessageType_WS_TYPE_CHAT_JOIN_TOPIC_ROOM_RESPONSE,
+			Timestamp: time.Now().UnixMilli(),
+			Payload: &proto.WsMessage_Chat{
+				Chat: &chatpb.ChatPayload{
+					Payload: &chatpb.ChatPayload_JoinTopicRoomResponse{
+						JoinTopicRoomResponse: &chatpb.JoinTopicRoomResponse{
+							Room:           room,
+							RecentMessages: recentMessages,
+							Members:        members,
+						},
+					},
+				},
+			},
+		}
+	}
+
+	if req := payload.GetLeaveTopicRoom(); req != nil {
+		leftRoomID, err := s.LeaveTopicRoom(client.ID, req.RoomId)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+
+		return &proto.WsMessage{
+			RequestId: msg.RequestId,
+			Type:      proto.WsMessageType_WS_TYPE_CHAT_LEAVE_TOPIC_ROOM_RESPONSE,
+			Timestamp: time.Now().UnixMilli(),
+			Payload: &proto.WsMessage_Chat{
+				Chat: &chatpb.ChatPayload{
+					Payload: &chatpb.ChatPayload_LeaveTopicRoomResponse{
+						LeaveTopicRoomResponse: &chatpb.LeaveTopicRoomResponse{
+							RoomId: leftRoomID,
+						},
+					},
+				},
+			},
+		}
+	}
+
+	if req := payload.GetSendTopicRoomMessage(); req != nil {
+		topicMessage, recipients, err := s.SendTopicRoomMessage(client.ID, req.RoomId, req.Content)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+
+		filteredRecipients := make([]uint, 0, len(recipients))
+		for _, uid := range recipients {
+			if uid == client.ID {
+				continue
+			}
+			filteredRecipients = append(filteredRecipients, uid)
+		}
+		s.PushTopicRoomMessage(topicMessage, filteredRecipients)
+
+		return &proto.WsMessage{
+			RequestId: msg.RequestId,
+			Type:      proto.WsMessageType_WS_TYPE_CHAT_SEND_TOPIC_ROOM_MESSAGE_RESPONSE,
+			Timestamp: time.Now().UnixMilli(),
+			Payload: &proto.WsMessage_Chat{
+				Chat: &chatpb.ChatPayload{
+					Payload: &chatpb.ChatPayload_SendTopicRoomMessageResponse{
+						SendTopicRoomMessageResponse: &chatpb.SendTopicRoomMessageResponse{
+							Message: topicMessage,
+						},
+					},
+				},
+			},
+		}
+	}
+
+	if req := payload.GetGetTopicRoomMembers(); req != nil {
+		members, err := s.GetTopicRoomMembers(req.RoomId)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+
+		return &proto.WsMessage{
+			RequestId: msg.RequestId,
+			Type:      proto.WsMessageType_WS_TYPE_CHAT_GET_TOPIC_ROOM_MEMBERS_RESPONSE,
+			Timestamp: time.Now().UnixMilli(),
+			Payload: &proto.WsMessage_Chat{
+				Chat: &chatpb.ChatPayload{
+					Payload: &chatpb.ChatPayload_GetTopicRoomMembersResponse{
+						GetTopicRoomMembersResponse: &chatpb.GetTopicRoomMembersResponse{
+							RoomId:  req.RoomId,
+							Members: members,
 						},
 					},
 				},

@@ -43,12 +43,15 @@ type Server struct {
 	chatService     *service.ChatService
 	userService     *service.UserService
 	relationService *service.RelationService
+	topicRooms      map[string]*topicRoomState
+	topicUserRoom   map[uint]string
+	topicMessageSeq uint64
 }
 
 func NewServer() *Server {
 	database := db.GetDB()
 	relationService := service.NewRelationService(database)
-	return &Server{
+	server := &Server{
 		Clients:         make(map[uint]*Client),
 		Broadcast:       make(chan []byte),
 		Register:        make(chan *Client),
@@ -56,7 +59,11 @@ func NewServer() *Server {
 		chatService:     service.NewChatService(relationService),
 		userService:     service.NewUserService(),
 		relationService: relationService,
+		topicRooms:      make(map[string]*topicRoomState),
+		topicUserRoom:   make(map[uint]string),
 	}
+	server.initTopicRooms()
+	return server
 }
 
 func (s *Server) Run() {
@@ -79,6 +86,10 @@ func (s *Server) Run() {
 				close(client.Send)
 			}
 			s.Mutex.Unlock()
+
+			if _, err := s.LeaveTopicRoom(client.ID, ""); err != nil {
+				logger.Error("Failed to cleanup topic room for user %d: %v", client.ID, err)
+			}
 
 			if err := redis.SetUserOffline(client.ID); err != nil {
 				logger.Error("Failed to set user %d offline: %v", client.ID, err)

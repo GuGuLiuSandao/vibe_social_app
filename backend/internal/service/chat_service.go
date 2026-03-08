@@ -6,6 +6,7 @@ import (
 	"social_app/internal/models"
 	pb "social_app/internal/proto/chat"
 	"strconv"
+	"strings"
 	"time"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -431,9 +432,25 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 		userIDs[uid] = true
 	}
 
-	var conversation *models.Conversation
+	allParticipantIDs := make([]uint64, 0, len(userIDs))
+	for uid := range userIDs {
+		allParticipantIDs = append(allParticipantIDs, uid)
+	}
 
-	if req.Type == pb.ConversationType_CONVERSATION_TYPE_PRIVATE {
+	var existingUserCount int64
+	if err := s.db.Model(&models.User{}).
+		Where("uid IN ?", allParticipantIDs).
+		Count(&existingUserCount).Error; err != nil {
+		return nil, err
+	}
+	if existingUserCount != int64(len(allParticipantIDs)) {
+		return nil, errors.New("some participants do not exist")
+	}
+
+	var conversation *models.Conversation
+	var reqType = req.Type
+
+	if reqType == pb.ConversationType_CONVERSATION_TYPE_PRIVATE {
 		if len(userIDs) != 2 {
 			return nil, errors.New("private conversation must have exactly 2 participants")
 		}
@@ -477,11 +494,20 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 		conversation = &models.Conversation{
 			Type: models.ConversationTypePrivate,
 		}
-	} else if req.Type == pb.ConversationType_CONVERSATION_TYPE_GROUP {
+	} else if reqType == pb.ConversationType_CONVERSATION_TYPE_GROUP {
+		groupName := strings.TrimSpace(req.Name)
+		if groupName == "" {
+			return nil, errors.New("group name is required")
+		}
+		// 包含创建者在内，群聊至少 3 人，避免与私聊语义冲突。
+		if len(userIDs) < 3 {
+			return nil, errors.New("group conversation must have at least 3 participants")
+		}
+
 		conversation = &models.Conversation{
 			Type:    models.ConversationTypeGroup,
-			Name:    req.Name,
-			Avatar:  req.Avatar,
+			Name:    groupName,
+			Avatar:  strings.TrimSpace(req.Avatar),
 			OwnerID: creatorID,
 		}
 	} else {
@@ -496,7 +522,7 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 		var participants []models.ConversationParticipant
 		for uid := range userIDs {
 			role := "member"
-			if uid == creatorID && req.Type == pb.ConversationType_CONVERSATION_TYPE_GROUP {
+			if uid == creatorID && reqType == pb.ConversationType_CONVERSATION_TYPE_GROUP {
 				role = "owner"
 			}
 			participants = append(participants, models.ConversationParticipant{
