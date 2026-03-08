@@ -36,20 +36,20 @@ func setupTestDB(t *testing.T) {
 func TestEnsureWhitelistUserCreatesDefaults(t *testing.T) {
 	setupTestDB(t)
 
-	uid := uint(20000001)
+	uid := uint(20000000)
 	user, err := EnsureWhitelistUser(uid)
 	if err != nil {
 		t.Fatalf("ensure whitelist user: %v", err)
 	}
 
-	expected := "20000001"
+	expected := "20000000"
 	if user.Username != expected {
 		t.Fatalf("username mismatch: %s", user.Username)
 	}
 	if user.Nickname != expected {
 		t.Fatalf("nickname mismatch: %s", user.Nickname)
 	}
-	if user.Email != "20000001@123.com" {
+	if user.Email != "20000000@123.com" {
 		t.Fatalf("email mismatch: %s", user.Email)
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(expected)); err != nil {
@@ -185,7 +185,7 @@ func TestLoginWhitelistWithProtobufUID(t *testing.T) {
 	c, _ := gin.CreateTestContext(recorder)
 
 	reqBody, err := proto.Marshal(&accountpb.LoginRequest{
-		Uid: 20000001,
+		Uid: 20000000,
 	})
 	if err != nil {
 		t.Fatalf("marshal request: %v", err)
@@ -213,7 +213,7 @@ func TestLoginWhitelistWithProtobufUID(t *testing.T) {
 	if resp.Token == "" {
 		t.Fatalf("missing token")
 	}
-	if resp.User == nil || resp.User.Email != "20000001@123.com" {
+	if resp.User == nil || resp.User.Email != "20000000@123.com" {
 		t.Fatalf("unexpected user")
 	}
 }
