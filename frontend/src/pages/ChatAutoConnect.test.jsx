@@ -25,7 +25,7 @@ describe("Chat websocket auto connect", () => {
         store.clear();
       },
     };
-    globalThis.localStorage.setItem("token:1", "token-1");
+    globalThis.localStorage.setItem("token:1", "x.eyJleHAiOjQxMDI0NDQ4MDB9.y");
     globalThis.WebSocket = vi.fn(() => ({
       onopen: null,
       onerror: null,

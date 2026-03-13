@@ -73,6 +73,14 @@ func (s *ChatService) SendMessage(senderID uint64, req *pb.SendMessageRequest) (
 			}
 
 			// 检查我是否关注了对方
+			hasBlockingRelation, err := s.relationService.HasBlockingRelation(senderID, otherUserID)
+			if err != nil {
+				return err
+			}
+			if hasBlockingRelation {
+				return errors.New("private chat is blocked by blacklist settings")
+			}
+
 			isFollowing, err := s.relationService.IsFollowing(senderID, otherUserID)
 			if err != nil {
 				return err
@@ -465,6 +473,14 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 
 		// 检查关注关系
 		// 必须关注对方才能发起私聊
+		hasBlockingRelation, err := s.relationService.HasBlockingRelation(creatorID, otherID)
+		if err != nil {
+			return nil, err
+		}
+		if hasBlockingRelation {
+			return nil, errors.New("cannot start private chat because one of you has blocked the other")
+		}
+
 		isFollowing, err := s.relationService.IsFollowing(creatorID, otherID)
 		if err != nil {
 			return nil, err
@@ -509,6 +525,19 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 			Name:    groupName,
 			Avatar:  strings.TrimSpace(req.Avatar),
 			OwnerID: creatorID,
+		}
+
+		for uid := range userIDs {
+			if uid == creatorID {
+				continue
+			}
+			hasBlockingRelation, err := s.relationService.HasBlockingRelation(creatorID, uid)
+			if err != nil {
+				return nil, err
+			}
+			if hasBlockingRelation {
+				return nil, errors.New("cannot invite blocked users into group conversation")
+			}
 		}
 	} else {
 		return nil, errors.New("invalid conversation type")

@@ -29,6 +29,8 @@ const (
 	RelationPush_TYPE_UNSPECIFIED RelationPush_Type = 0
 	RelationPush_TYPE_FOLLOWED    RelationPush_Type = 1 // Someone followed me
 	RelationPush_TYPE_UNFOLLOWED  RelationPush_Type = 2 // Someone unfollowed me (optional, maybe not needed to push)
+	RelationPush_TYPE_BLOCKED     RelationPush_Type = 3
+	RelationPush_TYPE_UNBLOCKED   RelationPush_Type = 4
 )
 
 // Enum value maps for RelationPush_Type.
@@ -37,11 +39,15 @@ var (
 		0: "TYPE_UNSPECIFIED",
 		1: "TYPE_FOLLOWED",
 		2: "TYPE_UNFOLLOWED",
+		3: "TYPE_BLOCKED",
+		4: "TYPE_UNBLOCKED",
 	}
 	RelationPush_Type_value = map[string]int32{
 		"TYPE_UNSPECIFIED": 0,
 		"TYPE_FOLLOWED":    1,
 		"TYPE_UNFOLLOWED":  2,
+		"TYPE_BLOCKED":     3,
+		"TYPE_UNBLOCKED":   4,
 	}
 )
 
@@ -69,7 +75,7 @@ func (x RelationPush_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use RelationPush_Type.Descriptor instead.
 func (RelationPush_Type) EnumDescriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{12, 0}
+	return file_relation_relation_proto_rawDescGZIP(), []int{18, 0}
 }
 
 // Relation represents a user relationship (following)
@@ -319,6 +325,198 @@ func (x *UnfollowResponse) GetMessage() string {
 	return ""
 }
 
+type BlockRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TargetUid     uint64                 `protobuf:"varint,1,opt,name=target_uid,json=targetUid,proto3" json:"target_uid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlockRequest) Reset() {
+	*x = BlockRequest{}
+	mi := &file_relation_relation_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlockRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlockRequest) ProtoMessage() {}
+
+func (x *BlockRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_relation_relation_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlockRequest.ProtoReflect.Descriptor instead.
+func (*BlockRequest) Descriptor() ([]byte, []int) {
+	return file_relation_relation_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *BlockRequest) GetTargetUid() uint64 {
+	if x != nil {
+		return x.TargetUid
+	}
+	return 0
+}
+
+type BlockResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ErrorCode     common.ErrorCode       `protobuf:"varint,1,opt,name=error_code,json=errorCode,proto3,enum=social.ErrorCode" json:"error_code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlockResponse) Reset() {
+	*x = BlockResponse{}
+	mi := &file_relation_relation_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlockResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlockResponse) ProtoMessage() {}
+
+func (x *BlockResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_relation_relation_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlockResponse.ProtoReflect.Descriptor instead.
+func (*BlockResponse) Descriptor() ([]byte, []int) {
+	return file_relation_relation_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *BlockResponse) GetErrorCode() common.ErrorCode {
+	if x != nil {
+		return x.ErrorCode
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *BlockResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type UnblockRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TargetUid     uint64                 `protobuf:"varint,1,opt,name=target_uid,json=targetUid,proto3" json:"target_uid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnblockRequest) Reset() {
+	*x = UnblockRequest{}
+	mi := &file_relation_relation_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnblockRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnblockRequest) ProtoMessage() {}
+
+func (x *UnblockRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_relation_relation_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnblockRequest.ProtoReflect.Descriptor instead.
+func (*UnblockRequest) Descriptor() ([]byte, []int) {
+	return file_relation_relation_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UnblockRequest) GetTargetUid() uint64 {
+	if x != nil {
+		return x.TargetUid
+	}
+	return 0
+}
+
+type UnblockResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ErrorCode     common.ErrorCode       `protobuf:"varint,1,opt,name=error_code,json=errorCode,proto3,enum=social.ErrorCode" json:"error_code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnblockResponse) Reset() {
+	*x = UnblockResponse{}
+	mi := &file_relation_relation_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnblockResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnblockResponse) ProtoMessage() {}
+
+func (x *UnblockResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_relation_relation_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnblockResponse.ProtoReflect.Descriptor instead.
+func (*UnblockResponse) Descriptor() ([]byte, []int) {
+	return file_relation_relation_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UnblockResponse) GetErrorCode() common.ErrorCode {
+	if x != nil {
+		return x.ErrorCode
+	}
+	return common.ErrorCode(0)
+}
+
+func (x *UnblockResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 // GetFollowingRequest retrieves the list of users I follow
 type GetFollowingRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -328,7 +526,7 @@ type GetFollowingRequest struct {
 
 func (x *GetFollowingRequest) Reset() {
 	*x = GetFollowingRequest{}
-	mi := &file_relation_relation_proto_msgTypes[5]
+	mi := &file_relation_relation_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -340,7 +538,7 @@ func (x *GetFollowingRequest) String() string {
 func (*GetFollowingRequest) ProtoMessage() {}
 
 func (x *GetFollowingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[5]
+	mi := &file_relation_relation_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -353,7 +551,7 @@ func (x *GetFollowingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowingRequest.ProtoReflect.Descriptor instead.
 func (*GetFollowingRequest) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{5}
+	return file_relation_relation_proto_rawDescGZIP(), []int{9}
 }
 
 type GetFollowingResponse struct {
@@ -365,7 +563,7 @@ type GetFollowingResponse struct {
 
 func (x *GetFollowingResponse) Reset() {
 	*x = GetFollowingResponse{}
-	mi := &file_relation_relation_proto_msgTypes[6]
+	mi := &file_relation_relation_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -377,7 +575,7 @@ func (x *GetFollowingResponse) String() string {
 func (*GetFollowingResponse) ProtoMessage() {}
 
 func (x *GetFollowingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[6]
+	mi := &file_relation_relation_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -390,7 +588,7 @@ func (x *GetFollowingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowingResponse.ProtoReflect.Descriptor instead.
 func (*GetFollowingResponse) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{6}
+	return file_relation_relation_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetFollowingResponse) GetFollowingList() []*Relation {
@@ -409,7 +607,7 @@ type GetFollowersRequest struct {
 
 func (x *GetFollowersRequest) Reset() {
 	*x = GetFollowersRequest{}
-	mi := &file_relation_relation_proto_msgTypes[7]
+	mi := &file_relation_relation_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -421,7 +619,7 @@ func (x *GetFollowersRequest) String() string {
 func (*GetFollowersRequest) ProtoMessage() {}
 
 func (x *GetFollowersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[7]
+	mi := &file_relation_relation_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -434,7 +632,7 @@ func (x *GetFollowersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowersRequest.ProtoReflect.Descriptor instead.
 func (*GetFollowersRequest) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{7}
+	return file_relation_relation_proto_rawDescGZIP(), []int{11}
 }
 
 type GetFollowersResponse struct {
@@ -446,7 +644,7 @@ type GetFollowersResponse struct {
 
 func (x *GetFollowersResponse) Reset() {
 	*x = GetFollowersResponse{}
-	mi := &file_relation_relation_proto_msgTypes[8]
+	mi := &file_relation_relation_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -458,7 +656,7 @@ func (x *GetFollowersResponse) String() string {
 func (*GetFollowersResponse) ProtoMessage() {}
 
 func (x *GetFollowersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[8]
+	mi := &file_relation_relation_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -471,7 +669,7 @@ func (x *GetFollowersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFollowersResponse.ProtoReflect.Descriptor instead.
 func (*GetFollowersResponse) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{8}
+	return file_relation_relation_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetFollowersResponse) GetFollowerList() []*Relation {
@@ -492,7 +690,7 @@ type GetFriendsRequest struct {
 
 func (x *GetFriendsRequest) Reset() {
 	*x = GetFriendsRequest{}
-	mi := &file_relation_relation_proto_msgTypes[9]
+	mi := &file_relation_relation_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -504,7 +702,7 @@ func (x *GetFriendsRequest) String() string {
 func (*GetFriendsRequest) ProtoMessage() {}
 
 func (x *GetFriendsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[9]
+	mi := &file_relation_relation_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -517,7 +715,7 @@ func (x *GetFriendsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFriendsRequest.ProtoReflect.Descriptor instead.
 func (*GetFriendsRequest) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{9}
+	return file_relation_relation_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GetFriendsRequest) GetPageSize() int32 {
@@ -544,7 +742,7 @@ type GetFriendsResponse struct {
 
 func (x *GetFriendsResponse) Reset() {
 	*x = GetFriendsResponse{}
-	mi := &file_relation_relation_proto_msgTypes[10]
+	mi := &file_relation_relation_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -556,7 +754,7 @@ func (x *GetFriendsResponse) String() string {
 func (*GetFriendsResponse) ProtoMessage() {}
 
 func (x *GetFriendsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[10]
+	mi := &file_relation_relation_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -569,7 +767,7 @@ func (x *GetFriendsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFriendsResponse.ProtoReflect.Descriptor instead.
 func (*GetFriendsResponse) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{10}
+	return file_relation_relation_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GetFriendsResponse) GetFriendList() []*Relation {
@@ -584,6 +782,86 @@ func (x *GetFriendsResponse) GetNextCursor() string {
 		return x.NextCursor
 	}
 	return ""
+}
+
+type GetBlockedRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetBlockedRequest) Reset() {
+	*x = GetBlockedRequest{}
+	mi := &file_relation_relation_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetBlockedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetBlockedRequest) ProtoMessage() {}
+
+func (x *GetBlockedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_relation_relation_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetBlockedRequest.ProtoReflect.Descriptor instead.
+func (*GetBlockedRequest) Descriptor() ([]byte, []int) {
+	return file_relation_relation_proto_rawDescGZIP(), []int{15}
+}
+
+type GetBlockedResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BlockedList   []*Relation            `protobuf:"bytes,1,rep,name=blocked_list,json=blockedList,proto3" json:"blocked_list,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetBlockedResponse) Reset() {
+	*x = GetBlockedResponse{}
+	mi := &file_relation_relation_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetBlockedResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetBlockedResponse) ProtoMessage() {}
+
+func (x *GetBlockedResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_relation_relation_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetBlockedResponse.ProtoReflect.Descriptor instead.
+func (*GetBlockedResponse) Descriptor() ([]byte, []int) {
+	return file_relation_relation_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetBlockedResponse) GetBlockedList() []*Relation {
+	if x != nil {
+		return x.BlockedList
+	}
+	return nil
 }
 
 // RelationPayload wraps all relation related messages
@@ -602,6 +880,12 @@ type RelationPayload struct {
 	//	*RelationPayload_RelationPush
 	//	*RelationPayload_GetFriends
 	//	*RelationPayload_GetFriendsResponse
+	//	*RelationPayload_Block
+	//	*RelationPayload_BlockResponse
+	//	*RelationPayload_Unblock
+	//	*RelationPayload_UnblockResponse
+	//	*RelationPayload_GetBlocked
+	//	*RelationPayload_GetBlockedResponse
 	Payload       isRelationPayload_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -609,7 +893,7 @@ type RelationPayload struct {
 
 func (x *RelationPayload) Reset() {
 	*x = RelationPayload{}
-	mi := &file_relation_relation_proto_msgTypes[11]
+	mi := &file_relation_relation_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -621,7 +905,7 @@ func (x *RelationPayload) String() string {
 func (*RelationPayload) ProtoMessage() {}
 
 func (x *RelationPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[11]
+	mi := &file_relation_relation_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -634,7 +918,7 @@ func (x *RelationPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelationPayload.ProtoReflect.Descriptor instead.
 func (*RelationPayload) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{11}
+	return file_relation_relation_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *RelationPayload) GetPayload() isRelationPayload_Payload {
@@ -743,6 +1027,60 @@ func (x *RelationPayload) GetGetFriendsResponse() *GetFriendsResponse {
 	return nil
 }
 
+func (x *RelationPayload) GetBlock() *BlockRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*RelationPayload_Block); ok {
+			return x.Block
+		}
+	}
+	return nil
+}
+
+func (x *RelationPayload) GetBlockResponse() *BlockResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*RelationPayload_BlockResponse); ok {
+			return x.BlockResponse
+		}
+	}
+	return nil
+}
+
+func (x *RelationPayload) GetUnblock() *UnblockRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*RelationPayload_Unblock); ok {
+			return x.Unblock
+		}
+	}
+	return nil
+}
+
+func (x *RelationPayload) GetUnblockResponse() *UnblockResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*RelationPayload_UnblockResponse); ok {
+			return x.UnblockResponse
+		}
+	}
+	return nil
+}
+
+func (x *RelationPayload) GetGetBlocked() *GetBlockedRequest {
+	if x != nil {
+		if x, ok := x.Payload.(*RelationPayload_GetBlocked); ok {
+			return x.GetBlocked
+		}
+	}
+	return nil
+}
+
+func (x *RelationPayload) GetGetBlockedResponse() *GetBlockedResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*RelationPayload_GetBlockedResponse); ok {
+			return x.GetBlockedResponse
+		}
+	}
+	return nil
+}
+
 type isRelationPayload_Payload interface {
 	isRelationPayload_Payload()
 }
@@ -791,6 +1129,30 @@ type RelationPayload_GetFriendsResponse struct {
 	GetFriendsResponse *GetFriendsResponse `protobuf:"bytes,11,opt,name=get_friends_response,json=getFriendsResponse,proto3,oneof"`
 }
 
+type RelationPayload_Block struct {
+	Block *BlockRequest `protobuf:"bytes,12,opt,name=block,proto3,oneof"`
+}
+
+type RelationPayload_BlockResponse struct {
+	BlockResponse *BlockResponse `protobuf:"bytes,13,opt,name=block_response,json=blockResponse,proto3,oneof"`
+}
+
+type RelationPayload_Unblock struct {
+	Unblock *UnblockRequest `protobuf:"bytes,14,opt,name=unblock,proto3,oneof"`
+}
+
+type RelationPayload_UnblockResponse struct {
+	UnblockResponse *UnblockResponse `protobuf:"bytes,15,opt,name=unblock_response,json=unblockResponse,proto3,oneof"`
+}
+
+type RelationPayload_GetBlocked struct {
+	GetBlocked *GetBlockedRequest `protobuf:"bytes,16,opt,name=get_blocked,json=getBlocked,proto3,oneof"`
+}
+
+type RelationPayload_GetBlockedResponse struct {
+	GetBlockedResponse *GetBlockedResponse `protobuf:"bytes,17,opt,name=get_blocked_response,json=getBlockedResponse,proto3,oneof"`
+}
+
 func (*RelationPayload_Follow) isRelationPayload_Payload() {}
 
 func (*RelationPayload_FollowResponse) isRelationPayload_Payload() {}
@@ -813,6 +1175,18 @@ func (*RelationPayload_GetFriends) isRelationPayload_Payload() {}
 
 func (*RelationPayload_GetFriendsResponse) isRelationPayload_Payload() {}
 
+func (*RelationPayload_Block) isRelationPayload_Payload() {}
+
+func (*RelationPayload_BlockResponse) isRelationPayload_Payload() {}
+
+func (*RelationPayload_Unblock) isRelationPayload_Payload() {}
+
+func (*RelationPayload_UnblockResponse) isRelationPayload_Payload() {}
+
+func (*RelationPayload_GetBlocked) isRelationPayload_Payload() {}
+
+func (*RelationPayload_GetBlockedResponse) isRelationPayload_Payload() {}
+
 type RelationPush struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Type          RelationPush_Type      `protobuf:"varint,1,opt,name=type,proto3,enum=social.relation.RelationPush_Type" json:"type,omitempty"`
@@ -824,7 +1198,7 @@ type RelationPush struct {
 
 func (x *RelationPush) Reset() {
 	*x = RelationPush{}
-	mi := &file_relation_relation_proto_msgTypes[12]
+	mi := &file_relation_relation_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -836,7 +1210,7 @@ func (x *RelationPush) String() string {
 func (*RelationPush) ProtoMessage() {}
 
 func (x *RelationPush) ProtoReflect() protoreflect.Message {
-	mi := &file_relation_relation_proto_msgTypes[12]
+	mi := &file_relation_relation_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -849,7 +1223,7 @@ func (x *RelationPush) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelationPush.ProtoReflect.Descriptor instead.
 func (*RelationPush) Descriptor() ([]byte, []int) {
-	return file_relation_relation_proto_rawDescGZIP(), []int{12}
+	return file_relation_relation_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *RelationPush) GetType() RelationPush_Type {
@@ -895,6 +1269,20 @@ const file_relation_relation_proto_rawDesc = "" +
 	"\x10UnfollowResponse\x120\n" +
 	"\n" +
 	"error_code\x18\x01 \x01(\x0e2\x11.social.ErrorCodeR\terrorCode\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"-\n" +
+	"\fBlockRequest\x12\x1d\n" +
+	"\n" +
+	"target_uid\x18\x01 \x01(\x04R\ttargetUid\"[\n" +
+	"\rBlockResponse\x120\n" +
+	"\n" +
+	"error_code\x18\x01 \x01(\x0e2\x11.social.ErrorCodeR\terrorCode\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"/\n" +
+	"\x0eUnblockRequest\x12\x1d\n" +
+	"\n" +
+	"target_uid\x18\x01 \x01(\x04R\ttargetUid\"]\n" +
+	"\x0fUnblockResponse\x120\n" +
+	"\n" +
+	"error_code\x18\x01 \x01(\x0e2\x11.social.ErrorCodeR\terrorCode\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"\x15\n" +
 	"\x13GetFollowingRequest\"X\n" +
 	"\x14GetFollowingResponse\x12@\n" +
@@ -909,7 +1297,11 @@ const file_relation_relation_proto_rawDesc = "" +
 	"\vfriend_list\x18\x01 \x03(\v2\x19.social.relation.RelationR\n" +
 	"friendList\x12\x1f\n" +
 	"\vnext_cursor\x18\x02 \x01(\tR\n" +
-	"nextCursor\"\xf2\x06\n" +
+	"nextCursor\"\x13\n" +
+	"\x11GetBlockedRequest\"R\n" +
+	"\x12GetBlockedResponse\x12<\n" +
+	"\fblocked_list\x18\x01 \x03(\v2\x19.social.relation.RelationR\vblockedList\"\x9e\n" +
+	"\n" +
 	"\x0fRelationPayload\x128\n" +
 	"\x06follow\x18\x01 \x01(\v2\x1e.social.relation.FollowRequestH\x00R\x06follow\x12J\n" +
 	"\x0ffollow_response\x18\x02 \x01(\v2\x1f.social.relation.FollowResponseH\x00R\x0efollowResponse\x12>\n" +
@@ -923,16 +1315,25 @@ const file_relation_relation_proto_rawDesc = "" +
 	"\vget_friends\x18\n" +
 	" \x01(\v2\".social.relation.GetFriendsRequestH\x00R\n" +
 	"getFriends\x12W\n" +
-	"\x14get_friends_response\x18\v \x01(\v2#.social.relation.GetFriendsResponseH\x00R\x12getFriendsResponseB\t\n" +
-	"\apayload\"\xd4\x01\n" +
+	"\x14get_friends_response\x18\v \x01(\v2#.social.relation.GetFriendsResponseH\x00R\x12getFriendsResponse\x125\n" +
+	"\x05block\x18\f \x01(\v2\x1d.social.relation.BlockRequestH\x00R\x05block\x12G\n" +
+	"\x0eblock_response\x18\r \x01(\v2\x1e.social.relation.BlockResponseH\x00R\rblockResponse\x12;\n" +
+	"\aunblock\x18\x0e \x01(\v2\x1f.social.relation.UnblockRequestH\x00R\aunblock\x12M\n" +
+	"\x10unblock_response\x18\x0f \x01(\v2 .social.relation.UnblockResponseH\x00R\x0funblockResponse\x12E\n" +
+	"\vget_blocked\x18\x10 \x01(\v2\".social.relation.GetBlockedRequestH\x00R\n" +
+	"getBlocked\x12W\n" +
+	"\x14get_blocked_response\x18\x11 \x01(\v2#.social.relation.GetBlockedResponseH\x00R\x12getBlockedResponseB\t\n" +
+	"\apayload\"\xfa\x01\n" +
 	"\fRelationPush\x126\n" +
 	"\x04type\x18\x01 \x01(\x0e2\".social.relation.RelationPush.TypeR\x04type\x12(\n" +
 	"\x04user\x18\x02 \x01(\v2\x14.social.account.UserR\x04user\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"D\n" +
+	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"j\n" +
 	"\x04Type\x12\x14\n" +
 	"\x10TYPE_UNSPECIFIED\x10\x00\x12\x11\n" +
 	"\rTYPE_FOLLOWED\x10\x01\x12\x13\n" +
-	"\x0fTYPE_UNFOLLOWED\x10\x02B-Z+social_app/internal/proto/relation;relationb\x06proto3"
+	"\x0fTYPE_UNFOLLOWED\x10\x02\x12\x10\n" +
+	"\fTYPE_BLOCKED\x10\x03\x12\x12\n" +
+	"\x0eTYPE_UNBLOCKED\x10\x04B-Z+social_app/internal/proto/relation;relationb\x06proto3"
 
 var (
 	file_relation_relation_proto_rawDescOnce sync.Once
@@ -947,7 +1348,7 @@ func file_relation_relation_proto_rawDescGZIP() []byte {
 }
 
 var file_relation_relation_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_relation_relation_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_relation_relation_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_relation_relation_proto_goTypes = []any{
 	(RelationPush_Type)(0),       // 0: social.relation.RelationPush.Type
 	(*Relation)(nil),             // 1: social.relation.Relation
@@ -955,42 +1356,57 @@ var file_relation_relation_proto_goTypes = []any{
 	(*FollowResponse)(nil),       // 3: social.relation.FollowResponse
 	(*UnfollowRequest)(nil),      // 4: social.relation.UnfollowRequest
 	(*UnfollowResponse)(nil),     // 5: social.relation.UnfollowResponse
-	(*GetFollowingRequest)(nil),  // 6: social.relation.GetFollowingRequest
-	(*GetFollowingResponse)(nil), // 7: social.relation.GetFollowingResponse
-	(*GetFollowersRequest)(nil),  // 8: social.relation.GetFollowersRequest
-	(*GetFollowersResponse)(nil), // 9: social.relation.GetFollowersResponse
-	(*GetFriendsRequest)(nil),    // 10: social.relation.GetFriendsRequest
-	(*GetFriendsResponse)(nil),   // 11: social.relation.GetFriendsResponse
-	(*RelationPayload)(nil),      // 12: social.relation.RelationPayload
-	(*RelationPush)(nil),         // 13: social.relation.RelationPush
-	(*account.User)(nil),         // 14: social.account.User
-	(common.ErrorCode)(0),        // 15: social.ErrorCode
+	(*BlockRequest)(nil),         // 6: social.relation.BlockRequest
+	(*BlockResponse)(nil),        // 7: social.relation.BlockResponse
+	(*UnblockRequest)(nil),       // 8: social.relation.UnblockRequest
+	(*UnblockResponse)(nil),      // 9: social.relation.UnblockResponse
+	(*GetFollowingRequest)(nil),  // 10: social.relation.GetFollowingRequest
+	(*GetFollowingResponse)(nil), // 11: social.relation.GetFollowingResponse
+	(*GetFollowersRequest)(nil),  // 12: social.relation.GetFollowersRequest
+	(*GetFollowersResponse)(nil), // 13: social.relation.GetFollowersResponse
+	(*GetFriendsRequest)(nil),    // 14: social.relation.GetFriendsRequest
+	(*GetFriendsResponse)(nil),   // 15: social.relation.GetFriendsResponse
+	(*GetBlockedRequest)(nil),    // 16: social.relation.GetBlockedRequest
+	(*GetBlockedResponse)(nil),   // 17: social.relation.GetBlockedResponse
+	(*RelationPayload)(nil),      // 18: social.relation.RelationPayload
+	(*RelationPush)(nil),         // 19: social.relation.RelationPush
+	(*account.User)(nil),         // 20: social.account.User
+	(common.ErrorCode)(0),        // 21: social.ErrorCode
 }
 var file_relation_relation_proto_depIdxs = []int32{
-	14, // 0: social.relation.Relation.user:type_name -> social.account.User
-	15, // 1: social.relation.FollowResponse.error_code:type_name -> social.ErrorCode
-	15, // 2: social.relation.UnfollowResponse.error_code:type_name -> social.ErrorCode
-	1,  // 3: social.relation.GetFollowingResponse.following_list:type_name -> social.relation.Relation
-	1,  // 4: social.relation.GetFollowersResponse.follower_list:type_name -> social.relation.Relation
-	1,  // 5: social.relation.GetFriendsResponse.friend_list:type_name -> social.relation.Relation
-	2,  // 6: social.relation.RelationPayload.follow:type_name -> social.relation.FollowRequest
-	3,  // 7: social.relation.RelationPayload.follow_response:type_name -> social.relation.FollowResponse
-	4,  // 8: social.relation.RelationPayload.unfollow:type_name -> social.relation.UnfollowRequest
-	5,  // 9: social.relation.RelationPayload.unfollow_response:type_name -> social.relation.UnfollowResponse
-	6,  // 10: social.relation.RelationPayload.get_following:type_name -> social.relation.GetFollowingRequest
-	7,  // 11: social.relation.RelationPayload.get_following_response:type_name -> social.relation.GetFollowingResponse
-	8,  // 12: social.relation.RelationPayload.get_followers:type_name -> social.relation.GetFollowersRequest
-	9,  // 13: social.relation.RelationPayload.get_followers_response:type_name -> social.relation.GetFollowersResponse
-	13, // 14: social.relation.RelationPayload.relation_push:type_name -> social.relation.RelationPush
-	10, // 15: social.relation.RelationPayload.get_friends:type_name -> social.relation.GetFriendsRequest
-	11, // 16: social.relation.RelationPayload.get_friends_response:type_name -> social.relation.GetFriendsResponse
-	0,  // 17: social.relation.RelationPush.type:type_name -> social.relation.RelationPush.Type
-	14, // 18: social.relation.RelationPush.user:type_name -> social.account.User
-	19, // [19:19] is the sub-list for method output_type
-	19, // [19:19] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	20, // 0: social.relation.Relation.user:type_name -> social.account.User
+	21, // 1: social.relation.FollowResponse.error_code:type_name -> social.ErrorCode
+	21, // 2: social.relation.UnfollowResponse.error_code:type_name -> social.ErrorCode
+	21, // 3: social.relation.BlockResponse.error_code:type_name -> social.ErrorCode
+	21, // 4: social.relation.UnblockResponse.error_code:type_name -> social.ErrorCode
+	1,  // 5: social.relation.GetFollowingResponse.following_list:type_name -> social.relation.Relation
+	1,  // 6: social.relation.GetFollowersResponse.follower_list:type_name -> social.relation.Relation
+	1,  // 7: social.relation.GetFriendsResponse.friend_list:type_name -> social.relation.Relation
+	1,  // 8: social.relation.GetBlockedResponse.blocked_list:type_name -> social.relation.Relation
+	2,  // 9: social.relation.RelationPayload.follow:type_name -> social.relation.FollowRequest
+	3,  // 10: social.relation.RelationPayload.follow_response:type_name -> social.relation.FollowResponse
+	4,  // 11: social.relation.RelationPayload.unfollow:type_name -> social.relation.UnfollowRequest
+	5,  // 12: social.relation.RelationPayload.unfollow_response:type_name -> social.relation.UnfollowResponse
+	10, // 13: social.relation.RelationPayload.get_following:type_name -> social.relation.GetFollowingRequest
+	11, // 14: social.relation.RelationPayload.get_following_response:type_name -> social.relation.GetFollowingResponse
+	12, // 15: social.relation.RelationPayload.get_followers:type_name -> social.relation.GetFollowersRequest
+	13, // 16: social.relation.RelationPayload.get_followers_response:type_name -> social.relation.GetFollowersResponse
+	19, // 17: social.relation.RelationPayload.relation_push:type_name -> social.relation.RelationPush
+	14, // 18: social.relation.RelationPayload.get_friends:type_name -> social.relation.GetFriendsRequest
+	15, // 19: social.relation.RelationPayload.get_friends_response:type_name -> social.relation.GetFriendsResponse
+	6,  // 20: social.relation.RelationPayload.block:type_name -> social.relation.BlockRequest
+	7,  // 21: social.relation.RelationPayload.block_response:type_name -> social.relation.BlockResponse
+	8,  // 22: social.relation.RelationPayload.unblock:type_name -> social.relation.UnblockRequest
+	9,  // 23: social.relation.RelationPayload.unblock_response:type_name -> social.relation.UnblockResponse
+	16, // 24: social.relation.RelationPayload.get_blocked:type_name -> social.relation.GetBlockedRequest
+	17, // 25: social.relation.RelationPayload.get_blocked_response:type_name -> social.relation.GetBlockedResponse
+	0,  // 26: social.relation.RelationPush.type:type_name -> social.relation.RelationPush.Type
+	20, // 27: social.relation.RelationPush.user:type_name -> social.account.User
+	28, // [28:28] is the sub-list for method output_type
+	28, // [28:28] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_relation_relation_proto_init() }
@@ -998,7 +1414,7 @@ func file_relation_relation_proto_init() {
 	if File_relation_relation_proto != nil {
 		return
 	}
-	file_relation_relation_proto_msgTypes[11].OneofWrappers = []any{
+	file_relation_relation_proto_msgTypes[17].OneofWrappers = []any{
 		(*RelationPayload_Follow)(nil),
 		(*RelationPayload_FollowResponse)(nil),
 		(*RelationPayload_Unfollow)(nil),
@@ -1010,6 +1426,12 @@ func file_relation_relation_proto_init() {
 		(*RelationPayload_RelationPush)(nil),
 		(*RelationPayload_GetFriends)(nil),
 		(*RelationPayload_GetFriendsResponse)(nil),
+		(*RelationPayload_Block)(nil),
+		(*RelationPayload_BlockResponse)(nil),
+		(*RelationPayload_Unblock)(nil),
+		(*RelationPayload_UnblockResponse)(nil),
+		(*RelationPayload_GetBlocked)(nil),
+		(*RelationPayload_GetBlockedResponse)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1017,7 +1439,7 @@ func file_relation_relation_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_relation_relation_proto_rawDesc), len(file_relation_relation_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   13,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

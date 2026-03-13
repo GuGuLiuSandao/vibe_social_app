@@ -80,8 +80,8 @@ WebSocket 模块采用 Hub-Client 模型：
 已实现：
 - follow / unfollow 后，向目标用户推送 `WS_TYPE_RELATION_PUSH`
 
-当前未完整实现：
-- 创建会话后向其他参与者推送 `WS_TYPE_CHAT_CONVERSATION_PUSH` 的逻辑仍为注释占位
+已实现：
+- 创建会话后会向其他参与者推送 `WS_TYPE_CHAT_CONVERSATION_PUSH`
 
 ## 7. 参数与默认值
 

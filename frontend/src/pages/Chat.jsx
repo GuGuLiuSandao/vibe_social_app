@@ -17,9 +17,12 @@ import { isWhitelistUid, parseUid } from "../lib/uid";
 import {
   buildAccountPing,
   buildAuthRequest,
+  buildBlockRequest,
+  buildGetBlockedRequest,
   buildFollowRequest,
   buildGetFollowersRequest,
   buildGetFollowingRequest,
+  buildUnblockRequest,
   buildUpdateProfileRequest,
   buildUnfollowRequest,
   buildUploadAvatarRequest,
@@ -87,6 +90,23 @@ function getInitials(name) {
   return name.slice(0, 2).toUpperCase();
 }
 
+function isTokenValid(token) {
+  if (!token) return false;
+  const segments = token.split(".");
+  if (segments.length < 2) return false;
+
+  try {
+    const payloadPart = segments[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = payloadPart.padEnd(Math.ceil(payloadPart.length / 4) * 4, "=");
+    const decoded = atob(padded);
+    const payload = JSON.parse(decoded);
+    if (typeof payload?.exp !== "number") return false;
+    return payload.exp * 1000 > Date.now() + 5000;
+  } catch {
+    return false;
+  }
+}
+
 function DiscordButton({ className = "", ...props }) {
   return (
     <Button
@@ -148,6 +168,7 @@ export default function Chat() {
   const [relationTab, setRelationTab] = useState("following");
   const [followingList, setFollowingList] = useState([]);
   const [followersList, setFollowersList] = useState([]);
+  const [blockedList, setBlockedList] = useState([]);
 
   const [inputText, setInputText] = useState("");
 
@@ -165,16 +186,18 @@ export default function Chat() {
 
   const friendCandidates = useMemo(() => {
     const followingMap = new Map();
+    const blockedSet = new Set(blockedList.map((item) => toIdString(item.user?.id)).filter(Boolean));
     followingList.forEach((item) => {
       const memberId = toIdString(item.user?.id);
       if (!memberId) return;
+      if (blockedSet.has(memberId)) return;
       followingMap.set(memberId, item.user || {});
     });
 
     const friends = [];
     followersList.forEach((item) => {
       const memberId = toIdString(item.user?.id);
-      if (!memberId || !followingMap.has(memberId)) return;
+      if (!memberId || blockedSet.has(memberId) || !followingMap.has(memberId)) return;
       const followingUser = followingMap.get(memberId) || {};
       const followerUser = item.user || {};
       friends.push({
@@ -191,7 +214,12 @@ export default function Chat() {
       return left.localeCompare(right);
     });
     return friends;
-  }, [followersList, followingList]);
+  }, [blockedList, followersList, followingList]);
+
+  const blockedIdSet = useMemo(
+    () => new Set(blockedList.map((item) => toIdString(item.user?.id)).filter(Boolean)),
+    [blockedList],
+  );
 
   const friendIdSet = useMemo(
     () => new Set(friendCandidates.map((item) => toIdString(item.id))),
@@ -288,20 +316,13 @@ export default function Chat() {
       const whitelist = isWhitelistUid(uid);
       let token = getToken(uid);
 
-      if (!whitelist && !token) {
-        setAuthError("需要登录");
-        setAuthStatus("error");
-        navigate("/login", { replace: true });
-        return;
-      }
-
       setLastUid(uid);
       const cachedUser = getUser(uid);
       if (cachedUser) {
         setUserState(cachedUser);
       }
 
-      if (whitelist && !token) {
+      if (whitelist) {
         try {
           const data = await loginWithUid(uid);
           if (cancelled) return;
@@ -316,6 +337,12 @@ export default function Chat() {
           }
           return;
         }
+      } else if (!isTokenValid(token)) {
+        setToken(uid, "");
+        setAuthError(token ? "登录已过期，请重新登录" : "需要登录");
+        setAuthStatus("error");
+        navigate("/login", { replace: true });
+        return;
       }
 
       setAuthError("");
@@ -659,10 +686,14 @@ export default function Chat() {
         case "getFollowersResponse":
           setFollowersList(payload.value?.followerList || []);
           break;
+        case "getBlockedResponse":
+          setBlockedList(payload.value?.blockedList || []);
+          break;
         case "followResponse":
           if (payload.value?.errorCode === 1 || payload.value?.errorCode === 0) {
             wsRef.current?.send(encodeWsMessage(buildGetFollowingRequest()));
             wsRef.current?.send(encodeWsMessage(buildGetFollowersRequest()));
+            wsRef.current?.send(encodeWsMessage(buildGetBlockedRequest()));
             setFollowModalOpen(false);
             setFollowTargetId("");
           } else {
@@ -673,13 +704,31 @@ export default function Chat() {
           if (payload.value?.errorCode === 1 || payload.value?.errorCode === 0) {
             wsRef.current?.send(encodeWsMessage(buildGetFollowingRequest()));
             wsRef.current?.send(encodeWsMessage(buildGetFollowersRequest()));
+            wsRef.current?.send(encodeWsMessage(buildGetBlockedRequest()));
           } else {
             setRequestError(payload.value?.message || "取消关注失败");
+          }
+          break;
+        case "blockResponse":
+          if (payload.value?.errorCode === 1 || payload.value?.errorCode === 0) {
+            wsRef.current?.send(encodeWsMessage(buildGetFollowingRequest()));
+            wsRef.current?.send(encodeWsMessage(buildGetFollowersRequest()));
+            wsRef.current?.send(encodeWsMessage(buildGetBlockedRequest()));
+          } else {
+            setRequestError(payload.value?.message || "拉黑失败");
+          }
+          break;
+        case "unblockResponse":
+          if (payload.value?.errorCode === 1 || payload.value?.errorCode === 0) {
+            wsRef.current?.send(encodeWsMessage(buildGetBlockedRequest()));
+          } else {
+            setRequestError(payload.value?.message || "取消拉黑失败");
           }
           break;
         case "relationPush":
           wsRef.current?.send(encodeWsMessage(buildGetFollowingRequest()));
           wsRef.current?.send(encodeWsMessage(buildGetFollowersRequest()));
+          wsRef.current?.send(encodeWsMessage(buildGetBlockedRequest()));
           break;
         default:
           break;
@@ -706,6 +755,7 @@ export default function Chat() {
       sendGetTopicRoomList(socket);
       socket.send(encodeWsMessage(buildGetFollowingRequest()));
       socket.send(encodeWsMessage(buildGetFollowersRequest()));
+      socket.send(encodeWsMessage(buildGetBlockedRequest()));
 
       try {
         const authMessage = buildAuthRequest(uid, nextRequestId());
@@ -928,10 +978,22 @@ export default function Chat() {
     wsRef.current.send(encodeWsMessage(buildUnfollowRequest(toIdBigInt(targetId))));
   };
 
+  const handleBlockUser = (targetId) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+    wsRef.current.send(encodeWsMessage(buildBlockRequest(toIdBigInt(targetId))));
+  };
+
+  const handleUnblockUser = (targetId) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+    wsRef.current.send(encodeWsMessage(buildUnblockRequest(toIdBigInt(targetId))));
+  };
+
   const refreshRelationList = () => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
     if (relationTab === "following") {
       wsRef.current.send(encodeWsMessage(buildGetFollowingRequest()));
+    } else if (relationTab === "blocked") {
+      wsRef.current.send(encodeWsMessage(buildGetBlockedRequest()));
     } else {
       wsRef.current.send(encodeWsMessage(buildGetFollowersRequest()));
     }
@@ -1044,7 +1106,12 @@ export default function Chat() {
     );
   }
 
-  const relationList = relationTab === "following" ? followingList : followersList;
+  const relationList =
+    relationTab === "following"
+      ? followingList
+      : relationTab === "blocked"
+        ? blockedList
+        : followersList;
   const activeMessages = activeConvId ? messages[activeConvId] || [] : [];
   const activeConv = conversations.find((conv) => toIdString(conv.id) === activeConvId) || null;
   const activeTopicRoom = topicRooms.find((room) => toIdString(room.id) === activeTopicRoomId) || null;
@@ -1295,8 +1362,8 @@ export default function Chat() {
           </div>
         ) : (
           <div className="flex flex-1 flex-col">
-            <div className="grid grid-cols-2 gap-2 p-2">
-              <button
+                <div className="grid grid-cols-3 gap-2 p-2">
+                  <button
                 type="button"
                 onClick={() => setRelationTab("following")}
                 className={`rounded-md px-2 py-2 text-xs font-semibold transition ${
@@ -1315,10 +1382,21 @@ export default function Chat() {
                     ? "bg-[#5865f2] text-white"
                     : "bg-[#35373c] text-slate-300 hover:bg-[#404249]"
                 }`}
-              >
-                Followers
-              </button>
-            </div>
+                  >
+                    Followers
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRelationTab("blocked")}
+                    className={`rounded-md px-2 py-2 text-xs font-semibold transition ${
+                      relationTab === "blocked"
+                        ? "bg-[#5865f2] text-white"
+                        : "bg-[#35373c] text-slate-300 hover:bg-[#404249]"
+                    }`}
+                  >
+                    Blocked
+                  </button>
+                </div>
             <div className="flex-1 overflow-y-auto p-2">
               {relationList.length === 0 ? (
                 <div className="rounded-lg border border-[#3a3d43] bg-[#232428] p-3 text-sm text-slate-400">
@@ -1334,6 +1412,7 @@ export default function Chat() {
                   (item) => toIdString(item.user?.id) === rid,
                 );
                 const isFriend = isFollowing && isFollower;
+                const isBlocked = blockedIdSet.has(rid);
                 return (
                   <div
                     key={rid}
@@ -1366,7 +1445,13 @@ export default function Chat() {
                     </div>
                     <div className="mt-2 flex gap-2">
                       <DiscordSecondaryButton
-                        className="!h-8 !text-xs"
+                        className={`!h-8 !text-xs ${
+                          isBlocked
+                            ? "!cursor-not-allowed !border-[#3d4047] !bg-[#232428] !text-slate-500 hover:!bg-[#232428]"
+                            : ""
+                        }`}
+                        disabled={isBlocked}
+                        title={isBlocked ? "已拉黑，无法发起私聊" : "发起私聊"}
                         onClick={() => startPrivateConversation(rid)}
                       >
                         发消息
@@ -1374,15 +1459,33 @@ export default function Chat() {
                       <DiscordSecondaryButton
                         className={`!h-8 !text-xs ${
                           isFriend
+                            && !isBlocked
                             ? ""
                             : "!cursor-not-allowed !border-[#3d4047] !bg-[#232428] !text-slate-500 hover:!bg-[#232428]"
                         }`}
-                        disabled={!isFriend}
-                        title={isFriend ? "创建好友群聊" : "仅可邀请互关好友"}
+                        disabled={!isFriend || isBlocked}
+                        title={
+                          isBlocked ? "已拉黑，无法邀请入群" : isFriend ? "创建好友群聊" : "仅可邀请互关好友"
+                        }
                         onClick={openCreateConversationModal}
                       >
                         拉群
                       </DiscordSecondaryButton>
+                      {relationTab === "blocked" ? (
+                        <DiscordSecondaryButton
+                          className="!h-8 !text-xs !border-[#305f4a] !bg-[#1f3b30] !text-[#b7f7cc] hover:!bg-[#28503f]"
+                          onClick={() => handleUnblockUser(rid)}
+                        >
+                          取消拉黑
+                        </DiscordSecondaryButton>
+                      ) : (
+                        <DiscordSecondaryButton
+                          className="!h-8 !text-xs !border-[#5f2a33] !bg-[#3b1f24] !text-[#ffb4bf] hover:!bg-[#4a252d]"
+                          onClick={() => handleBlockUser(rid)}
+                        >
+                          拉黑
+                        </DiscordSecondaryButton>
+                      )}
                       {relationTab === "following" ? (
                         <DiscordSecondaryButton
                           className="!h-8 !text-xs !border-[#5f2a33] !bg-[#3b1f24] !text-[#ffb4bf] hover:!bg-[#4a252d]"
@@ -1390,7 +1493,7 @@ export default function Chat() {
                         >
                           取消关注
                         </DiscordSecondaryButton>
-                      ) : !isFollowing ? (
+                      ) : !isFollowing && relationTab !== "blocked" ? (
                         <DiscordButton
                           className="!h-8 !text-xs"
                           onClick={() => handleFollowUser(rid)}

@@ -33,6 +33,24 @@ message UnfollowResponse {
   string message = 2;
 }
 
+message BlockRequest {
+  uint64 target_uid = 1;
+}
+
+message BlockResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+}
+
+message UnblockRequest {
+  uint64 target_uid = 1;
+}
+
+message UnblockResponse {
+  social.ErrorCode error_code = 1;
+  string message = 2;
+}
+
 // GetFollowingRequest retrieves the list of users I follow
 message GetFollowingRequest {}
 
@@ -58,6 +76,12 @@ message GetFriendsResponse {
   string next_cursor = 2;
 }
 
+message GetBlockedRequest {}
+
+message GetBlockedResponse {
+  repeated Relation blocked_list = 1;
+}
+
 // RelationPayload wraps all relation related messages
 message RelationPayload {
   oneof payload {
@@ -72,6 +96,12 @@ message RelationPayload {
     RelationPush relation_push = 9;
     GetFriendsRequest get_friends = 10;
     GetFriendsResponse get_friends_response = 11;
+    BlockRequest block = 12;
+    BlockResponse block_response = 13;
+    UnblockRequest unblock = 14;
+    UnblockResponse unblock_response = 15;
+    GetBlockedRequest get_blocked = 16;
+    GetBlockedResponse get_blocked_response = 17;
   }
 }
 
@@ -80,6 +110,8 @@ message RelationPush {
     TYPE_UNSPECIFIED = 0;
     TYPE_FOLLOWED = 1; // Someone followed me
     TYPE_UNFOLLOWED = 2; // Someone unfollowed me (optional, maybe not needed to push)
+    TYPE_BLOCKED = 3;
+    TYPE_UNBLOCKED = 4;
   }
   Type type = 1;
   social.account.User user = 2; // The user who performed the action

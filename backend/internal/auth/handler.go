@@ -90,9 +90,8 @@ func Register(c *gin.Context, cfg *config.Config) {
 		return
 	}
 
-	// Generate Short UID from Sequence
-	var uid uint64
-	if err := db.DB.Raw("SELECT nextval('user_uid_seq')").Scan(&uid).Error; err != nil {
+	uid, err := nextUserUID()
+	if err != nil {
 		resp := &accountpb.RegisterResponse{
 			ErrorCode: commonpb.ErrorCode_ERROR_CODE_INTERNAL,
 			Message:   "failed to generate uid",
@@ -260,8 +259,8 @@ func loginProtobuf(c *gin.Context, cfg *config.Config) {
 	}
 
 	if user.UID == 0 {
-		var uid uint64
-		if err := db.DB.Raw("SELECT nextval('user_uid_seq')").Scan(&uid).Error; err != nil {
+		uid, err := nextUserUID()
+		if err != nil {
 			respond(http.StatusInternalServerError, commonpb.ErrorCode_ERROR_CODE_INTERNAL, "failed to generate uid", nil, "")
 			return
 		}
@@ -584,4 +583,27 @@ func syncUserIDSequence() error {
 			GREATEST((SELECT COALESCE(MAX(id), 0) FROM users WHERE id < ?), 10000000)
 		)
 	`, whitelistMinUID).Error
+}
+
+func nextUserUID() (uint64, error) {
+	if db.DB == nil {
+		return 0, errors.New("database not initialized")
+	}
+
+	if db.DB.Dialector != nil && db.DB.Dialector.Name() == "postgres" {
+		var uid uint64
+		if err := db.DB.Raw("SELECT nextval('user_uid_seq')").Scan(&uid).Error; err != nil {
+			return 0, err
+		}
+		return uid, nil
+	}
+
+	var maxUID uint64
+	if err := db.DB.Model(&models.User{}).Select("COALESCE(MAX(uid), 0)").Scan(&maxUID).Error; err != nil {
+		return 0, err
+	}
+	if maxUID < whitelistMaxUID {
+		maxUID = whitelistMaxUID
+	}
+	return maxUID + 1, nil
 }

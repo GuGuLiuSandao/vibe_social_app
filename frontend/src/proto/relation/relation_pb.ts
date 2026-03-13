@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file relation/relation.proto.
  */
 export const file_relation_relation: GenFile = /*@__PURE__*/
-  fileDesc("ChdyZWxhdGlvbi9yZWxhdGlvbi5wcm90bxIPc29jaWFsLnJlbGF0aW9uIkIKCFJlbGF0aW9uEiIKBHVzZXIYASABKAsyFC5zb2NpYWwuYWNjb3VudC5Vc2VyEhIKCmNyZWF0ZWRfYXQYAiABKAMiIwoNRm9sbG93UmVxdWVzdBISCgp0YXJnZXRfdWlkGAEgASgEIkgKDkZvbGxvd1Jlc3BvbnNlEiUKCmVycm9yX2NvZGUYASABKA4yES5zb2NpYWwuRXJyb3JDb2RlEg8KB21lc3NhZ2UYAiABKAkiJQoPVW5mb2xsb3dSZXF1ZXN0EhIKCnRhcmdldF91aWQYASABKAQiSgoQVW5mb2xsb3dSZXNwb25zZRIlCgplcnJvcl9jb2RlGAEgASgOMhEuc29jaWFsLkVycm9yQ29kZRIPCgdtZXNzYWdlGAIgASgJIhUKE0dldEZvbGxvd2luZ1JlcXVlc3QiSQoUR2V0Rm9sbG93aW5nUmVzcG9uc2USMQoOZm9sbG93aW5nX2xpc3QYASADKAsyGS5zb2NpYWwucmVsYXRpb24uUmVsYXRpb24iFQoTR2V0Rm9sbG93ZXJzUmVxdWVzdCJIChRHZXRGb2xsb3dlcnNSZXNwb25zZRIwCg1mb2xsb3dlcl9saXN0GAEgAygLMhkuc29jaWFsLnJlbGF0aW9uLlJlbGF0aW9uIjYKEUdldEZyaWVuZHNSZXF1ZXN0EhEKCXBhZ2Vfc2l6ZRgBIAEoBRIOCgZjdXJzb3IYAiABKAkiWQoSR2V0RnJpZW5kc1Jlc3BvbnNlEi4KC2ZyaWVuZF9saXN0GAEgAygLMhkuc29jaWFsLnJlbGF0aW9uLlJlbGF0aW9uEhMKC25leHRfY3Vyc29yGAIgASgJIsgFCg9SZWxhdGlvblBheWxvYWQSMAoGZm9sbG93GAEgASgLMh4uc29jaWFsLnJlbGF0aW9uLkZvbGxvd1JlcXVlc3RIABI6Cg9mb2xsb3dfcmVzcG9uc2UYAiABKAsyHy5zb2NpYWwucmVsYXRpb24uRm9sbG93UmVzcG9uc2VIABI0Cgh1bmZvbGxvdxgDIAEoCzIgLnNvY2lhbC5yZWxhdGlvbi5VbmZvbGxvd1JlcXVlc3RIABI+ChF1bmZvbGxvd19yZXNwb25zZRgEIAEoCzIhLnNvY2lhbC5yZWxhdGlvbi5VbmZvbGxvd1Jlc3BvbnNlSAASPQoNZ2V0X2ZvbGxvd2luZxgFIAEoCzIkLnNvY2lhbC5yZWxhdGlvbi5HZXRGb2xsb3dpbmdSZXF1ZXN0SAASRwoWZ2V0X2ZvbGxvd2luZ19yZXNwb25zZRgGIAEoCzIlLnNvY2lhbC5yZWxhdGlvbi5HZXRGb2xsb3dpbmdSZXNwb25zZUgAEj0KDWdldF9mb2xsb3dlcnMYByABKAsyJC5zb2NpYWwucmVsYXRpb24uR2V0Rm9sbG93ZXJzUmVxdWVzdEgAEkcKFmdldF9mb2xsb3dlcnNfcmVzcG9uc2UYCCABKAsyJS5zb2NpYWwucmVsYXRpb24uR2V0Rm9sbG93ZXJzUmVzcG9uc2VIABI2Cg1yZWxhdGlvbl9wdXNoGAkgASgLMh0uc29jaWFsLnJlbGF0aW9uLlJlbGF0aW9uUHVzaEgAEjkKC2dldF9mcmllbmRzGAogASgLMiIuc29jaWFsLnJlbGF0aW9uLkdldEZyaWVuZHNSZXF1ZXN0SAASQwoUZ2V0X2ZyaWVuZHNfcmVzcG9uc2UYCyABKAsyIy5zb2NpYWwucmVsYXRpb24uR2V0RnJpZW5kc1Jlc3BvbnNlSABCCQoHcGF5bG9hZCK9AQoMUmVsYXRpb25QdXNoEjAKBHR5cGUYASABKA4yIi5zb2NpYWwucmVsYXRpb24uUmVsYXRpb25QdXNoLlR5cGUSIgoEdXNlchgCIAEoCzIULnNvY2lhbC5hY2NvdW50LlVzZXISEQoJdGltZXN0YW1wGAMgASgDIkQKBFR5cGUSFAoQVFlQRV9VTlNQRUNJRklFRBAAEhEKDVRZUEVfRk9MTE9XRUQQARITCg9UWVBFX1VORk9MTE9XRUQQAkItWitzb2NpYWxfYXBwL2ludGVybmFsL3Byb3RvL3JlbGF0aW9uO3JlbGF0aW9uYgZwcm90bzM", [file_common_error_code, file_account_account]);
+  fileDesc("ChdyZWxhdGlvbi9yZWxhdGlvbi5wcm90bxIPc29jaWFsLnJlbGF0aW9uIkIKCFJlbGF0aW9uEiIKBHVzZXIYASABKAsyFC5zb2NpYWwuYWNjb3VudC5Vc2VyEhIKCmNyZWF0ZWRfYXQYAiABKAMiIwoNRm9sbG93UmVxdWVzdBISCgp0YXJnZXRfdWlkGAEgASgEIkgKDkZvbGxvd1Jlc3BvbnNlEiUKCmVycm9yX2NvZGUYASABKA4yES5zb2NpYWwuRXJyb3JDb2RlEg8KB21lc3NhZ2UYAiABKAkiJQoPVW5mb2xsb3dSZXF1ZXN0EhIKCnRhcmdldF91aWQYASABKAQiSgoQVW5mb2xsb3dSZXNwb25zZRIlCgplcnJvcl9jb2RlGAEgASgOMhEuc29jaWFsLkVycm9yQ29kZRIPCgdtZXNzYWdlGAIgASgJIiIKDEJsb2NrUmVxdWVzdBISCgp0YXJnZXRfdWlkGAEgASgEIkcKDUJsb2NrUmVzcG9uc2USJQoKZXJyb3JfY29kZRgBIAEoDjIRLnNvY2lhbC5FcnJvckNvZGUSDwoHbWVzc2FnZRgCIAEoCSIkCg5VbmJsb2NrUmVxdWVzdBISCgp0YXJnZXRfdWlkGAEgASgEIkkKD1VuYmxvY2tSZXNwb25zZRIlCgplcnJvcl9jb2RlGAEgASgOMhEuc29jaWFsLkVycm9yQ29kZRIPCgdtZXNzYWdlGAIgASgJIhUKE0dldEZvbGxvd2luZ1JlcXVlc3QiSQoUR2V0Rm9sbG93aW5nUmVzcG9uc2USMQoOZm9sbG93aW5nX2xpc3QYASADKAsyGS5zb2NpYWwucmVsYXRpb24uUmVsYXRpb24iFQoTR2V0Rm9sbG93ZXJzUmVxdWVzdCJIChRHZXRGb2xsb3dlcnNSZXNwb25zZRIwCg1mb2xsb3dlcl9saXN0GAEgAygLMhkuc29jaWFsLnJlbGF0aW9uLlJlbGF0aW9uIjYKEUdldEZyaWVuZHNSZXF1ZXN0EhEKCXBhZ2Vfc2l6ZRgBIAEoBRIOCgZjdXJzb3IYAiABKAkiWQoSR2V0RnJpZW5kc1Jlc3BvbnNlEi4KC2ZyaWVuZF9saXN0GAEgAygLMhkuc29jaWFsLnJlbGF0aW9uLlJlbGF0aW9uEhMKC25leHRfY3Vyc29yGAIgASgJIhMKEUdldEJsb2NrZWRSZXF1ZXN0IkUKEkdldEJsb2NrZWRSZXNwb25zZRIvCgxibG9ja2VkX2xpc3QYASADKAsyGS5zb2NpYWwucmVsYXRpb24uUmVsYXRpb24ipAgKD1JlbGF0aW9uUGF5bG9hZBIwCgZmb2xsb3cYASABKAsyHi5zb2NpYWwucmVsYXRpb24uRm9sbG93UmVxdWVzdEgAEjoKD2ZvbGxvd19yZXNwb25zZRgCIAEoCzIfLnNvY2lhbC5yZWxhdGlvbi5Gb2xsb3dSZXNwb25zZUgAEjQKCHVuZm9sbG93GAMgASgLMiAuc29jaWFsLnJlbGF0aW9uLlVuZm9sbG93UmVxdWVzdEgAEj4KEXVuZm9sbG93X3Jlc3BvbnNlGAQgASgLMiEuc29jaWFsLnJlbGF0aW9uLlVuZm9sbG93UmVzcG9uc2VIABI9Cg1nZXRfZm9sbG93aW5nGAUgASgLMiQuc29jaWFsLnJlbGF0aW9uLkdldEZvbGxvd2luZ1JlcXVlc3RIABJHChZnZXRfZm9sbG93aW5nX3Jlc3BvbnNlGAYgASgLMiUuc29jaWFsLnJlbGF0aW9uLkdldEZvbGxvd2luZ1Jlc3BvbnNlSAASPQoNZ2V0X2ZvbGxvd2VycxgHIAEoCzIkLnNvY2lhbC5yZWxhdGlvbi5HZXRGb2xsb3dlcnNSZXF1ZXN0SAASRwoWZ2V0X2ZvbGxvd2Vyc19yZXNwb25zZRgIIAEoCzIlLnNvY2lhbC5yZWxhdGlvbi5HZXRGb2xsb3dlcnNSZXNwb25zZUgAEjYKDXJlbGF0aW9uX3B1c2gYCSABKAsyHS5zb2NpYWwucmVsYXRpb24uUmVsYXRpb25QdXNoSAASOQoLZ2V0X2ZyaWVuZHMYCiABKAsyIi5zb2NpYWwucmVsYXRpb24uR2V0RnJpZW5kc1JlcXVlc3RIABJDChRnZXRfZnJpZW5kc19yZXNwb25zZRgLIAEoCzIjLnNvY2lhbC5yZWxhdGlvbi5HZXRGcmllbmRzUmVzcG9uc2VIABIuCgVibG9jaxgMIAEoCzIdLnNvY2lhbC5yZWxhdGlvbi5CbG9ja1JlcXVlc3RIABI4Cg5ibG9ja19yZXNwb25zZRgNIAEoCzIeLnNvY2lhbC5yZWxhdGlvbi5CbG9ja1Jlc3BvbnNlSAASMgoHdW5ibG9jaxgOIAEoCzIfLnNvY2lhbC5yZWxhdGlvbi5VbmJsb2NrUmVxdWVzdEgAEjwKEHVuYmxvY2tfcmVzcG9uc2UYDyABKAsyIC5zb2NpYWwucmVsYXRpb24uVW5ibG9ja1Jlc3BvbnNlSAASOQoLZ2V0X2Jsb2NrZWQYECABKAsyIi5zb2NpYWwucmVsYXRpb24uR2V0QmxvY2tlZFJlcXVlc3RIABJDChRnZXRfYmxvY2tlZF9yZXNwb25zZRgRIAEoCzIjLnNvY2lhbC5yZWxhdGlvbi5HZXRCbG9ja2VkUmVzcG9uc2VIAEIJCgdwYXlsb2FkIuMBCgxSZWxhdGlvblB1c2gSMAoEdHlwZRgBIAEoDjIiLnNvY2lhbC5yZWxhdGlvbi5SZWxhdGlvblB1c2guVHlwZRIiCgR1c2VyGAIgASgLMhQuc29jaWFsLmFjY291bnQuVXNlchIRCgl0aW1lc3RhbXAYAyABKAMiagoEVHlwZRIUChBUWVBFX1VOU1BFQ0lGSUVEEAASEQoNVFlQRV9GT0xMT1dFRBABEhMKD1RZUEVfVU5GT0xMT1dFRBACEhAKDFRZUEVfQkxPQ0tFRBADEhIKDlRZUEVfVU5CTE9DS0VEEARCLVorc29jaWFsX2FwcC9pbnRlcm5hbC9wcm90by9yZWxhdGlvbjtyZWxhdGlvbmIGcHJvdG8z", [file_common_error_code, file_account_account]);
 
 /**
  * Relation represents a user relationship (following)
@@ -127,6 +127,84 @@ export const UnfollowResponseSchema: GenMessage<UnfollowResponse> = /*@__PURE__*
   messageDesc(file_relation_relation, 4);
 
 /**
+ * @generated from message social.relation.BlockRequest
+ */
+export type BlockRequest = Message<"social.relation.BlockRequest"> & {
+  /**
+   * @generated from field: uint64 target_uid = 1;
+   */
+  targetUid: bigint;
+};
+
+/**
+ * Describes the message social.relation.BlockRequest.
+ * Use `create(BlockRequestSchema)` to create a new message.
+ */
+export const BlockRequestSchema: GenMessage<BlockRequest> = /*@__PURE__*/
+  messageDesc(file_relation_relation, 5);
+
+/**
+ * @generated from message social.relation.BlockResponse
+ */
+export type BlockResponse = Message<"social.relation.BlockResponse"> & {
+  /**
+   * @generated from field: social.ErrorCode error_code = 1;
+   */
+  errorCode: ErrorCode;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message social.relation.BlockResponse.
+ * Use `create(BlockResponseSchema)` to create a new message.
+ */
+export const BlockResponseSchema: GenMessage<BlockResponse> = /*@__PURE__*/
+  messageDesc(file_relation_relation, 6);
+
+/**
+ * @generated from message social.relation.UnblockRequest
+ */
+export type UnblockRequest = Message<"social.relation.UnblockRequest"> & {
+  /**
+   * @generated from field: uint64 target_uid = 1;
+   */
+  targetUid: bigint;
+};
+
+/**
+ * Describes the message social.relation.UnblockRequest.
+ * Use `create(UnblockRequestSchema)` to create a new message.
+ */
+export const UnblockRequestSchema: GenMessage<UnblockRequest> = /*@__PURE__*/
+  messageDesc(file_relation_relation, 7);
+
+/**
+ * @generated from message social.relation.UnblockResponse
+ */
+export type UnblockResponse = Message<"social.relation.UnblockResponse"> & {
+  /**
+   * @generated from field: social.ErrorCode error_code = 1;
+   */
+  errorCode: ErrorCode;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message social.relation.UnblockResponse.
+ * Use `create(UnblockResponseSchema)` to create a new message.
+ */
+export const UnblockResponseSchema: GenMessage<UnblockResponse> = /*@__PURE__*/
+  messageDesc(file_relation_relation, 8);
+
+/**
  * GetFollowingRequest retrieves the list of users I follow
  *
  * @generated from message social.relation.GetFollowingRequest
@@ -139,7 +217,7 @@ export type GetFollowingRequest = Message<"social.relation.GetFollowingRequest">
  * Use `create(GetFollowingRequestSchema)` to create a new message.
  */
 export const GetFollowingRequestSchema: GenMessage<GetFollowingRequest> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 5);
+  messageDesc(file_relation_relation, 9);
 
 /**
  * @generated from message social.relation.GetFollowingResponse
@@ -156,7 +234,7 @@ export type GetFollowingResponse = Message<"social.relation.GetFollowingResponse
  * Use `create(GetFollowingResponseSchema)` to create a new message.
  */
 export const GetFollowingResponseSchema: GenMessage<GetFollowingResponse> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 6);
+  messageDesc(file_relation_relation, 10);
 
 /**
  * GetFollowersResponse retrieves the list of users following me
@@ -171,7 +249,7 @@ export type GetFollowersRequest = Message<"social.relation.GetFollowersRequest">
  * Use `create(GetFollowersRequestSchema)` to create a new message.
  */
 export const GetFollowersRequestSchema: GenMessage<GetFollowersRequest> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 7);
+  messageDesc(file_relation_relation, 11);
 
 /**
  * @generated from message social.relation.GetFollowersResponse
@@ -188,7 +266,7 @@ export type GetFollowersResponse = Message<"social.relation.GetFollowersResponse
  * Use `create(GetFollowersResponseSchema)` to create a new message.
  */
 export const GetFollowersResponseSchema: GenMessage<GetFollowersResponse> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 8);
+  messageDesc(file_relation_relation, 12);
 
 /**
  * GetFriendsRequest retrieves the list of mutual friends (bidirectional follow)
@@ -214,7 +292,7 @@ export type GetFriendsRequest = Message<"social.relation.GetFriendsRequest"> & {
  * Use `create(GetFriendsRequestSchema)` to create a new message.
  */
 export const GetFriendsRequestSchema: GenMessage<GetFriendsRequest> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 9);
+  messageDesc(file_relation_relation, 13);
 
 /**
  * @generated from message social.relation.GetFriendsResponse
@@ -236,7 +314,37 @@ export type GetFriendsResponse = Message<"social.relation.GetFriendsResponse"> &
  * Use `create(GetFriendsResponseSchema)` to create a new message.
  */
 export const GetFriendsResponseSchema: GenMessage<GetFriendsResponse> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 10);
+  messageDesc(file_relation_relation, 14);
+
+/**
+ * @generated from message social.relation.GetBlockedRequest
+ */
+export type GetBlockedRequest = Message<"social.relation.GetBlockedRequest"> & {
+};
+
+/**
+ * Describes the message social.relation.GetBlockedRequest.
+ * Use `create(GetBlockedRequestSchema)` to create a new message.
+ */
+export const GetBlockedRequestSchema: GenMessage<GetBlockedRequest> = /*@__PURE__*/
+  messageDesc(file_relation_relation, 15);
+
+/**
+ * @generated from message social.relation.GetBlockedResponse
+ */
+export type GetBlockedResponse = Message<"social.relation.GetBlockedResponse"> & {
+  /**
+   * @generated from field: repeated social.relation.Relation blocked_list = 1;
+   */
+  blockedList: Relation[];
+};
+
+/**
+ * Describes the message social.relation.GetBlockedResponse.
+ * Use `create(GetBlockedResponseSchema)` to create a new message.
+ */
+export const GetBlockedResponseSchema: GenMessage<GetBlockedResponse> = /*@__PURE__*/
+  messageDesc(file_relation_relation, 16);
 
 /**
  * RelationPayload wraps all relation related messages
@@ -313,6 +421,42 @@ export type RelationPayload = Message<"social.relation.RelationPayload"> & {
      */
     value: GetFriendsResponse;
     case: "getFriendsResponse";
+  } | {
+    /**
+     * @generated from field: social.relation.BlockRequest block = 12;
+     */
+    value: BlockRequest;
+    case: "block";
+  } | {
+    /**
+     * @generated from field: social.relation.BlockResponse block_response = 13;
+     */
+    value: BlockResponse;
+    case: "blockResponse";
+  } | {
+    /**
+     * @generated from field: social.relation.UnblockRequest unblock = 14;
+     */
+    value: UnblockRequest;
+    case: "unblock";
+  } | {
+    /**
+     * @generated from field: social.relation.UnblockResponse unblock_response = 15;
+     */
+    value: UnblockResponse;
+    case: "unblockResponse";
+  } | {
+    /**
+     * @generated from field: social.relation.GetBlockedRequest get_blocked = 16;
+     */
+    value: GetBlockedRequest;
+    case: "getBlocked";
+  } | {
+    /**
+     * @generated from field: social.relation.GetBlockedResponse get_blocked_response = 17;
+     */
+    value: GetBlockedResponse;
+    case: "getBlockedResponse";
   } | { case: undefined; value?: undefined };
 };
 
@@ -321,7 +465,7 @@ export type RelationPayload = Message<"social.relation.RelationPayload"> & {
  * Use `create(RelationPayloadSchema)` to create a new message.
  */
 export const RelationPayloadSchema: GenMessage<RelationPayload> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 11);
+  messageDesc(file_relation_relation, 17);
 
 /**
  * @generated from message social.relation.RelationPush
@@ -350,7 +494,7 @@ export type RelationPush = Message<"social.relation.RelationPush"> & {
  * Use `create(RelationPushSchema)` to create a new message.
  */
 export const RelationPushSchema: GenMessage<RelationPush> = /*@__PURE__*/
-  messageDesc(file_relation_relation, 12);
+  messageDesc(file_relation_relation, 18);
 
 /**
  * @generated from enum social.relation.RelationPush.Type
@@ -374,11 +518,21 @@ export enum RelationPush_Type {
    * @generated from enum value: TYPE_UNFOLLOWED = 2;
    */
   UNFOLLOWED = 2,
+
+  /**
+   * @generated from enum value: TYPE_BLOCKED = 3;
+   */
+  BLOCKED = 3,
+
+  /**
+   * @generated from enum value: TYPE_UNBLOCKED = 4;
+   */
+  UNBLOCKED = 4,
 }
 
 /**
  * Describes the enum social.relation.RelationPush.Type.
  */
 export const RelationPush_TypeSchema: GenEnum<RelationPush_Type> = /*@__PURE__*/
-  enumDesc(file_relation_relation, 12, 0);
+  enumDesc(file_relation_relation, 18, 0);
 

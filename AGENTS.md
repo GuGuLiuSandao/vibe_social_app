@@ -10,6 +10,7 @@ This repository is a split frontend/backend social app with shared Protocol Buff
   - Go: `backend/internal/proto`
   - TypeScript: `frontend/src/proto`
 - `docs/`: project notes and documentation.
+- `docs/features/`: feature-by-feature delivery records. Each requirement gets its own subdirectory containing requirement design, technical design, and code review notes.
 
 ## Build, Test, and Development Commands
 - `docker compose up -d db redis`: start local PostgreSQL and Redis only.
@@ -32,6 +33,10 @@ This repository is a split frontend/backend social app with shared Protocol Buff
 - Frontend tests use Vitest + Testing Library with `*.test.jsx` / `*.test.js`.
 - No enforced coverage threshold is configured; add focused tests for new handlers, websocket behavior, and page-level interactions.
 - After changing `proto/`, regenerate bindings and run both backend and frontend tests.
+- M0 baseline gate (must pass before closing a task):
+  - `cd backend && go test ./...`
+  - `cd frontend && npm test`
+  - If chat flow changed, run `docs/plans/M0_MANUAL_QA.md`.
 
 ## Roadmap Execution Rules
 - Treat these two planning docs as mandatory execution context for all feature and refactor work:
@@ -42,6 +47,23 @@ This repository is a split frontend/backend social app with shared Protocol Buff
   - `ROADMAP.md`: reflect milestone progress, timeline/risk changes, or scope changes.
   - `M0_TASKS.md`: mark checklist status and add short outcome notes.
 - Do not consider a task complete until code, tests, and both planning docs are updated consistently.
+
+## Feature Delivery Workflow Rules
+- All feature development must follow this mandatory sequence:
+  1. Requirement design document (`需求设计文档`)
+  2. Technical solution document (`技术方案文档`)
+  3. Feature implementation
+  4. Code review and review note capture
+  5. Git commit
+- Do not start implementation before the requirement design doc and technical solution doc exist for that feature.
+- Do not create the final commit before code review feedback is recorded.
+- Every new feature/request must create or reuse a dedicated subdirectory under `docs/features/`, named by requirement scope (example: `docs/features/block-system-v1/`).
+- Each feature subdirectory must contain at least:
+  - `requirement.md` — requirement design
+  - `technical-solution.md` — technical design / implementation plan
+  - `code-review.md` — code review findings, decisions, and follow-up notes
+- After the commit is created, append the final commit hash and commit message to `technical-solution.md` for traceability.
+- If a requirement changes during implementation, update the requirement doc and technical solution doc before continuing code changes.
 
 ## Commit & Pull Request Guidelines
 - Current history favors short, imperative commit subjects; optional prefixes are already used (for example `init: ...`).

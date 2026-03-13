@@ -7,7 +7,17 @@ import {
   UpdateProfileRequestSchema,
   UploadAvatarRequestSchema,
 } from "../proto/account/account_pb.ts";
-import { RelationPayloadSchema, FollowRequestSchema, UnfollowRequestSchema, GetFollowingRequestSchema, GetFollowersRequestSchema, GetFriendsRequestSchema } from "../proto/relation/relation_pb.ts";
+import {
+  RelationPayloadSchema,
+  FollowRequestSchema,
+  UnfollowRequestSchema,
+  GetFollowingRequestSchema,
+  GetFollowersRequestSchema,
+  GetFriendsRequestSchema,
+  BlockRequestSchema,
+  UnblockRequestSchema,
+  GetBlockedRequestSchema,
+} from "../proto/relation/relation_pb.ts";
 import { WsMessageSchema, WsMessageType } from "../proto/ws_pb.ts";
 
 const WS_BASE = "ws://localhost:8080/ws";
@@ -214,6 +224,64 @@ export function buildGetFriendsRequest(pageSize = 20, cursor = "", requestId = B
             pageSize,
             cursor
           }),
+        },
+      }),
+    },
+  });
+}
+
+export function buildBlockRequest(targetUid, requestId = BigInt(Date.now())) {
+  const timestamp = BigInt(Date.now());
+  return create(WsMessageSchema, {
+    requestId,
+    type: WsMessageType.WS_TYPE_RELATION_BLOCK,
+    timestamp,
+    payload: {
+      case: "relation",
+      value: create(RelationPayloadSchema, {
+        payload: {
+          case: "block",
+          value: create(BlockRequestSchema, {
+            targetUid: BigInt(targetUid),
+          }),
+        },
+      }),
+    },
+  });
+}
+
+export function buildUnblockRequest(targetUid, requestId = BigInt(Date.now())) {
+  const timestamp = BigInt(Date.now());
+  return create(WsMessageSchema, {
+    requestId,
+    type: WsMessageType.WS_TYPE_RELATION_UNBLOCK,
+    timestamp,
+    payload: {
+      case: "relation",
+      value: create(RelationPayloadSchema, {
+        payload: {
+          case: "unblock",
+          value: create(UnblockRequestSchema, {
+            targetUid: BigInt(targetUid),
+          }),
+        },
+      }),
+    },
+  });
+}
+
+export function buildGetBlockedRequest(requestId = BigInt(Date.now())) {
+  const timestamp = BigInt(Date.now());
+  return create(WsMessageSchema, {
+    requestId,
+    type: WsMessageType.WS_TYPE_RELATION_GET_BLOCKED,
+    timestamp,
+    payload: {
+      case: "relation",
+      value: create(RelationPayloadSchema, {
+        payload: {
+          case: "getBlocked",
+          value: create(GetBlockedRequestSchema, {}),
         },
       }),
     },

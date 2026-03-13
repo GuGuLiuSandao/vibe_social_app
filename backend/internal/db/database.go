@@ -54,6 +54,7 @@ func autoMigrate() error {
 		&models.Conversation{},
 		&models.ConversationParticipant{},
 		&models.Relation{},
+		&models.BlockRelation{},
 	)
 
 	if err != nil {

@@ -79,5 +79,19 @@ cd backend && go test ./...
 cd frontend && npm test
 ```
 
+## M0 测试基线要求
+
+每次功能改动后至少执行以下验证：
+
+```bash
+cd backend && go test ./...
+cd frontend && npm test
+```
+
+通过标准：
+- 后端测试全绿
+- 前端测试全绿
+- 若涉及聊天链路，按 `docs/plans/M0_MANUAL_QA.md` 完成最小手工回归
+
 ## 许可证
 MIT

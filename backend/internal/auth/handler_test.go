@@ -233,7 +233,7 @@ func TestGetCurrentUserWithProtobuf(t *testing.T) {
 	}
 
 	cfg := &config.Config{JWTSecret: "test-secret"}
-	token, err := GenerateToken(user.ID, user.Username, cfg)
+	token, err := GenerateToken(user.UID, user.Username, cfg)
 	if err != nil {
 		t.Fatalf("generate token: %v", err)
 	}
@@ -244,7 +244,7 @@ func TestGetCurrentUserWithProtobuf(t *testing.T) {
 
 	reqBody, err := proto.Marshal(&accountpb.AuthRequest{
 		Token: token,
-		Uid:   uint64(user.ID),
+		Uid:   user.UID,
 	})
 	if err != nil {
 		t.Fatalf("marshal request: %v", err)

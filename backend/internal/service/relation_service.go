@@ -26,6 +26,14 @@ func (s *RelationService) Follow(userID, targetID uint64) error {
 		return errors.New("cannot follow yourself")
 	}
 
+	hasBlockingRelation, err := s.HasBlockingRelation(userID, targetID)
+	if err != nil {
+		return err
+	}
+	if hasBlockingRelation {
+		return errors.New("cannot follow because one of you has blocked the other")
+	}
+
 	// Check if target user exists
 	var targetUser models.User
 	if err := s.db.Where("uid = ?", targetID).First(&targetUser).Error; err != nil {
@@ -34,7 +42,7 @@ func (s *RelationService) Follow(userID, targetID uint64) error {
 
 	// Check if already following
 	var rel models.Relation
-	err := s.db.Where("user_id = ? AND target_id = ?", userID, targetID).First(&rel).Error
+	err = s.db.Where("user_id = ? AND target_id = ?", userID, targetID).First(&rel).Error
 	if err == nil {
 		return errors.New("already following")
 	}
@@ -57,6 +65,96 @@ func (s *RelationService) Unfollow(userID, targetID uint64) error {
 		return errors.New("relationship not found")
 	}
 	return nil
+}
+
+func (s *RelationService) Block(userID, targetID uint64) error {
+	if userID == targetID {
+		return errors.New("cannot block yourself")
+	}
+
+	var targetUser models.User
+	if err := s.db.Where("uid = ?", targetID).First(&targetUser).Error; err != nil {
+		return fmt.Errorf("user not found with uid: %d, error: %v", targetID, err)
+	}
+
+	var rel models.BlockRelation
+	err := s.db.Where("user_id = ? AND target_id = ?", userID, targetID).First(&rel).Error
+	if err == nil {
+		return errors.New("already blocked")
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		blockRel := models.BlockRelation{UserID: userID, TargetID: targetID}
+		if err := tx.Create(&blockRel).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Where("(user_id = ? AND target_id = ?) OR (user_id = ? AND target_id = ?)", userID, targetID, targetID, userID).
+			Delete(&models.Relation{}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func (s *RelationService) Unblock(userID, targetID uint64) error {
+	result := s.db.Where("user_id = ? AND target_id = ?", userID, targetID).Delete(&models.BlockRelation{})
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("block relation not found")
+	}
+	return nil
+}
+
+func (s *RelationService) GetBlocked(userID uint64) ([]*pb.Relation, error) {
+	var relations []models.BlockRelation
+	if err := s.db.Preload("Target").Where("user_id = ?", userID).Find(&relations).Error; err != nil {
+		return nil, err
+	}
+
+	var pbRelations []*pb.Relation
+	for _, r := range relations {
+		pbRelations = append(pbRelations, &pb.Relation{
+			User: &accountpb.User{
+				Id:       r.Target.UID,
+				Username: r.Target.Username,
+				Nickname: r.Target.Nickname,
+				Avatar:   r.Target.Avatar,
+				Email:    r.Target.Email,
+				Bio:      r.Target.Bio,
+			},
+			CreatedAt: r.CreatedAt.UnixMilli(),
+		})
+	}
+	return pbRelations, nil
+}
+
+func (s *RelationService) IsBlocked(userID, targetID uint64) (bool, error) {
+	var count int64
+	err := s.db.Model(&models.BlockRelation{}).
+		Where("user_id = ? AND target_id = ?", userID, targetID).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (s *RelationService) HasBlockingRelation(userID, targetID uint64) (bool, error) {
+	var count int64
+	err := s.db.Model(&models.BlockRelation{}).
+		Where("(user_id = ? AND target_id = ?) OR (user_id = ? AND target_id = ?)", userID, targetID, targetID, userID).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 // GetFollowing returns list of users I follow

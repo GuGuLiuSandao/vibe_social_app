@@ -9,41 +9,39 @@ import (
 
 func TestWsProtoIsEnvelopeOnly(t *testing.T) {
 	root := filepath.Join("..", "..", "..")
-	data, err := os.ReadFile(filepath.Join(root, "proto", "ws.pb"))
+	data, err := os.ReadFile(filepath.Join(root, "proto", "ws.proto"))
 	if err != nil {
-		t.Fatalf("read ws.pb: %v", err)
+		t.Fatalf("read ws.proto: %v", err)
 	}
 	source := string(data)
 	disallowed := []string{
 		"message Message",
 		"message SendMessageRequest",
-		"message GetMessagesRequest",
+		"message GetMessageListRequest",
 		"message MarkAsReadRequest",
 		"message MessagePush",
-		"message CommonResponse",
-		"enum MessageStatus",
-		"enum Status",
+		"message Conversation",
 	}
 	for _, token := range disallowed {
 		if strings.Contains(source, token) {
-			t.Fatalf("ws.pb contains business type: %s", token)
+			t.Fatalf("ws.proto contains business type: %s", token)
 		}
 	}
 }
 
 func TestWsProtoUsesAccountAndChatPayloads(t *testing.T) {
 	root := filepath.Join("..", "..", "..")
-	wsBytes, err := os.ReadFile(filepath.Join(root, "proto", "ws.pb"))
+	wsBytes, err := os.ReadFile(filepath.Join(root, "proto", "ws.proto"))
 	if err != nil {
-		t.Fatalf("read ws.pb: %v", err)
+		t.Fatalf("read ws.proto: %v", err)
 	}
-	accountBytes, err := os.ReadFile(filepath.Join(root, "proto", "account", "account.pb"))
+	accountBytes, err := os.ReadFile(filepath.Join(root, "proto", "account", "account.proto"))
 	if err != nil {
-		t.Fatalf("read account.pb: %v", err)
+		t.Fatalf("read account.proto: %v", err)
 	}
-	chatBytes, err := os.ReadFile(filepath.Join(root, "proto", "chat", "chat.pb"))
+	chatBytes, err := os.ReadFile(filepath.Join(root, "proto", "chat", "chat.proto"))
 	if err != nil {
-		t.Fatalf("read chat.pb: %v", err)
+		t.Fatalf("read chat.proto: %v", err)
 	}
 
 	wsSource := string(wsBytes)
@@ -51,8 +49,10 @@ func TestWsProtoUsesAccountAndChatPayloads(t *testing.T) {
 	chatSource := string(chatBytes)
 
 	requiredInWs := []string{
-		"AccountPayload account",
-		"ChatPayload chat",
+		`import "account/account.proto";`,
+		`import "chat/chat.proto";`,
+		"social.account.AccountPayload account = 10;",
+		"social.chat.ChatPayload chat = 11;",
 	}
 	for _, token := range requiredInWs {
 		if !strings.Contains(wsSource, token) {
@@ -62,8 +62,8 @@ func TestWsProtoUsesAccountAndChatPayloads(t *testing.T) {
 
 	requiredInAccount := []string{
 		"message AccountPayload",
-		"message Ping",
-		"message Pong",
+		"Ping ping = 1;",
+		"AuthRequest auth = 3;",
 	}
 	for _, token := range requiredInAccount {
 		if !strings.Contains(accountSource, token) {
@@ -73,7 +73,8 @@ func TestWsProtoUsesAccountAndChatPayloads(t *testing.T) {
 
 	requiredInChat := []string{
 		"message ChatPayload",
-		"message GetConversationsRequest",
+		"message GetConversationListRequest",
+		"CreateConversationRequest create_conversation = 9;",
 	}
 	for _, token := range requiredInChat {
 		if !strings.Contains(chatSource, token) {

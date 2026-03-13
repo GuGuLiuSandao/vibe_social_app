@@ -124,7 +124,10 @@ func (s *Server) HandleMessage(client *Client, message []byte) {
 		proto.WsMessageType_WS_TYPE_RELATION_UNFOLLOW,
 		proto.WsMessageType_WS_TYPE_RELATION_GET_FOLLOWING,
 		proto.WsMessageType_WS_TYPE_RELATION_GET_FOLLOWERS,
-		proto.WsMessageType_WS_TYPE_RELATION_GET_FRIENDS:
+		proto.WsMessageType_WS_TYPE_RELATION_GET_FRIENDS,
+		proto.WsMessageType_WS_TYPE_RELATION_BLOCK,
+		proto.WsMessageType_WS_TYPE_RELATION_UNBLOCK,
+		proto.WsMessageType_WS_TYPE_RELATION_GET_BLOCKED:
 		if msg.GetRelation() != nil {
 			response = s.handleRelationMessage(client, &msg, msg.GetRelation())
 		}
@@ -703,6 +706,15 @@ func (s *Server) handleRelationMessage(client *Client, msg *proto.WsMessage, pay
 	if payload.GetGetFriends() != nil {
 		return s.handleGetFriends(client, msg, payload)
 	}
+	if payload.GetBlock() != nil {
+		return s.handleBlock(client, msg, payload)
+	}
+	if payload.GetUnblock() != nil {
+		return s.handleUnblock(client, msg, payload)
+	}
+	if payload.GetGetBlocked() != nil {
+		return s.handleGetBlocked(client, msg, payload)
+	}
 
 	logger.Warn("Unhandled relation payload from user %d", client.ID)
 	return s.createErrorResponse(msg.RequestId, "unhandled relation payload")
@@ -823,6 +835,76 @@ func (s *Server) handleGetFriends(client *Client, msg *proto.WsMessage, payload 
 					GetFriendsResponse: &relationpb.GetFriendsResponse{
 						FriendList: relations,
 						NextCursor: nextCursor,
+					},
+				},
+			},
+		},
+	}
+}
+
+func (s *Server) handleBlock(client *Client, msg *proto.WsMessage, payload *relationpb.RelationPayload) *proto.WsMessage {
+	req := payload.GetBlock()
+	err := s.relationService.Block(uint64(client.ID), req.TargetUid)
+	if err != nil {
+		return s.createErrorResponse(msg.RequestId, err.Error())
+	}
+
+	return &proto.WsMessage{
+		RequestId: msg.RequestId,
+		Type:      proto.WsMessageType_WS_TYPE_RELATION_BLOCK_RESPONSE,
+		Timestamp: time.Now().UnixMilli(),
+		Payload: &proto.WsMessage_Relation{
+			Relation: &relationpb.RelationPayload{
+				Payload: &relationpb.RelationPayload_BlockResponse{
+					BlockResponse: &relationpb.BlockResponse{
+						ErrorCode: commonpb.ErrorCode_ERROR_CODE_OK,
+						Message:   "blocked",
+					},
+				},
+			},
+		},
+	}
+}
+
+func (s *Server) handleUnblock(client *Client, msg *proto.WsMessage, payload *relationpb.RelationPayload) *proto.WsMessage {
+	req := payload.GetUnblock()
+	err := s.relationService.Unblock(uint64(client.ID), req.TargetUid)
+	if err != nil {
+		return s.createErrorResponse(msg.RequestId, err.Error())
+	}
+
+	return &proto.WsMessage{
+		RequestId: msg.RequestId,
+		Type:      proto.WsMessageType_WS_TYPE_RELATION_UNBLOCK_RESPONSE,
+		Timestamp: time.Now().UnixMilli(),
+		Payload: &proto.WsMessage_Relation{
+			Relation: &relationpb.RelationPayload{
+				Payload: &relationpb.RelationPayload_UnblockResponse{
+					UnblockResponse: &relationpb.UnblockResponse{
+						ErrorCode: commonpb.ErrorCode_ERROR_CODE_OK,
+						Message:   "unblocked",
+					},
+				},
+			},
+		},
+	}
+}
+
+func (s *Server) handleGetBlocked(client *Client, msg *proto.WsMessage, payload *relationpb.RelationPayload) *proto.WsMessage {
+	relations, err := s.relationService.GetBlocked(uint64(client.ID))
+	if err != nil {
+		return s.createErrorResponse(msg.RequestId, err.Error())
+	}
+
+	return &proto.WsMessage{
+		RequestId: msg.RequestId,
+		Type:      proto.WsMessageType_WS_TYPE_RELATION_GET_BLOCKED_RESPONSE,
+		Timestamp: time.Now().UnixMilli(),
+		Payload: &proto.WsMessage_Relation{
+			Relation: &relationpb.RelationPayload{
+				Payload: &relationpb.RelationPayload_GetBlockedResponse{
+					GetBlockedResponse: &relationpb.GetBlockedResponse{
+						BlockedList: relations,
 					},
 				},
 			},

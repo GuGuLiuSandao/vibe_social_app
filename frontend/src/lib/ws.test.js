@@ -3,7 +3,10 @@ import { WsMessageType } from "../proto/ws_pb.ts";
 import {
   buildAccountPing,
   buildAuthRequest,
+  buildBlockRequest,
+  buildGetBlockedRequest,
   buildUpdateProfileRequest,
+  buildUnblockRequest,
   buildUploadAvatarRequest,
   buildWsUrl,
   decodeWsMessage,
@@ -53,5 +56,20 @@ describe("ws protobuf helpers", () => {
     expect(upload.payload.value.payload.case).toBe("uploadAvatar");
     expect(upload.payload.value.payload.value.filename).toBe("avatar.png");
     expect(upload.payload.value.payload.value.data).toEqual(data);
+  });
+
+  it("builds block relation payloads", () => {
+    const block = buildBlockRequest(10000002n, 203n);
+    const unblock = buildUnblockRequest(10000002n, 204n);
+    const getBlocked = buildGetBlockedRequest(205n);
+
+    expect(block.type).toBe(WsMessageType.WS_TYPE_RELATION_BLOCK);
+    expect(block.payload.value.payload.case).toBe("block");
+
+    expect(unblock.type).toBe(WsMessageType.WS_TYPE_RELATION_UNBLOCK);
+    expect(unblock.payload.value.payload.case).toBe("unblock");
+
+    expect(getBlocked.type).toBe(WsMessageType.WS_TYPE_RELATION_GET_BLOCKED);
+    expect(getBlocked.payload.value.payload.case).toBe("getBlocked");
   });
 });

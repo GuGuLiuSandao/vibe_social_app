@@ -9,7 +9,7 @@ import { enumDesc, fileDesc } from "@bufbuild/protobuf/codegenv2";
  * Describes the file common/error_code.proto.
  */
 export const file_common_error_code: GenFile = /*@__PURE__*/
-  fileDesc("Chdjb21tb24vZXJyb3JfY29kZS5wcm90bxIGc29jaWFsKqsBCglFcnJvckNvZGUSGgoWRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEhEKDUVSUk9SX0NPREVfT0sQARIbChdFUlJPUl9DT0RFX1VOQVVUSE9SSVpFRBACEhgKFEVSUk9SX0NPREVfTk9UX0ZPVU5EEAMSHwobRVJST1JfQ09ERV9JTlZBTElEX0FSR1VNRU5UEAQSFwoTRVJST1JfQ09ERV9JTlRFUk5BTBAFQilaJ3NvY2lhbF9hcHAvaW50ZXJuYWwvcHJvdG8vY29tbW9uO2NvbW1vbmIGcHJvdG8z");
+  fileDesc("Chdjb21tb24vZXJyb3JfY29kZS5wcm90bxIGc29jaWFsKsUBCglFcnJvckNvZGUSGgoWRVJST1JfQ09ERV9VTlNQRUNJRklFRBAAEhEKDUVSUk9SX0NPREVfT0sQARIbChdFUlJPUl9DT0RFX1VOQVVUSE9SSVpFRBACEhgKFEVSUk9SX0NPREVfTk9UX0ZPVU5EEAMSHwobRVJST1JfQ09ERV9JTlZBTElEX0FSR1VNRU5UEAQSFwoTRVJST1JfQ09ERV9JTlRFUk5BTBAFEhgKFEVSUk9SX0NPREVfRk9SQklEREVOEAZCKVonc29jaWFsX2FwcC9pbnRlcm5hbC9wcm90by9jb21tb247Y29tbW9uYgZwcm90bzM");
 
 /**
  * @generated from enum social.ErrorCode
@@ -44,6 +44,11 @@ export enum ErrorCode {
    * @generated from enum value: ERROR_CODE_INTERNAL = 5;
    */
   INTERNAL = 5,
+
+  /**
+   * @generated from enum value: ERROR_CODE_FORBIDDEN = 6;
+   */
+  FORBIDDEN = 6,
 }
 
 /**

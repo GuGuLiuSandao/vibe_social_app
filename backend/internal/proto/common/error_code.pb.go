@@ -30,6 +30,7 @@ const (
 	ErrorCode_ERROR_CODE_NOT_FOUND        ErrorCode = 3
 	ErrorCode_ERROR_CODE_INVALID_ARGUMENT ErrorCode = 4
 	ErrorCode_ERROR_CODE_INTERNAL         ErrorCode = 5
+	ErrorCode_ERROR_CODE_FORBIDDEN        ErrorCode = 6
 )
 
 // Enum value maps for ErrorCode.
@@ -41,6 +42,7 @@ var (
 		3: "ERROR_CODE_NOT_FOUND",
 		4: "ERROR_CODE_INVALID_ARGUMENT",
 		5: "ERROR_CODE_INTERNAL",
+		6: "ERROR_CODE_FORBIDDEN",
 	}
 	ErrorCode_value = map[string]int32{
 		"ERROR_CODE_UNSPECIFIED":      0,
@@ -49,6 +51,7 @@ var (
 		"ERROR_CODE_NOT_FOUND":        3,
 		"ERROR_CODE_INVALID_ARGUMENT": 4,
 		"ERROR_CODE_INTERNAL":         5,
+		"ERROR_CODE_FORBIDDEN":        6,
 	}
 )
 
@@ -83,14 +86,15 @@ var File_common_error_code_proto protoreflect.FileDescriptor
 
 const file_common_error_code_proto_rawDesc = "" +
 	"\n" +
-	"\x17common/error_code.proto\x12\x06social*\xab\x01\n" +
+	"\x17common/error_code.proto\x12\x06social*\xc5\x01\n" +
 	"\tErrorCode\x12\x1a\n" +
 	"\x16ERROR_CODE_UNSPECIFIED\x10\x00\x12\x11\n" +
 	"\rERROR_CODE_OK\x10\x01\x12\x1b\n" +
 	"\x17ERROR_CODE_UNAUTHORIZED\x10\x02\x12\x18\n" +
 	"\x14ERROR_CODE_NOT_FOUND\x10\x03\x12\x1f\n" +
 	"\x1bERROR_CODE_INVALID_ARGUMENT\x10\x04\x12\x17\n" +
-	"\x13ERROR_CODE_INTERNAL\x10\x05B)Z'social_app/internal/proto/common;commonb\x06proto3"
+	"\x13ERROR_CODE_INTERNAL\x10\x05\x12\x18\n" +
+	"\x14ERROR_CODE_FORBIDDEN\x10\x06B)Z'social_app/internal/proto/common;commonb\x06proto3"
 
 var (
 	file_common_error_code_proto_rawDescOnce sync.Once
