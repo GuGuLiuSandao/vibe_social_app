@@ -13,6 +13,49 @@ enum ConversationType {
   CONVERSATION_TYPE_GROUP = 2;   // 群聊
 }
 
+enum GroupKind {
+  GROUP_KIND_UNSPECIFIED = 0;
+  GROUP_KIND_OFFICIAL = 1;
+  GROUP_KIND_PLAYER_CREATED = 2;
+}
+
+enum GroupJoinMode {
+  GROUP_JOIN_MODE_UNSPECIFIED = 0;
+  GROUP_JOIN_MODE_PRIVATE = 1;
+  GROUP_JOIN_MODE_APPROVAL = 2;
+  GROUP_JOIN_MODE_PUBLIC = 3;
+}
+
+enum GroupStatus {
+  GROUP_STATUS_UNSPECIFIED = 0;
+  GROUP_STATUS_ACTIVE = 1;
+  GROUP_STATUS_DISSOLVED = 2;
+}
+
+enum GroupMemberRole {
+  GROUP_MEMBER_ROLE_UNSPECIFIED = 0;
+  GROUP_MEMBER_ROLE_OWNER = 1;
+  GROUP_MEMBER_ROLE_ADMIN = 2;
+  GROUP_MEMBER_ROLE_MEMBER = 3;
+}
+
+enum GroupJoinRequestStatus {
+  GROUP_JOIN_REQUEST_STATUS_UNSPECIFIED = 0;
+  GROUP_JOIN_REQUEST_STATUS_PENDING = 1;
+  GROUP_JOIN_REQUEST_STATUS_APPROVED = 2;
+  GROUP_JOIN_REQUEST_STATUS_REJECTED = 3;
+  GROUP_JOIN_REQUEST_STATUS_CANCELLED = 4;
+}
+
+enum GroupInvitationStatus {
+  GROUP_INVITATION_STATUS_UNSPECIFIED = 0;
+  GROUP_INVITATION_STATUS_PENDING = 1;
+  GROUP_INVITATION_STATUS_ACCEPTED = 2;
+  GROUP_INVITATION_STATUS_REJECTED = 3;
+  GROUP_INVITATION_STATUS_CANCELLED = 4;
+  GROUP_INVITATION_STATUS_EXPIRED = 5;
+}
+
 // 消息类型
 enum MessageType {
   MESSAGE_TYPE_UNSPECIFIED = 0;
@@ -30,6 +73,50 @@ message Conversation {
   Message last_message = 5;
   uint32 unread_count = 6;
   google.protobuf.Timestamp updated_at = 7; // 排序用，通常是 last_message.created_at
+  string description = 8;
+  string announcement = 9;
+  GroupKind group_kind = 10;
+  GroupJoinMode join_mode = 11;
+  GroupStatus status = 12;
+  uint64 owner_id = 13;
+  GroupMemberRole my_role = 14;
+  uint32 member_count = 15;
+}
+
+message GroupMember {
+  uint64 user_id = 1;
+  string username = 2;
+  string nickname = 3;
+  string avatar = 4;
+  GroupMemberRole role = 5;
+  google.protobuf.Timestamp joined_at = 6;
+}
+
+message GroupJoinRequest {
+  uint64 id = 1;
+  uint64 conversation_id = 2;
+  uint64 applicant_id = 3;
+  string applicant_username = 4;
+  string applicant_nickname = 5;
+  string applicant_avatar = 6;
+  string message = 7;
+  GroupJoinRequestStatus status = 8;
+  uint64 reviewed_by = 9;
+  google.protobuf.Timestamp reviewed_at = 10;
+  google.protobuf.Timestamp created_at = 11;
+}
+
+message GroupInvitation {
+  uint64 id = 1;
+  uint64 conversation_id = 2;
+  uint64 inviter_id = 3;
+  string inviter_username = 4;
+  string inviter_nickname = 5;
+  string inviter_avatar = 6;
+  GroupInvitationStatus status = 7;
+  google.protobuf.Timestamp created_at = 8;
+  string group_name = 9;
+  string group_avatar = 10;
 }
 
 message SenderInfo {
@@ -109,6 +196,9 @@ message CreateConversationRequest {
   repeated uint64 participant_ids = 2; // 成员ID列表 (不包含自己，或者包含也可以，后端处理)
   string name = 3; // 群聊名称 (仅群聊有效)
   string avatar = 4; // 群聊头像 (仅群聊有效)
+  string description = 5;
+  GroupKind group_kind = 6;
+  GroupJoinMode join_mode = 7;
 }
 
 message CreateConversationResponse {
@@ -122,6 +212,161 @@ message MessagePush {
 
 message ConversationPush {
   Conversation conversation = 1;
+}
+
+message GetGroupDetailRequest {
+  uint64 conversation_id = 1;
+}
+
+message GetGroupDetailResponse {
+  Conversation conversation = 1;
+}
+
+message UpdateGroupProfileRequest {
+  uint64 conversation_id = 1;
+  string name = 2;
+  string avatar = 3;
+  string description = 4;
+  GroupJoinMode join_mode = 5;
+}
+
+message UpdateGroupProfileResponse {
+  Conversation conversation = 1;
+}
+
+message UpdateGroupAnnouncementRequest {
+  uint64 conversation_id = 1;
+  string announcement = 2;
+}
+
+message UpdateGroupAnnouncementResponse {
+  Conversation conversation = 1;
+}
+
+message GetGroupMembersRequest {
+  uint64 conversation_id = 1;
+}
+
+message GetGroupMembersResponse {
+  uint64 conversation_id = 1;
+  repeated GroupMember members = 2;
+}
+
+message UpdateGroupMemberRoleRequest {
+  uint64 conversation_id = 1;
+  uint64 target_user_id = 2;
+  GroupMemberRole role = 3;
+}
+
+message UpdateGroupMemberRoleResponse {
+  uint64 conversation_id = 1;
+  GroupMember member = 2;
+}
+
+message TransferGroupOwnershipRequest {
+  uint64 conversation_id = 1;
+  uint64 target_user_id = 2;
+}
+
+message TransferGroupOwnershipResponse {
+  Conversation conversation = 1;
+}
+
+message RemoveGroupMemberRequest {
+  uint64 conversation_id = 1;
+  uint64 target_user_id = 2;
+}
+
+message RemoveGroupMemberResponse {
+  uint64 conversation_id = 1;
+  uint64 target_user_id = 2;
+}
+
+message LeaveGroupRequest {
+  uint64 conversation_id = 1;
+}
+
+message LeaveGroupResponse {
+  uint64 conversation_id = 1;
+}
+
+message DissolveGroupRequest {
+  uint64 conversation_id = 1;
+}
+
+message DissolveGroupResponse {
+  uint64 conversation_id = 1;
+}
+
+message ApplyToJoinGroupRequest {
+  uint64 conversation_id = 1;
+  string message = 2;
+}
+
+message ApplyToJoinGroupResponse {
+  GroupJoinRequest join_request = 1;
+}
+
+message GetGroupJoinRequestsRequest {
+  uint64 conversation_id = 1;
+}
+
+message GetGroupJoinRequestsResponse {
+  uint64 conversation_id = 1;
+  repeated GroupJoinRequest requests = 2;
+}
+
+message ReviewGroupJoinRequestRequest {
+  uint64 request_id = 1;
+  bool approve = 2;
+}
+
+message ReviewGroupJoinRequestResponse {
+  GroupJoinRequest join_request = 1;
+}
+
+message InviteToGroupRequest {
+  uint64 conversation_id = 1;
+  uint64 invitee_id = 2;
+}
+
+message InviteToGroupResponse {
+  GroupInvitation invitation = 1;
+}
+
+message GetMyGroupInvitationsRequest {}
+
+message GetMyGroupInvitationsResponse {
+  repeated GroupInvitation invitations = 1;
+}
+
+message RespondGroupInvitationRequest {
+  uint64 invitation_id = 1;
+  bool accept = 2;
+}
+
+message RespondGroupInvitationResponse {
+  GroupInvitation invitation = 1;
+  Conversation conversation = 2;
+}
+
+message GroupUpdatedPush {
+  Conversation conversation = 1;
+}
+
+message GroupMembersUpdatedPush {
+  uint64 conversation_id = 1;
+  repeated GroupMember members = 2;
+}
+
+message GroupJoinRequestUpdatedPush {
+  uint64 conversation_id = 1;
+  GroupJoinRequest join_request = 2;
+}
+
+message GroupInvitationUpdatedPush {
+  GroupInvitation invitation = 1;
+  Conversation conversation = 2;
 }
 
 // ----------------------
@@ -227,6 +472,41 @@ message ChatPayload {
 
     MessagePush message_push = 11; // 新消息推送
     ConversationPush conversation_push = 12; // 新会话推送
+
+    GetGroupDetailRequest get_group_detail = 25;
+    GetGroupDetailResponse get_group_detail_response = 26;
+    UpdateGroupProfileRequest update_group_profile = 27;
+    UpdateGroupProfileResponse update_group_profile_response = 28;
+    UpdateGroupAnnouncementRequest update_group_announcement = 29;
+    UpdateGroupAnnouncementResponse update_group_announcement_response = 30;
+    GetGroupMembersRequest get_group_members = 31;
+    GetGroupMembersResponse get_group_members_response = 32;
+    UpdateGroupMemberRoleRequest update_group_member_role = 33;
+    UpdateGroupMemberRoleResponse update_group_member_role_response = 34;
+    TransferGroupOwnershipRequest transfer_group_ownership = 35;
+    TransferGroupOwnershipResponse transfer_group_ownership_response = 36;
+    RemoveGroupMemberRequest remove_group_member = 37;
+    RemoveGroupMemberResponse remove_group_member_response = 38;
+    LeaveGroupRequest leave_group = 39;
+    LeaveGroupResponse leave_group_response = 40;
+    DissolveGroupRequest dissolve_group = 41;
+    DissolveGroupResponse dissolve_group_response = 42;
+    ApplyToJoinGroupRequest apply_to_join_group = 43;
+    ApplyToJoinGroupResponse apply_to_join_group_response = 44;
+    GetGroupJoinRequestsRequest get_group_join_requests = 45;
+    GetGroupJoinRequestsResponse get_group_join_requests_response = 46;
+    ReviewGroupJoinRequestRequest review_group_join_request = 47;
+    ReviewGroupJoinRequestResponse review_group_join_request_response = 48;
+    InviteToGroupRequest invite_to_group = 49;
+    InviteToGroupResponse invite_to_group_response = 50;
+    GetMyGroupInvitationsRequest get_my_group_invitations = 51;
+    GetMyGroupInvitationsResponse get_my_group_invitations_response = 52;
+    RespondGroupInvitationRequest respond_group_invitation = 53;
+    RespondGroupInvitationResponse respond_group_invitation_response = 54;
+    GroupUpdatedPush group_updated_push = 55;
+    GroupMembersUpdatedPush group_members_updated_push = 56;
+    GroupJoinRequestUpdatedPush group_join_request_updated_push = 57;
+    GroupInvitationUpdatedPush group_invitation_updated_push = 58;
 
     // Topic Room
     GetTopicRoomListRequest get_topic_room_list = 13;

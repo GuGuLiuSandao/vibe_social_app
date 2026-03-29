@@ -19,6 +19,11 @@ type ChatService struct {
 	relationService *RelationService
 }
 
+type groupActorContext struct {
+	Conversation models.Conversation
+	Participant  models.ConversationParticipant
+}
+
 // NewChatService creates a new ChatService instance
 func NewChatService(relationService *RelationService) *ChatService {
 	return &ChatService{
@@ -34,6 +39,325 @@ func (s *ChatService) GetUser(userID uint64) (*models.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func normalizeGroupKind(kind pb.GroupKind) string {
+	switch kind {
+	case pb.GroupKind_GROUP_KIND_OFFICIAL:
+		return models.GroupKindOfficial
+	case pb.GroupKind_GROUP_KIND_PLAYER_CREATED, pb.GroupKind_GROUP_KIND_UNSPECIFIED:
+		return models.GroupKindPlayerCreated
+	default:
+		return models.GroupKindPlayerCreated
+	}
+}
+
+func normalizeJoinMode(mode pb.GroupJoinMode) string {
+	switch mode {
+	case pb.GroupJoinMode_GROUP_JOIN_MODE_APPROVAL:
+		return models.GroupJoinModeApproval
+	case pb.GroupJoinMode_GROUP_JOIN_MODE_PUBLIC:
+		return models.GroupJoinModePublic
+	case pb.GroupJoinMode_GROUP_JOIN_MODE_PRIVATE, pb.GroupJoinMode_GROUP_JOIN_MODE_UNSPECIFIED:
+		return models.GroupJoinModePrivate
+	default:
+		return models.GroupJoinModePrivate
+	}
+}
+
+func toPBGroupKind(kind string) pb.GroupKind {
+	switch kind {
+	case models.GroupKindOfficial:
+		return pb.GroupKind_GROUP_KIND_OFFICIAL
+	case models.GroupKindPlayerCreated:
+		return pb.GroupKind_GROUP_KIND_PLAYER_CREATED
+	default:
+		return pb.GroupKind_GROUP_KIND_UNSPECIFIED
+	}
+}
+
+func toPBJoinMode(mode string) pb.GroupJoinMode {
+	switch mode {
+	case models.GroupJoinModePrivate:
+		return pb.GroupJoinMode_GROUP_JOIN_MODE_PRIVATE
+	case models.GroupJoinModeApproval:
+		return pb.GroupJoinMode_GROUP_JOIN_MODE_APPROVAL
+	case models.GroupJoinModePublic:
+		return pb.GroupJoinMode_GROUP_JOIN_MODE_PUBLIC
+	default:
+		return pb.GroupJoinMode_GROUP_JOIN_MODE_UNSPECIFIED
+	}
+}
+
+func toPBGroupStatus(status string) pb.GroupStatus {
+	switch status {
+	case models.GroupStatusActive:
+		return pb.GroupStatus_GROUP_STATUS_ACTIVE
+	case models.GroupStatusDissolved:
+		return pb.GroupStatus_GROUP_STATUS_DISSOLVED
+	default:
+		return pb.GroupStatus_GROUP_STATUS_UNSPECIFIED
+	}
+}
+
+func toPBGroupRole(role string) pb.GroupMemberRole {
+	switch role {
+	case models.GroupRoleOwner:
+		return pb.GroupMemberRole_GROUP_MEMBER_ROLE_OWNER
+	case models.GroupRoleAdmin:
+		return pb.GroupMemberRole_GROUP_MEMBER_ROLE_ADMIN
+	case models.GroupRoleMember:
+		return pb.GroupMemberRole_GROUP_MEMBER_ROLE_MEMBER
+	default:
+		return pb.GroupMemberRole_GROUP_MEMBER_ROLE_UNSPECIFIED
+	}
+}
+
+func normalizeTargetRole(role pb.GroupMemberRole) (string, error) {
+	switch role {
+	case pb.GroupMemberRole_GROUP_MEMBER_ROLE_ADMIN:
+		return models.GroupRoleAdmin, nil
+	case pb.GroupMemberRole_GROUP_MEMBER_ROLE_MEMBER:
+		return models.GroupRoleMember, nil
+	default:
+		return "", errors.New("unsupported target role")
+	}
+}
+
+func toPBJoinRequestStatus(status string) pb.GroupJoinRequestStatus {
+	switch status {
+	case models.GroupJoinRequestStatusPending:
+		return pb.GroupJoinRequestStatus_GROUP_JOIN_REQUEST_STATUS_PENDING
+	case models.GroupJoinRequestStatusApproved:
+		return pb.GroupJoinRequestStatus_GROUP_JOIN_REQUEST_STATUS_APPROVED
+	case models.GroupJoinRequestStatusRejected:
+		return pb.GroupJoinRequestStatus_GROUP_JOIN_REQUEST_STATUS_REJECTED
+	case models.GroupJoinRequestStatusCancelled:
+		return pb.GroupJoinRequestStatus_GROUP_JOIN_REQUEST_STATUS_CANCELLED
+	default:
+		return pb.GroupJoinRequestStatus_GROUP_JOIN_REQUEST_STATUS_UNSPECIFIED
+	}
+}
+
+func toPBInvitationStatus(status string) pb.GroupInvitationStatus {
+	switch status {
+	case models.GroupInvitationStatusPending:
+		return pb.GroupInvitationStatus_GROUP_INVITATION_STATUS_PENDING
+	case models.GroupInvitationStatusAccepted:
+		return pb.GroupInvitationStatus_GROUP_INVITATION_STATUS_ACCEPTED
+	case models.GroupInvitationStatusRejected:
+		return pb.GroupInvitationStatus_GROUP_INVITATION_STATUS_REJECTED
+	case models.GroupInvitationStatusCancelled:
+		return pb.GroupInvitationStatus_GROUP_INVITATION_STATUS_CANCELLED
+	case models.GroupInvitationStatusExpired:
+		return pb.GroupInvitationStatus_GROUP_INVITATION_STATUS_EXPIRED
+	default:
+		return pb.GroupInvitationStatus_GROUP_INVITATION_STATUS_UNSPECIFIED
+	}
+}
+
+func hasAnyRole(role string, roles ...string) bool {
+	for _, candidate := range roles {
+		if role == candidate {
+			return true
+		}
+	}
+	return false
+}
+
+func isGroupRoleManageable(actorRole, targetRole string) bool {
+	if actorRole == models.GroupRoleOwner {
+		return targetRole != models.GroupRoleOwner
+	}
+	if actorRole == models.GroupRoleAdmin {
+		return targetRole == models.GroupRoleMember
+	}
+	return false
+}
+
+func (s *ChatService) getGroupActorContext(tx *gorm.DB, conversationID, userID uint64, lock bool) (*groupActorContext, error) {
+	query := tx
+	if lock {
+		query = query.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+
+	var conversation models.Conversation
+	if err := query.First(&conversation, conversationID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("group not found")
+		}
+		return nil, err
+	}
+	if conversation.Type != models.ConversationTypeGroup {
+		return nil, errors.New("conversation is not a group")
+	}
+
+	partQuery := tx
+	if lock {
+		partQuery = partQuery.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+	var participant models.ConversationParticipant
+	if err := partQuery.Where("conversation_id = ? AND user_id = ?", conversationID, userID).First(&participant).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("you are not a member of this group")
+		}
+		return nil, err
+	}
+
+	return &groupActorContext{Conversation: conversation, Participant: participant}, nil
+}
+
+func (s *ChatService) requireActiveGroup(conversation models.Conversation) error {
+	if conversation.Status == models.GroupStatusDissolved {
+		return errors.New("group has been dissolved")
+	}
+	return nil
+}
+
+func (s *ChatService) countGroupMembersTx(tx *gorm.DB, conversationID uint64) (uint32, error) {
+	var count int64
+	if err := tx.Model(&models.ConversationParticipant{}).Where("conversation_id = ?", conversationID).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return uint32(count), nil
+}
+
+func (s *ChatService) buildPBConversation(tx *gorm.DB, conv models.Conversation, participant *models.ConversationParticipant) (*pb.Conversation, error) {
+	memberCount, err := s.countGroupMembersTx(tx, conv.ID)
+	if err != nil {
+		return nil, err
+	}
+	pbConv := &pb.Conversation{
+		Id:           conv.ID,
+		Type:         pb.ConversationType(conv.Type),
+		Name:         conv.Name,
+		Avatar:       conv.Avatar,
+		UpdatedAt:    timestamppb.New(conv.UpdatedAt),
+		Description:  conv.Description,
+		Announcement: conv.Announcement,
+		GroupKind:    toPBGroupKind(conv.GroupKind),
+		JoinMode:     toPBJoinMode(conv.JoinMode),
+		Status:       toPBGroupStatus(conv.Status),
+		OwnerId:      conv.OwnerID,
+		MemberCount:  memberCount,
+	}
+	if participant != nil {
+		if conv.LastLocalID > participant.LastReadLocalID {
+			pbConv.UnreadCount = uint32(conv.LastLocalID - participant.LastReadLocalID)
+		}
+		pbConv.MyRole = toPBGroupRole(participant.Role)
+	}
+	if conv.LastMessageID != nil {
+		var lastMessage models.Message
+		if err := tx.First(&lastMessage, *conv.LastMessageID).Error; err == nil {
+			pbConv.LastMessage = &pb.Message{
+				Id:             lastMessage.ID,
+				LocalId:        lastMessage.LocalID,
+				ConversationId: lastMessage.ConversationID,
+				SenderId:       lastMessage.SenderID,
+				Content:        lastMessage.Content,
+				Type:           pb.MessageType(lastMessage.Type),
+				CreatedAt:      timestamppb.New(lastMessage.CreatedAt),
+			}
+		}
+	}
+	return pbConv, nil
+}
+
+func (s *ChatService) buildPBGroupMember(participant models.ConversationParticipant) *pb.GroupMember {
+	return &pb.GroupMember{
+		UserId:   participant.UserID,
+		Username: participant.User.Username,
+		Nickname: participant.User.Nickname,
+		Avatar:   participant.User.Avatar,
+		Role:     toPBGroupRole(participant.Role),
+		JoinedAt: timestamppb.New(participant.JoinedAt),
+	}
+}
+
+func (s *ChatService) addParticipantTx(tx *gorm.DB, conversationID, userID uint64, role string) error {
+	participant := models.ConversationParticipant{
+		ConversationID: conversationID,
+		UserID:         userID,
+		Role:           role,
+		JoinedAt:       time.Now(),
+	}
+	return tx.Where("conversation_id = ? AND user_id = ?", conversationID, userID).FirstOrCreate(&participant).Error
+}
+
+func (s *ChatService) getGroupMembersTx(tx *gorm.DB, conversationID uint64) ([]*pb.GroupMember, error) {
+	var participants []models.ConversationParticipant
+	if err := tx.Where("conversation_id = ?", conversationID).Preload("User").Order("joined_at ASC").Find(&participants).Error; err != nil {
+		return nil, err
+	}
+	members := make([]*pb.GroupMember, 0, len(participants))
+	for _, participant := range participants {
+		members = append(members, s.buildPBGroupMember(participant))
+	}
+	return members, nil
+}
+
+func (s *ChatService) getGroupJoinRequestTx(tx *gorm.DB, requestID uint64, lock bool) (*models.GroupJoinRequest, error) {
+	query := tx
+	if lock {
+		query = query.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+	var joinRequest models.GroupJoinRequest
+	if err := query.First(&joinRequest, requestID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("join request not found")
+		}
+		return nil, err
+	}
+	return &joinRequest, nil
+}
+
+func (s *ChatService) buildPBJoinRequest(tx *gorm.DB, request models.GroupJoinRequest) (*pb.GroupJoinRequest, error) {
+	var user models.User
+	if err := tx.Where("uid = ?", request.ApplicantID).First(&user).Error; err != nil {
+		return nil, err
+	}
+	resp := &pb.GroupJoinRequest{
+		Id:                request.ID,
+		ConversationId:    request.ConversationID,
+		ApplicantId:       request.ApplicantID,
+		ApplicantUsername: user.Username,
+		ApplicantNickname: user.Nickname,
+		ApplicantAvatar:   user.Avatar,
+		Message:           request.Message,
+		Status:            toPBJoinRequestStatus(request.Status),
+		CreatedAt:         timestamppb.New(request.CreatedAt),
+	}
+	if request.ReviewedBy != nil {
+		resp.ReviewedBy = *request.ReviewedBy
+	}
+	if request.ReviewedAt != nil {
+		resp.ReviewedAt = timestamppb.New(*request.ReviewedAt)
+	}
+	return resp, nil
+}
+
+func (s *ChatService) buildPBInvitation(tx *gorm.DB, invitation models.GroupInvitation) (*pb.GroupInvitation, error) {
+	var inviter models.User
+	if err := tx.Where("uid = ?", invitation.InviterID).First(&inviter).Error; err != nil {
+		return nil, err
+	}
+	var conversation models.Conversation
+	if err := tx.First(&conversation, invitation.ConversationID).Error; err != nil {
+		return nil, err
+	}
+	return &pb.GroupInvitation{
+		Id:              invitation.ID,
+		ConversationId:  invitation.ConversationID,
+		InviterId:       invitation.InviterID,
+		InviterUsername: inviter.Username,
+		InviterNickname: inviter.Nickname,
+		InviterAvatar:   inviter.Avatar,
+		Status:          toPBInvitationStatus(invitation.Status),
+		CreatedAt:       timestamppb.New(invitation.CreatedAt),
+		GroupName:       conversation.Name,
+		GroupAvatar:     conversation.Avatar,
+	}, nil
 }
 
 // SendMessage 发送消息
@@ -107,6 +431,10 @@ func (s *ChatService) SendMessage(senderID uint64, req *pb.SendMessageRequest) (
 					return errors.New("message limit reached (3). wait for follow back.")
 				}
 			}
+		}
+
+		if conversation.Type == models.ConversationTypeGroup && conversation.Status == models.GroupStatusDissolved {
+			return errors.New("group has been dissolved")
 		}
 
 		// 3. 生成新的 LocalID
@@ -217,12 +545,24 @@ func (s *ChatService) GetConversationList(userID uint64, pageSize int, pageToken
 		}
 
 		pbConv := &pb.Conversation{
-			Id:          conv.ID,
-			Type:        pb.ConversationType(conv.Type),
-			Name:        conv.Name,
-			Avatar:      conv.Avatar,
-			UnreadCount: uint32(unreadCount),
-			UpdatedAt:   timestamppb.New(conv.UpdatedAt),
+			Id:           conv.ID,
+			Type:         pb.ConversationType(conv.Type),
+			Name:         conv.Name,
+			Avatar:       conv.Avatar,
+			UnreadCount:  uint32(unreadCount),
+			UpdatedAt:    timestamppb.New(conv.UpdatedAt),
+			Description:  conv.Description,
+			Announcement: conv.Announcement,
+			GroupKind:    toPBGroupKind(conv.GroupKind),
+			JoinMode:     toPBJoinMode(conv.JoinMode),
+			Status:       toPBGroupStatus(conv.Status),
+			OwnerId:      conv.OwnerID,
+			MyRole:       toPBGroupRole(p.Role),
+		}
+		if conv.Type == models.ConversationTypeGroup {
+			var memberCount int64
+			s.db.Model(&models.ConversationParticipant{}).Where("conversation_id = ?", conv.ID).Count(&memberCount)
+			pbConv.MemberCount = uint32(memberCount)
 		}
 
 		// 如果是私聊，使用对方的信息覆盖
@@ -270,6 +610,13 @@ func (s *ChatService) GetMessageList(userID uint64, req *pb.GetMessageListReques
 
 	if count == 0 {
 		return nil, "", errors.New("you are not a member of this conversation")
+	}
+
+	var conversationMeta models.Conversation
+	if err := s.db.Select("id", "type", "status").First(&conversationMeta, req.ConversationId).Error; err == nil {
+		if conversationMeta.Type == models.ConversationTypeGroup && conversationMeta.Status == models.GroupStatusDissolved {
+			return nil, "", errors.New("group has been dissolved")
+		}
 	}
 
 	// 2. 查询消息
@@ -521,10 +868,14 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 		}
 
 		conversation = &models.Conversation{
-			Type:    models.ConversationTypeGroup,
-			Name:    groupName,
-			Avatar:  strings.TrimSpace(req.Avatar),
-			OwnerID: creatorID,
+			Type:        models.ConversationTypeGroup,
+			Name:        groupName,
+			Avatar:      strings.TrimSpace(req.Avatar),
+			OwnerID:     creatorID,
+			Description: strings.TrimSpace(req.Description),
+			GroupKind:   normalizeGroupKind(req.GroupKind),
+			JoinMode:    normalizeJoinMode(req.JoinMode),
+			Status:      models.GroupStatusActive,
 		}
 
 		for uid := range userIDs {
@@ -550,9 +901,9 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 
 		var participants []models.ConversationParticipant
 		for uid := range userIDs {
-			role := "member"
+			role := models.GroupRoleMember
 			if uid == creatorID && reqType == pb.ConversationType_CONVERSATION_TYPE_GROUP {
-				role = "owner"
+				role = models.GroupRoleOwner
 			}
 			participants = append(participants, models.ConversationParticipant{
 				ConversationID: conversation.ID,
@@ -619,12 +970,24 @@ func (s *ChatService) GetConversationForUser(conversationID uint64, userID uint6
 	}
 
 	pbConv := &pb.Conversation{
-		Id:          conversation.ID,
-		Type:        pb.ConversationType(conversation.Type),
-		Name:        conversation.Name,
-		Avatar:      conversation.Avatar,
-		UnreadCount: uint32(unreadCount),
-		UpdatedAt:   timestamppb.New(conversation.UpdatedAt),
+		Id:           conversation.ID,
+		Type:         pb.ConversationType(conversation.Type),
+		Name:         conversation.Name,
+		Avatar:       conversation.Avatar,
+		UnreadCount:  uint32(unreadCount),
+		UpdatedAt:    timestamppb.New(conversation.UpdatedAt),
+		Description:  conversation.Description,
+		Announcement: conversation.Announcement,
+		GroupKind:    toPBGroupKind(conversation.GroupKind),
+		JoinMode:     toPBJoinMode(conversation.JoinMode),
+		Status:       toPBGroupStatus(conversation.Status),
+		OwnerId:      conversation.OwnerID,
+		MyRole:       toPBGroupRole(participant.Role),
+	}
+	if conversation.Type == models.ConversationTypeGroup {
+		var memberCount int64
+		s.db.Model(&models.ConversationParticipant{}).Where("conversation_id = ?", conversation.ID).Count(&memberCount)
+		pbConv.MemberCount = uint32(memberCount)
 	}
 
 	if conversation.Type == models.ConversationTypePrivate {
@@ -652,4 +1015,461 @@ func (s *ChatService) GetConversationForUser(conversationID uint64, userID uint6
 	}
 
 	return pbConv, nil
+}
+
+func (s *ChatService) GetGroupDetail(userID uint64, conversationID uint64) (*pb.Conversation, error) {
+	ctx, err := s.getGroupActorContext(s.db, conversationID, userID, false)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+		return nil, err
+	}
+	return s.buildPBConversation(s.db, ctx.Conversation, &ctx.Participant)
+}
+
+func (s *ChatService) UpdateGroupProfile(userID uint64, req *pb.UpdateGroupProfileRequest) (*pb.Conversation, error) {
+	var result *pb.Conversation
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, req.ConversationId, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if !hasAnyRole(ctx.Participant.Role, models.GroupRoleOwner, models.GroupRoleAdmin) {
+			return errors.New("permission denied")
+		}
+		updates := map[string]interface{}{"updated_at": time.Now()}
+		if name := strings.TrimSpace(req.Name); name != "" {
+			updates["name"] = name
+		}
+		updates["avatar"] = strings.TrimSpace(req.Avatar)
+		updates["description"] = strings.TrimSpace(req.Description)
+		if req.JoinMode != pb.GroupJoinMode_GROUP_JOIN_MODE_UNSPECIFIED {
+			updates["join_mode"] = normalizeJoinMode(req.JoinMode)
+		}
+		if err := tx.Model(&models.Conversation{}).Where("id = ?", req.ConversationId).Updates(updates).Error; err != nil {
+			return err
+		}
+		var conv models.Conversation
+		if err := tx.First(&conv, req.ConversationId).Error; err != nil {
+			return err
+		}
+		result, err = s.buildPBConversation(tx, conv, &ctx.Participant)
+		return err
+	})
+	return result, err
+}
+
+func (s *ChatService) UpdateGroupAnnouncement(userID uint64, req *pb.UpdateGroupAnnouncementRequest) (*pb.Conversation, error) {
+	var result *pb.Conversation
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, req.ConversationId, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if !hasAnyRole(ctx.Participant.Role, models.GroupRoleOwner, models.GroupRoleAdmin) {
+			return errors.New("permission denied")
+		}
+		now := time.Now()
+		if err := tx.Model(&models.Conversation{}).Where("id = ?", req.ConversationId).Updates(map[string]interface{}{
+			"announcement":            strings.TrimSpace(req.Announcement),
+			"announcement_updated_by": userID,
+			"announcement_updated_at": now,
+			"updated_at":              now,
+		}).Error; err != nil {
+			return err
+		}
+		var conv models.Conversation
+		if err := tx.First(&conv, req.ConversationId).Error; err != nil {
+			return err
+		}
+		result, err = s.buildPBConversation(tx, conv, &ctx.Participant)
+		return err
+	})
+	return result, err
+}
+
+func (s *ChatService) GetGroupMembers(userID uint64, conversationID uint64) ([]*pb.GroupMember, error) {
+	ctx, err := s.getGroupActorContext(s.db, conversationID, userID, false)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+		return nil, err
+	}
+	return s.getGroupMembersTx(s.db, conversationID)
+}
+
+func (s *ChatService) UpdateGroupMemberRole(userID uint64, req *pb.UpdateGroupMemberRoleRequest) (*pb.GroupMember, error) {
+	var result *pb.GroupMember
+	targetRole, err := normalizeTargetRole(req.Role)
+	if err != nil {
+		return nil, err
+	}
+	err = s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, req.ConversationId, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if ctx.Participant.Role != models.GroupRoleOwner {
+			return errors.New("only owner can change admin role")
+		}
+		var target models.ConversationParticipant
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("conversation_id = ? AND user_id = ?", req.ConversationId, req.TargetUserId).Preload("User").First(&target).Error; err != nil {
+			return errors.New("target member not found")
+		}
+		if target.Role == models.GroupRoleOwner {
+			return errors.New("cannot change owner role")
+		}
+		if err := tx.Model(&models.ConversationParticipant{}).Where("id = ?", target.ID).Update("role", targetRole).Error; err != nil {
+			return err
+		}
+		target.Role = targetRole
+		result = s.buildPBGroupMember(target)
+		return nil
+	})
+	return result, err
+}
+
+func (s *ChatService) TransferGroupOwnership(userID uint64, req *pb.TransferGroupOwnershipRequest) (*pb.Conversation, error) {
+	var result *pb.Conversation
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, req.ConversationId, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if ctx.Participant.Role != models.GroupRoleOwner {
+			return errors.New("only owner can transfer ownership")
+		}
+		if req.TargetUserId == userID {
+			return errors.New("target user must be another group member")
+		}
+		var target models.ConversationParticipant
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("conversation_id = ? AND user_id = ?", req.ConversationId, req.TargetUserId).First(&target).Error; err != nil {
+			return errors.New("target member not found")
+		}
+		if err := tx.Model(&models.ConversationParticipant{}).Where("conversation_id = ? AND user_id = ?", req.ConversationId, userID).Update("role", models.GroupRoleMember).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&models.ConversationParticipant{}).Where("conversation_id = ? AND user_id = ?", req.ConversationId, req.TargetUserId).Update("role", models.GroupRoleOwner).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&models.Conversation{}).Where("id = ?", req.ConversationId).Updates(map[string]interface{}{"owner_id": req.TargetUserId, "updated_at": time.Now()}).Error; err != nil {
+			return err
+		}
+		var conv models.Conversation
+		if err := tx.First(&conv, req.ConversationId).Error; err != nil {
+			return err
+		}
+		ctx.Participant.Role = models.GroupRoleMember
+		result, err = s.buildPBConversation(tx, conv, &ctx.Participant)
+		return err
+	})
+	return result, err
+}
+
+func (s *ChatService) RemoveGroupMember(userID uint64, req *pb.RemoveGroupMemberRequest) error {
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, req.ConversationId, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if req.TargetUserId == userID {
+			return errors.New("use leave group instead")
+		}
+		var target models.ConversationParticipant
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("conversation_id = ? AND user_id = ?", req.ConversationId, req.TargetUserId).First(&target).Error; err != nil {
+			return errors.New("target member not found")
+		}
+		if !isGroupRoleManageable(ctx.Participant.Role, target.Role) {
+			return errors.New("permission denied")
+		}
+		return tx.Where("conversation_id = ? AND user_id = ?", req.ConversationId, req.TargetUserId).Delete(&models.ConversationParticipant{}).Error
+	})
+}
+
+func (s *ChatService) LeaveGroup(userID uint64, conversationID uint64) error {
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, conversationID, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if ctx.Participant.Role == models.GroupRoleOwner {
+			return errors.New("owner must transfer ownership before leaving")
+		}
+		return tx.Where("conversation_id = ? AND user_id = ?", conversationID, userID).Delete(&models.ConversationParticipant{}).Error
+	})
+}
+
+func (s *ChatService) DissolveGroup(userID uint64, conversationID uint64) error {
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, conversationID, userID, true)
+		if err != nil {
+			return err
+		}
+		if ctx.Participant.Role != models.GroupRoleOwner {
+			return errors.New("only owner can dissolve group")
+		}
+		if ctx.Conversation.Status == models.GroupStatusDissolved {
+			return errors.New("group has already been dissolved")
+		}
+		now := time.Now()
+		return tx.Model(&models.Conversation{}).Where("id = ?", conversationID).Updates(map[string]interface{}{
+			"status":       models.GroupStatusDissolved,
+			"dissolved_at": now,
+			"dissolved_by": userID,
+			"updated_at":   now,
+		}).Error
+	})
+}
+
+func (s *ChatService) ApplyToJoinGroup(userID uint64, req *pb.ApplyToJoinGroupRequest) (*pb.GroupJoinRequest, error) {
+	var result *pb.GroupJoinRequest
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		var conversation models.Conversation
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&conversation, req.ConversationId).Error; err != nil {
+			return errors.New("group not found")
+		}
+		if conversation.Type != models.ConversationTypeGroup {
+			return errors.New("conversation is not a group")
+		}
+		if err := s.requireActiveGroup(conversation); err != nil {
+			return err
+		}
+		if conversation.JoinMode == models.GroupJoinModePrivate {
+			return errors.New("private group does not allow join requests")
+		}
+		var existingMember int64
+		if err := tx.Model(&models.ConversationParticipant{}).Where("conversation_id = ? AND user_id = ?", req.ConversationId, userID).Count(&existingMember).Error; err != nil {
+			return err
+		}
+		if existingMember > 0 {
+			return errors.New("already a group member")
+		}
+		var existingPending int64
+		if err := tx.Model(&models.GroupJoinRequest{}).Where("conversation_id = ? AND applicant_id = ? AND status = ?", req.ConversationId, userID, models.GroupJoinRequestStatusPending).Count(&existingPending).Error; err != nil {
+			return err
+		}
+		if existingPending > 0 {
+			return errors.New("join request already pending")
+		}
+		joinRequest := models.GroupJoinRequest{ConversationID: req.ConversationId, ApplicantID: userID, Status: models.GroupJoinRequestStatusPending, Message: strings.TrimSpace(req.Message), CreatedAt: time.Now(), UpdatedAt: time.Now()}
+		if conversation.JoinMode == models.GroupJoinModePublic {
+			joinRequest.Status = models.GroupJoinRequestStatusApproved
+			now := time.Now()
+			joinRequest.ReviewedAt = &now
+			joinRequest.ReviewedBy = &conversation.OwnerID
+			if err := s.addParticipantTx(tx, req.ConversationId, userID, models.GroupRoleMember); err != nil {
+				return err
+			}
+		}
+		if err := tx.Create(&joinRequest).Error; err != nil {
+			return err
+		}
+		built, buildErr := s.buildPBJoinRequest(tx, joinRequest)
+		if buildErr != nil {
+			return buildErr
+		}
+		result = built
+		return nil
+	})
+	return result, err
+}
+
+func (s *ChatService) GetGroupJoinRequests(userID uint64, conversationID uint64) ([]*pb.GroupJoinRequest, error) {
+	ctx, err := s.getGroupActorContext(s.db, conversationID, userID, false)
+	if err != nil {
+		return nil, err
+	}
+	if !hasAnyRole(ctx.Participant.Role, models.GroupRoleOwner, models.GroupRoleAdmin) {
+		return nil, errors.New("permission denied")
+	}
+	var requests []models.GroupJoinRequest
+	if err := s.db.Where("conversation_id = ?", conversationID).Order("created_at DESC").Find(&requests).Error; err != nil {
+		return nil, err
+	}
+	result := make([]*pb.GroupJoinRequest, 0, len(requests))
+	for _, item := range requests {
+		pbReq, err := s.buildPBJoinRequest(s.db, item)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, pbReq)
+	}
+	return result, nil
+}
+
+func (s *ChatService) ReviewGroupJoinRequest(userID uint64, req *pb.ReviewGroupJoinRequestRequest) (*pb.GroupJoinRequest, error) {
+	var result *pb.GroupJoinRequest
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		joinRequest, err := s.getGroupJoinRequestTx(tx, req.RequestId, true)
+		if err != nil {
+			return err
+		}
+		ctx, err := s.getGroupActorContext(tx, joinRequest.ConversationID, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if !hasAnyRole(ctx.Participant.Role, models.GroupRoleOwner, models.GroupRoleAdmin) {
+			return errors.New("permission denied")
+		}
+		if joinRequest.Status != models.GroupJoinRequestStatusPending {
+			return errors.New("join request already processed")
+		}
+		now := time.Now()
+		status := models.GroupJoinRequestStatusRejected
+		if req.Approve {
+			status = models.GroupJoinRequestStatusApproved
+			if err := s.addParticipantTx(tx, joinRequest.ConversationID, joinRequest.ApplicantID, models.GroupRoleMember); err != nil {
+				return err
+			}
+		}
+		if err := tx.Model(&models.GroupJoinRequest{}).Where("id = ?", joinRequest.ID).Updates(map[string]interface{}{"status": status, "reviewed_by": userID, "reviewed_at": now, "updated_at": now}).Error; err != nil {
+			return err
+		}
+		joinRequest.Status = status
+		joinRequest.ReviewedBy = &userID
+		joinRequest.ReviewedAt = &now
+		built, buildErr := s.buildPBJoinRequest(tx, *joinRequest)
+		if buildErr != nil {
+			return buildErr
+		}
+		result = built
+		return nil
+	})
+	return result, err
+}
+
+func (s *ChatService) InviteToGroup(userID uint64, req *pb.InviteToGroupRequest) (*pb.GroupInvitation, error) {
+	var result *pb.GroupInvitation
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		ctx, err := s.getGroupActorContext(tx, req.ConversationId, userID, true)
+		if err != nil {
+			return err
+		}
+		if err := s.requireActiveGroup(ctx.Conversation); err != nil {
+			return err
+		}
+		if !hasAnyRole(ctx.Participant.Role, models.GroupRoleOwner, models.GroupRoleAdmin) {
+			return errors.New("permission denied")
+		}
+		var memberCount int64
+		if err := tx.Model(&models.ConversationParticipant{}).Where("conversation_id = ? AND user_id = ?", req.ConversationId, req.InviteeId).Count(&memberCount).Error; err != nil {
+			return err
+		}
+		if memberCount > 0 {
+			return errors.New("user is already a group member")
+		}
+		var pending int64
+		if err := tx.Model(&models.GroupInvitation{}).Where("conversation_id = ? AND invitee_id = ? AND status = ?", req.ConversationId, req.InviteeId, models.GroupInvitationStatusPending).Count(&pending).Error; err != nil {
+			return err
+		}
+		if pending > 0 {
+			return errors.New("invitation already pending")
+		}
+		invitation := models.GroupInvitation{ConversationID: req.ConversationId, InviterID: userID, InviteeID: req.InviteeId, Status: models.GroupInvitationStatusPending, CreatedAt: time.Now(), UpdatedAt: time.Now()}
+		if err := tx.Create(&invitation).Error; err != nil {
+			return err
+		}
+		built, buildErr := s.buildPBInvitation(tx, invitation)
+		if buildErr != nil {
+			return buildErr
+		}
+		result = built
+		return nil
+	})
+	return result, err
+}
+
+func (s *ChatService) GetMyGroupInvitations(userID uint64) ([]*pb.GroupInvitation, error) {
+	var invitations []models.GroupInvitation
+	if err := s.db.Where("invitee_id = ?", userID).Order("created_at DESC").Find(&invitations).Error; err != nil {
+		return nil, err
+	}
+	result := make([]*pb.GroupInvitation, 0, len(invitations))
+	for _, invitation := range invitations {
+		pbInvitation, err := s.buildPBInvitation(s.db, invitation)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, pbInvitation)
+	}
+	return result, nil
+}
+
+func (s *ChatService) RespondGroupInvitation(userID uint64, invitationID uint64, accept bool) (*pb.GroupInvitation, *pb.Conversation, error) {
+	var result *pb.GroupInvitation
+	var convResult *pb.Conversation
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		var invitation models.GroupInvitation
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&invitation, invitationID).Error; err != nil {
+			return errors.New("invitation not found")
+		}
+		if invitation.InviteeID != userID {
+			return errors.New("permission denied")
+		}
+		if invitation.Status != models.GroupInvitationStatusPending {
+			return errors.New("invitation already processed")
+		}
+		var conversation models.Conversation
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&conversation, invitation.ConversationID).Error; err != nil {
+			return errors.New("group not found")
+		}
+		if err := s.requireActiveGroup(conversation); err != nil {
+			return err
+		}
+		now := time.Now()
+		status := models.GroupInvitationStatusRejected
+		if accept {
+			status = models.GroupInvitationStatusAccepted
+			if err := s.addParticipantTx(tx, invitation.ConversationID, userID, models.GroupRoleMember); err != nil {
+				return err
+			}
+			participant := models.ConversationParticipant{Role: models.GroupRoleMember}
+			builtConv, buildErr := s.buildPBConversation(tx, conversation, &participant)
+			if buildErr != nil {
+				return buildErr
+			}
+			convResult = builtConv
+		}
+		if err := tx.Model(&models.GroupInvitation{}).Where("id = ?", invitation.ID).Updates(map[string]interface{}{"status": status, "responded_at": now, "updated_at": now}).Error; err != nil {
+			return err
+		}
+		invitation.Status = status
+		invitation.RespondedAt = &now
+		builtInvitation, buildErr := s.buildPBInvitation(tx, invitation)
+		if buildErr != nil {
+			return buildErr
+		}
+		result = builtInvitation
+		return nil
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+	if convResult != nil {
+		convResult.MyRole = pb.GroupMemberRole_GROUP_MEMBER_ROLE_MEMBER
+	}
+	return result, convResult, nil
 }

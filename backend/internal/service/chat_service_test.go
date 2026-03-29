@@ -28,6 +28,8 @@ func setupChatServiceTestDB(t *testing.T) *ChatService {
 		&models.Message{},
 		&models.Conversation{},
 		&models.ConversationParticipant{},
+		&models.GroupJoinRequest{},
+		&models.GroupInvitation{},
 		&models.Relation{},
 		&models.BlockRelation{},
 	); err != nil {
@@ -201,6 +203,81 @@ func TestBlocklistBlocksFollowWhileBlocked(t *testing.T) {
 		t.Fatalf("expected follow to fail while blocked")
 	}
 	if !strings.Contains(err.Error(), "blocked") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestTransferGroupOwnershipDowngradesOldOwnerToMember(t *testing.T) {
+	chatService := setupChatServiceTestDB(t)
+
+	owner := mustCreateChatTestUser(t, 10000101)
+	target := mustCreateChatTestUser(t, 10000102)
+	member := mustCreateChatTestUser(t, 10000103)
+
+	conv, err := chatService.CreateConversation(owner.UID, &pb.CreateConversationRequest{
+		Type:           pb.ConversationType_CONVERSATION_TYPE_GROUP,
+		ParticipantIds: []uint64{target.UID, member.UID},
+		Name:           "ownership-group",
+		JoinMode:       pb.GroupJoinMode_GROUP_JOIN_MODE_PRIVATE,
+	})
+	if err != nil {
+		t.Fatalf("create group: %v", err)
+	}
+
+	updated, err := chatService.TransferGroupOwnership(owner.UID, &pb.TransferGroupOwnershipRequest{
+		ConversationId: conv.ID,
+		TargetUserId:   target.UID,
+	})
+	if err != nil {
+		t.Fatalf("transfer ownership: %v", err)
+	}
+	if updated.OwnerId != target.UID {
+		t.Fatalf("expected new owner %d, got %d", target.UID, updated.OwnerId)
+	}
+
+	var ownerParticipant models.ConversationParticipant
+	if err := db.DB.Where("conversation_id = ? AND user_id = ?", conv.ID, owner.UID).First(&ownerParticipant).Error; err != nil {
+		t.Fatalf("load old owner participant: %v", err)
+	}
+	if ownerParticipant.Role != models.GroupRoleMember {
+		t.Fatalf("expected old owner role member, got %s", ownerParticipant.Role)
+	}
+
+	var targetParticipant models.ConversationParticipant
+	if err := db.DB.Where("conversation_id = ? AND user_id = ?", conv.ID, target.UID).First(&targetParticipant).Error; err != nil {
+		t.Fatalf("load new owner participant: %v", err)
+	}
+	if targetParticipant.Role != models.GroupRoleOwner {
+		t.Fatalf("expected new owner role owner, got %s", targetParticipant.Role)
+	}
+}
+
+func TestPrivateGroupRejectsJoinRequest(t *testing.T) {
+	chatService := setupChatServiceTestDB(t)
+
+	owner := mustCreateChatTestUser(t, 10000111)
+	memberA := mustCreateChatTestUser(t, 10000112)
+	memberB := mustCreateChatTestUser(t, 10000113)
+	outsider := mustCreateChatTestUser(t, 10000114)
+
+	conv, err := chatService.CreateConversation(owner.UID, &pb.CreateConversationRequest{
+		Type:           pb.ConversationType_CONVERSATION_TYPE_GROUP,
+		ParticipantIds: []uint64{memberA.UID, memberB.UID},
+		Name:           "private-group",
+		JoinMode:       pb.GroupJoinMode_GROUP_JOIN_MODE_PRIVATE,
+	})
+	if err != nil {
+		t.Fatalf("create group: %v", err)
+	}
+
+	_, err = chatService.ApplyToJoinGroup(outsider.UID, &pb.ApplyToJoinGroupRequest{
+		ConversationId: conv.ID,
+		Message:        "let me in",
+	})
+	if err == nil {
+		t.Fatalf("expected private group join request to fail")
+	}
+	if !strings.Contains(err.Error(), "private group") {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }

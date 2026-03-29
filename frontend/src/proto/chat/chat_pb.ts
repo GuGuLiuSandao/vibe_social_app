@@ -12,7 +12,7 @@ import type { Message as Message$1 } from "@bufbuild/protobuf";
  * Describes the file chat/chat.proto.
  */
 export const file_chat_chat: GenFile = /*@__PURE__*/
-  fileDesc("Cg9jaGF0L2NoYXQucHJvdG8SC3NvY2lhbC5jaGF0ItcBCgxDb252ZXJzYXRpb24SCgoCaWQYASABKAQSKwoEdHlwZRgCIAEoDjIdLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvblR5cGUSDAoEbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAkSKgoMbGFzdF9tZXNzYWdlGAUgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZRIUCgx1bnJlYWRfY291bnQYBiABKA0SLgoKdXBkYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiTAoKU2VuZGVySW5mbxIKCgJpZBgBIAEoBBIQCgh1c2VybmFtZRgCIAEoCRIQCghuaWNrbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAki5QEKB01lc3NhZ2USCgoCaWQYASABKAQSEAoIbG9jYWxfaWQYByABKAQSFwoPY29udmVyc2F0aW9uX2lkGAIgASgEEhEKCXNlbmRlcl9pZBgDIAEoBBIPCgdjb250ZW50GAQgASgJEiYKBHR5cGUYBSABKA4yGC5zb2NpYWwuY2hhdC5NZXNzYWdlVHlwZRIuCgpjcmVhdGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBInCgZzZW5kZXIYCCABKAsyFy5zb2NpYWwuY2hhdC5TZW5kZXJJbmZvImYKElNlbmRNZXNzYWdlUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAQSDwoHY29udGVudBgCIAEoCRImCgR0eXBlGAMgASgOMhguc29jaWFsLmNoYXQuTWVzc2FnZVR5cGUiPAoTU2VuZE1lc3NhZ2VSZXNwb25zZRIlCgdtZXNzYWdlGAEgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZSJDChpHZXRDb252ZXJzYXRpb25MaXN0UmVxdWVzdBIRCglwYWdlX3NpemUYASABKA0SEgoKcGFnZV90b2tlbhgCIAEoCSJoChtHZXRDb252ZXJzYXRpb25MaXN0UmVzcG9uc2USMAoNY29udmVyc2F0aW9ucxgBIAMoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbhIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiVwoVR2V0TWVzc2FnZUxpc3RSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBIRCglwYWdlX3NpemUYAiABKA0SEgoKcGFnZV90b2tlbhgDIAEoCSJZChZHZXRNZXNzYWdlTGlzdFJlc3BvbnNlEiYKCG1lc3NhZ2VzGAEgAygLMhQuc29jaWFsLmNoYXQuTWVzc2FnZRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiXwoRTWFya0FzUmVhZFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEhMKC21lc3NhZ2VfaWRzGAIgAygEEhwKFGxhc3RfcmVhZF9tZXNzYWdlX2lkGAMgASgEIkMKEk1hcmtBc1JlYWRSZXNwb25zZRIXCg9jb252ZXJzYXRpb25faWQYASABKAQSFAoMdW5yZWFkX2NvdW50GAIgASgNIn8KGUNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3QSKwoEdHlwZRgBIAEoDjIdLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvblR5cGUSFwoPcGFydGljaXBhbnRfaWRzGAIgAygEEgwKBG5hbWUYAyABKAkSDgoGYXZhdGFyGAQgASgJIk0KGkNyZWF0ZUNvbnZlcnNhdGlvblJlc3BvbnNlEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiI0CgtNZXNzYWdlUHVzaBIlCgdtZXNzYWdlGAEgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZSJDChBDb252ZXJzYXRpb25QdXNoEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiJeCglUb3BpY1Jvb20SCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIMCgRpY29uGAQgASgJEhQKDG9ubGluZV9jb3VudBgFIAEoDSKsAQoQVG9waWNSb29tTWVzc2FnZRIKCgJpZBgBIAEoCRIPCgdyb29tX2lkGAIgASgJEhEKCXNlbmRlcl9pZBgDIAEoBBIPCgdjb250ZW50GAQgASgJEi4KCmNyZWF0ZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEicKBnNlbmRlchgGIAEoCzIXLnNvY2lhbC5jaGF0LlNlbmRlckluZm8iUQoPVG9waWNSb29tTWVtYmVyEgoKAmlkGAEgASgEEhAKCHVzZXJuYW1lGAIgASgJEhAKCG5pY2tuYW1lGAMgASgJEg4KBmF2YXRhchgEIAEoCSIZChdHZXRUb3BpY1Jvb21MaXN0UmVxdWVzdCJZChhHZXRUb3BpY1Jvb21MaXN0UmVzcG9uc2USJQoFcm9vbXMYASADKAsyFi5zb2NpYWwuY2hhdC5Ub3BpY1Jvb20SFgoOam9pbmVkX3Jvb21faWQYAiABKAkiJwoUSm9pblRvcGljUm9vbVJlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCSKkAQoVSm9pblRvcGljUm9vbVJlc3BvbnNlEiQKBHJvb20YASABKAsyFi5zb2NpYWwuY2hhdC5Ub3BpY1Jvb20SNgoPcmVjZW50X21lc3NhZ2VzGAIgAygLMh0uc29jaWFsLmNoYXQuVG9waWNSb29tTWVzc2FnZRItCgdtZW1iZXJzGAMgAygLMhwuc29jaWFsLmNoYXQuVG9waWNSb29tTWVtYmVyIigKFUxlYXZlVG9waWNSb29tUmVxdWVzdBIPCgdyb29tX2lkGAEgASgJIikKFkxlYXZlVG9waWNSb29tUmVzcG9uc2USDwoHcm9vbV9pZBgBIAEoCSI/ChtTZW5kVG9waWNSb29tTWVzc2FnZVJlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCRIPCgdjb250ZW50GAIgASgJIk4KHFNlbmRUb3BpY1Jvb21NZXNzYWdlUmVzcG9uc2USLgoHbWVzc2FnZRgBIAEoCzIdLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lc3NhZ2UiLQoaR2V0VG9waWNSb29tTWVtYmVyc1JlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCSJdChtHZXRUb3BpY1Jvb21NZW1iZXJzUmVzcG9uc2USDwoHcm9vbV9pZBgBIAEoCRItCgdtZW1iZXJzGAIgAygLMhwuc29jaWFsLmNoYXQuVG9waWNSb29tTWVtYmVyIkYKFFRvcGljUm9vbU1lc3NhZ2VQdXNoEi4KB21lc3NhZ2UYASABKAsyHS5zb2NpYWwuY2hhdC5Ub3BpY1Jvb21NZXNzYWdlImwKFFRvcGljUm9vbU1lbWJlcnNQdXNoEg8KB3Jvb21faWQYASABKAkSLQoHbWVtYmVycxgCIAMoCzIcLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lbWJlchIUCgxvbmxpbmVfY291bnQYAyABKA0isA0KC0NoYXRQYXlsb2FkEjcKDHNlbmRfbWVzc2FnZRgBIAEoCzIfLnNvY2lhbC5jaGF0LlNlbmRNZXNzYWdlUmVxdWVzdEgAEkEKFXNlbmRfbWVzc2FnZV9yZXNwb25zZRgCIAEoCzIgLnNvY2lhbC5jaGF0LlNlbmRNZXNzYWdlUmVzcG9uc2VIABJIChVnZXRfY29udmVyc2F0aW9uX2xpc3QYAyABKAsyJy5zb2NpYWwuY2hhdC5HZXRDb252ZXJzYXRpb25MaXN0UmVxdWVzdEgAElIKHmdldF9jb252ZXJzYXRpb25fbGlzdF9yZXNwb25zZRgEIAEoCzIoLnNvY2lhbC5jaGF0LkdldENvbnZlcnNhdGlvbkxpc3RSZXNwb25zZUgAEj4KEGdldF9tZXNzYWdlX2xpc3QYBSABKAsyIi5zb2NpYWwuY2hhdC5HZXRNZXNzYWdlTGlzdFJlcXVlc3RIABJIChlnZXRfbWVzc2FnZV9saXN0X3Jlc3BvbnNlGAYgASgLMiMuc29jaWFsLmNoYXQuR2V0TWVzc2FnZUxpc3RSZXNwb25zZUgAEjYKDG1hcmtfYXNfcmVhZBgHIAEoCzIeLnNvY2lhbC5jaGF0Lk1hcmtBc1JlYWRSZXF1ZXN0SAASQAoVbWFya19hc19yZWFkX3Jlc3BvbnNlGAggASgLMh8uc29jaWFsLmNoYXQuTWFya0FzUmVhZFJlc3BvbnNlSAASRQoTY3JlYXRlX2NvbnZlcnNhdGlvbhgJIAEoCzImLnNvY2lhbC5jaGF0LkNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3RIABJPChxjcmVhdGVfY29udmVyc2F0aW9uX3Jlc3BvbnNlGAogASgLMicuc29jaWFsLmNoYXQuQ3JlYXRlQ29udmVyc2F0aW9uUmVzcG9uc2VIABIwCgxtZXNzYWdlX3B1c2gYCyABKAsyGC5zb2NpYWwuY2hhdC5NZXNzYWdlUHVzaEgAEjoKEWNvbnZlcnNhdGlvbl9wdXNoGAwgASgLMh0uc29jaWFsLmNoYXQuQ29udmVyc2F0aW9uUHVzaEgAEkMKE2dldF90b3BpY19yb29tX2xpc3QYDSABKAsyJC5zb2NpYWwuY2hhdC5HZXRUb3BpY1Jvb21MaXN0UmVxdWVzdEgAEk0KHGdldF90b3BpY19yb29tX2xpc3RfcmVzcG9uc2UYDiABKAsyJS5zb2NpYWwuY2hhdC5HZXRUb3BpY1Jvb21MaXN0UmVzcG9uc2VIABI8Cg9qb2luX3RvcGljX3Jvb20YDyABKAsyIS5zb2NpYWwuY2hhdC5Kb2luVG9waWNSb29tUmVxdWVzdEgAEkYKGGpvaW5fdG9waWNfcm9vbV9yZXNwb25zZRgQIAEoCzIiLnNvY2lhbC5jaGF0LkpvaW5Ub3BpY1Jvb21SZXNwb25zZUgAEj4KEGxlYXZlX3RvcGljX3Jvb20YESABKAsyIi5zb2NpYWwuY2hhdC5MZWF2ZVRvcGljUm9vbVJlcXVlc3RIABJIChlsZWF2ZV90b3BpY19yb29tX3Jlc3BvbnNlGBIgASgLMiMuc29jaWFsLmNoYXQuTGVhdmVUb3BpY1Jvb21SZXNwb25zZUgAEksKF3NlbmRfdG9waWNfcm9vbV9tZXNzYWdlGBMgASgLMiguc29jaWFsLmNoYXQuU2VuZFRvcGljUm9vbU1lc3NhZ2VSZXF1ZXN0SAASVQogc2VuZF90b3BpY19yb29tX21lc3NhZ2VfcmVzcG9uc2UYFCABKAsyKS5zb2NpYWwuY2hhdC5TZW5kVG9waWNSb29tTWVzc2FnZVJlc3BvbnNlSAASSQoWZ2V0X3RvcGljX3Jvb21fbWVtYmVycxgVIAEoCzInLnNvY2lhbC5jaGF0LkdldFRvcGljUm9vbU1lbWJlcnNSZXF1ZXN0SAASUwofZ2V0X3RvcGljX3Jvb21fbWVtYmVyc19yZXNwb25zZRgWIAEoCzIoLnNvY2lhbC5jaGF0LkdldFRvcGljUm9vbU1lbWJlcnNSZXNwb25zZUgAEkQKF3RvcGljX3Jvb21fbWVzc2FnZV9wdXNoGBcgASgLMiEuc29jaWFsLmNoYXQuVG9waWNSb29tTWVzc2FnZVB1c2hIABJEChd0b3BpY19yb29tX21lbWJlcnNfcHVzaBgYIAEoCzIhLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lbWJlcnNQdXNoSABCCQoHcGF5bG9hZCpxChBDb252ZXJzYXRpb25UeXBlEiEKHUNPTlZFUlNBVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAASHQoZQ09OVkVSU0FUSU9OX1RZUEVfUFJJVkFURRABEhsKF0NPTlZFUlNBVElPTl9UWVBFX0dST1VQEAIqcwoLTWVzc2FnZVR5cGUSHAoYTUVTU0FHRV9UWVBFX1VOU1BFQ0lGSUVEEAASFQoRTUVTU0FHRV9UWVBFX1RFWFQQARIWChJNRVNTQUdFX1RZUEVfSU1BR0UQAhIXChNNRVNTQUdFX1RZUEVfU1lTVEVNEANCJVojc29jaWFsX2FwcC9pbnRlcm5hbC9wcm90by9jaGF0O2NoYXRiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("Cg9jaGF0L2NoYXQucHJvdG8SC3NvY2lhbC5jaGF0It4DCgxDb252ZXJzYXRpb24SCgoCaWQYASABKAQSKwoEdHlwZRgCIAEoDjIdLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvblR5cGUSDAoEbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAkSKgoMbGFzdF9tZXNzYWdlGAUgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZRIUCgx1bnJlYWRfY291bnQYBiABKA0SLgoKdXBkYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEwoLZGVzY3JpcHRpb24YCCABKAkSFAoMYW5ub3VuY2VtZW50GAkgASgJEioKCmdyb3VwX2tpbmQYCiABKA4yFi5zb2NpYWwuY2hhdC5Hcm91cEtpbmQSLQoJam9pbl9tb2RlGAsgASgOMhouc29jaWFsLmNoYXQuR3JvdXBKb2luTW9kZRIoCgZzdGF0dXMYDCABKA4yGC5zb2NpYWwuY2hhdC5Hcm91cFN0YXR1cxIQCghvd25lcl9pZBgNIAEoBBItCgdteV9yb2xlGA4gASgOMhwuc29jaWFsLmNoYXQuR3JvdXBNZW1iZXJSb2xlEhQKDG1lbWJlcl9jb3VudBgPIAEoDSKtAQoLR3JvdXBNZW1iZXISDwoHdXNlcl9pZBgBIAEoBBIQCgh1c2VybmFtZRgCIAEoCRIQCghuaWNrbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAkSKgoEcm9sZRgFIAEoDjIcLnNvY2lhbC5jaGF0Lkdyb3VwTWVtYmVyUm9sZRItCglqb2luZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wItsCChBHcm91cEpvaW5SZXF1ZXN0EgoKAmlkGAEgASgEEhcKD2NvbnZlcnNhdGlvbl9pZBgCIAEoBBIUCgxhcHBsaWNhbnRfaWQYAyABKAQSGgoSYXBwbGljYW50X3VzZXJuYW1lGAQgASgJEhoKEmFwcGxpY2FudF9uaWNrbmFtZRgFIAEoCRIYChBhcHBsaWNhbnRfYXZhdGFyGAYgASgJEg8KB21lc3NhZ2UYByABKAkSMwoGc3RhdHVzGAggASgOMiMuc29jaWFsLmNoYXQuR3JvdXBKb2luUmVxdWVzdFN0YXR1cxITCgtyZXZpZXdlZF9ieRgJIAEoBBIvCgtyZXZpZXdlZF9hdBgKIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAipAIKD0dyb3VwSW52aXRhdGlvbhIKCgJpZBgBIAEoBBIXCg9jb252ZXJzYXRpb25faWQYAiABKAQSEgoKaW52aXRlcl9pZBgDIAEoBBIYChBpbnZpdGVyX3VzZXJuYW1lGAQgASgJEhgKEGludml0ZXJfbmlja25hbWUYBSABKAkSFgoOaW52aXRlcl9hdmF0YXIYBiABKAkSMgoGc3RhdHVzGAcgASgOMiIuc29jaWFsLmNoYXQuR3JvdXBJbnZpdGF0aW9uU3RhdHVzEi4KCmNyZWF0ZWRfYXQYCCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhIKCmdyb3VwX25hbWUYCSABKAkSFAoMZ3JvdXBfYXZhdGFyGAogASgJIkwKClNlbmRlckluZm8SCgoCaWQYASABKAQSEAoIdXNlcm5hbWUYAiABKAkSEAoIbmlja25hbWUYAyABKAkSDgoGYXZhdGFyGAQgASgJIuUBCgdNZXNzYWdlEgoKAmlkGAEgASgEEhAKCGxvY2FsX2lkGAcgASgEEhcKD2NvbnZlcnNhdGlvbl9pZBgCIAEoBBIRCglzZW5kZXJfaWQYAyABKAQSDwoHY29udGVudBgEIAEoCRImCgR0eXBlGAUgASgOMhguc29jaWFsLmNoYXQuTWVzc2FnZVR5cGUSLgoKY3JlYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASJwoGc2VuZGVyGAggASgLMhcuc29jaWFsLmNoYXQuU2VuZGVySW5mbyJmChJTZW5kTWVzc2FnZVJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEg8KB2NvbnRlbnQYAiABKAkSJgoEdHlwZRgDIAEoDjIYLnNvY2lhbC5jaGF0Lk1lc3NhZ2VUeXBlIjwKE1NlbmRNZXNzYWdlUmVzcG9uc2USJQoHbWVzc2FnZRgBIAEoCzIULnNvY2lhbC5jaGF0Lk1lc3NhZ2UiQwoaR2V0Q29udmVyc2F0aW9uTGlzdFJlcXVlc3QSEQoJcGFnZV9zaXplGAEgASgNEhIKCnBhZ2VfdG9rZW4YAiABKAkiaAobR2V0Q29udmVyc2F0aW9uTGlzdFJlc3BvbnNlEjAKDWNvbnZlcnNhdGlvbnMYASADKAsyGS5zb2NpYWwuY2hhdC5Db252ZXJzYXRpb24SFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIlcKFUdldE1lc3NhZ2VMaXN0UmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAQSEQoJcGFnZV9zaXplGAIgASgNEhIKCnBhZ2VfdG9rZW4YAyABKAkiWQoWR2V0TWVzc2FnZUxpc3RSZXNwb25zZRImCghtZXNzYWdlcxgBIAMoCzIULnNvY2lhbC5jaGF0Lk1lc3NhZ2USFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIl8KEU1hcmtBc1JlYWRSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBITCgttZXNzYWdlX2lkcxgCIAMoBBIcChRsYXN0X3JlYWRfbWVzc2FnZV9pZBgDIAEoBCJDChJNYXJrQXNSZWFkUmVzcG9uc2USFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEhQKDHVucmVhZF9jb3VudBgCIAEoDSLvAQoZQ3JlYXRlQ29udmVyc2F0aW9uUmVxdWVzdBIrCgR0eXBlGAEgASgOMh0uc29jaWFsLmNoYXQuQ29udmVyc2F0aW9uVHlwZRIXCg9wYXJ0aWNpcGFudF9pZHMYAiADKAQSDAoEbmFtZRgDIAEoCRIOCgZhdmF0YXIYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSKgoKZ3JvdXBfa2luZBgGIAEoDjIWLnNvY2lhbC5jaGF0Lkdyb3VwS2luZBItCglqb2luX21vZGUYByABKA4yGi5zb2NpYWwuY2hhdC5Hcm91cEpvaW5Nb2RlIk0KGkNyZWF0ZUNvbnZlcnNhdGlvblJlc3BvbnNlEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiI0CgtNZXNzYWdlUHVzaBIlCgdtZXNzYWdlGAEgASgLMhQuc29jaWFsLmNoYXQuTWVzc2FnZSJDChBDb252ZXJzYXRpb25QdXNoEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiIwChVHZXRHcm91cERldGFpbFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEIkkKFkdldEdyb3VwRGV0YWlsUmVzcG9uc2USLwoMY29udmVyc2F0aW9uGAEgASgLMhkuc29jaWFsLmNoYXQuQ29udmVyc2F0aW9uIpYBChlVcGRhdGVHcm91cFByb2ZpbGVSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBIMCgRuYW1lGAIgASgJEg4KBmF2YXRhchgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRItCglqb2luX21vZGUYBSABKA4yGi5zb2NpYWwuY2hhdC5Hcm91cEpvaW5Nb2RlIk0KGlVwZGF0ZUdyb3VwUHJvZmlsZVJlc3BvbnNlEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiJPCh5VcGRhdGVHcm91cEFubm91bmNlbWVudFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEhQKDGFubm91bmNlbWVudBgCIAEoCSJSCh9VcGRhdGVHcm91cEFubm91bmNlbWVudFJlc3BvbnNlEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiIxChZHZXRHcm91cE1lbWJlcnNSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBCJdChdHZXRHcm91cE1lbWJlcnNSZXNwb25zZRIXCg9jb252ZXJzYXRpb25faWQYASABKAQSKQoHbWVtYmVycxgCIAMoCzIYLnNvY2lhbC5jaGF0Lkdyb3VwTWVtYmVyInsKHFVwZGF0ZUdyb3VwTWVtYmVyUm9sZVJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEhYKDnRhcmdldF91c2VyX2lkGAIgASgEEioKBHJvbGUYAyABKA4yHC5zb2NpYWwuY2hhdC5Hcm91cE1lbWJlclJvbGUiYgodVXBkYXRlR3JvdXBNZW1iZXJSb2xlUmVzcG9uc2USFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEigKBm1lbWJlchgCIAEoCzIYLnNvY2lhbC5jaGF0Lkdyb3VwTWVtYmVyIlAKHVRyYW5zZmVyR3JvdXBPd25lcnNoaXBSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBIWCg50YXJnZXRfdXNlcl9pZBgCIAEoBCJRCh5UcmFuc2Zlckdyb3VwT3duZXJzaGlwUmVzcG9uc2USLwoMY29udmVyc2F0aW9uGAEgASgLMhkuc29jaWFsLmNoYXQuQ29udmVyc2F0aW9uIksKGFJlbW92ZUdyb3VwTWVtYmVyUmVxdWVzdBIXCg9jb252ZXJzYXRpb25faWQYASABKAQSFgoOdGFyZ2V0X3VzZXJfaWQYAiABKAQiTAoZUmVtb3ZlR3JvdXBNZW1iZXJSZXNwb25zZRIXCg9jb252ZXJzYXRpb25faWQYASABKAQSFgoOdGFyZ2V0X3VzZXJfaWQYAiABKAQiLAoRTGVhdmVHcm91cFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEIi0KEkxlYXZlR3JvdXBSZXNwb25zZRIXCg9jb252ZXJzYXRpb25faWQYASABKAQiLwoURGlzc29sdmVHcm91cFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEIjAKFURpc3NvbHZlR3JvdXBSZXNwb25zZRIXCg9jb252ZXJzYXRpb25faWQYASABKAQiQwoXQXBwbHlUb0pvaW5Hcm91cFJlcXVlc3QSFwoPY29udmVyc2F0aW9uX2lkGAEgASgEEg8KB21lc3NhZ2UYAiABKAkiTwoYQXBwbHlUb0pvaW5Hcm91cFJlc3BvbnNlEjMKDGpvaW5fcmVxdWVzdBgBIAEoCzIdLnNvY2lhbC5jaGF0Lkdyb3VwSm9pblJlcXVlc3QiNgobR2V0R3JvdXBKb2luUmVxdWVzdHNSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBCJoChxHZXRHcm91cEpvaW5SZXF1ZXN0c1Jlc3BvbnNlEhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBIvCghyZXF1ZXN0cxgCIAMoCzIdLnNvY2lhbC5jaGF0Lkdyb3VwSm9pblJlcXVlc3QiRAodUmV2aWV3R3JvdXBKb2luUmVxdWVzdFJlcXVlc3QSEgoKcmVxdWVzdF9pZBgBIAEoBBIPCgdhcHByb3ZlGAIgASgIIlUKHlJldmlld0dyb3VwSm9pblJlcXVlc3RSZXNwb25zZRIzCgxqb2luX3JlcXVlc3QYASABKAsyHS5zb2NpYWwuY2hhdC5Hcm91cEpvaW5SZXF1ZXN0IkMKFEludml0ZVRvR3JvdXBSZXF1ZXN0EhcKD2NvbnZlcnNhdGlvbl9pZBgBIAEoBBISCgppbnZpdGVlX2lkGAIgASgEIkkKFUludml0ZVRvR3JvdXBSZXNwb25zZRIwCgppbnZpdGF0aW9uGAEgASgLMhwuc29jaWFsLmNoYXQuR3JvdXBJbnZpdGF0aW9uIh4KHEdldE15R3JvdXBJbnZpdGF0aW9uc1JlcXVlc3QiUgodR2V0TXlHcm91cEludml0YXRpb25zUmVzcG9uc2USMQoLaW52aXRhdGlvbnMYASADKAsyHC5zb2NpYWwuY2hhdC5Hcm91cEludml0YXRpb24iRgodUmVzcG9uZEdyb3VwSW52aXRhdGlvblJlcXVlc3QSFQoNaW52aXRhdGlvbl9pZBgBIAEoBBIOCgZhY2NlcHQYAiABKAgigwEKHlJlc3BvbmRHcm91cEludml0YXRpb25SZXNwb25zZRIwCgppbnZpdGF0aW9uGAEgASgLMhwuc29jaWFsLmNoYXQuR3JvdXBJbnZpdGF0aW9uEi8KDGNvbnZlcnNhdGlvbhgCIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiJDChBHcm91cFVwZGF0ZWRQdXNoEi8KDGNvbnZlcnNhdGlvbhgBIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiJdChdHcm91cE1lbWJlcnNVcGRhdGVkUHVzaBIXCg9jb252ZXJzYXRpb25faWQYASABKAQSKQoHbWVtYmVycxgCIAMoCzIYLnNvY2lhbC5jaGF0Lkdyb3VwTWVtYmVyImsKG0dyb3VwSm9pblJlcXVlc3RVcGRhdGVkUHVzaBIXCg9jb252ZXJzYXRpb25faWQYASABKAQSMwoMam9pbl9yZXF1ZXN0GAIgASgLMh0uc29jaWFsLmNoYXQuR3JvdXBKb2luUmVxdWVzdCJ/ChpHcm91cEludml0YXRpb25VcGRhdGVkUHVzaBIwCgppbnZpdGF0aW9uGAEgASgLMhwuc29jaWFsLmNoYXQuR3JvdXBJbnZpdGF0aW9uEi8KDGNvbnZlcnNhdGlvbhgCIAEoCzIZLnNvY2lhbC5jaGF0LkNvbnZlcnNhdGlvbiJeCglUb3BpY1Jvb20SCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIMCgRpY29uGAQgASgJEhQKDG9ubGluZV9jb3VudBgFIAEoDSKsAQoQVG9waWNSb29tTWVzc2FnZRIKCgJpZBgBIAEoCRIPCgdyb29tX2lkGAIgASgJEhEKCXNlbmRlcl9pZBgDIAEoBBIPCgdjb250ZW50GAQgASgJEi4KCmNyZWF0ZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEicKBnNlbmRlchgGIAEoCzIXLnNvY2lhbC5jaGF0LlNlbmRlckluZm8iUQoPVG9waWNSb29tTWVtYmVyEgoKAmlkGAEgASgEEhAKCHVzZXJuYW1lGAIgASgJEhAKCG5pY2tuYW1lGAMgASgJEg4KBmF2YXRhchgEIAEoCSIZChdHZXRUb3BpY1Jvb21MaXN0UmVxdWVzdCJZChhHZXRUb3BpY1Jvb21MaXN0UmVzcG9uc2USJQoFcm9vbXMYASADKAsyFi5zb2NpYWwuY2hhdC5Ub3BpY1Jvb20SFgoOam9pbmVkX3Jvb21faWQYAiABKAkiJwoUSm9pblRvcGljUm9vbVJlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCSKkAQoVSm9pblRvcGljUm9vbVJlc3BvbnNlEiQKBHJvb20YASABKAsyFi5zb2NpYWwuY2hhdC5Ub3BpY1Jvb20SNgoPcmVjZW50X21lc3NhZ2VzGAIgAygLMh0uc29jaWFsLmNoYXQuVG9waWNSb29tTWVzc2FnZRItCgdtZW1iZXJzGAMgAygLMhwuc29jaWFsLmNoYXQuVG9waWNSb29tTWVtYmVyIigKFUxlYXZlVG9waWNSb29tUmVxdWVzdBIPCgdyb29tX2lkGAEgASgJIikKFkxlYXZlVG9waWNSb29tUmVzcG9uc2USDwoHcm9vbV9pZBgBIAEoCSI/ChtTZW5kVG9waWNSb29tTWVzc2FnZVJlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCRIPCgdjb250ZW50GAIgASgJIk4KHFNlbmRUb3BpY1Jvb21NZXNzYWdlUmVzcG9uc2USLgoHbWVzc2FnZRgBIAEoCzIdLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lc3NhZ2UiLQoaR2V0VG9waWNSb29tTWVtYmVyc1JlcXVlc3QSDwoHcm9vbV9pZBgBIAEoCSJdChtHZXRUb3BpY1Jvb21NZW1iZXJzUmVzcG9uc2USDwoHcm9vbV9pZBgBIAEoCRItCgdtZW1iZXJzGAIgAygLMhwuc29jaWFsLmNoYXQuVG9waWNSb29tTWVtYmVyIkYKFFRvcGljUm9vbU1lc3NhZ2VQdXNoEi4KB21lc3NhZ2UYASABKAsyHS5zb2NpYWwuY2hhdC5Ub3BpY1Jvb21NZXNzYWdlImwKFFRvcGljUm9vbU1lbWJlcnNQdXNoEg8KB3Jvb21faWQYASABKAkSLQoHbWVtYmVycxgCIAMoCzIcLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lbWJlchIUCgxvbmxpbmVfY291bnQYAyABKA0i4CEKC0NoYXRQYXlsb2FkEjcKDHNlbmRfbWVzc2FnZRgBIAEoCzIfLnNvY2lhbC5jaGF0LlNlbmRNZXNzYWdlUmVxdWVzdEgAEkEKFXNlbmRfbWVzc2FnZV9yZXNwb25zZRgCIAEoCzIgLnNvY2lhbC5jaGF0LlNlbmRNZXNzYWdlUmVzcG9uc2VIABJIChVnZXRfY29udmVyc2F0aW9uX2xpc3QYAyABKAsyJy5zb2NpYWwuY2hhdC5HZXRDb252ZXJzYXRpb25MaXN0UmVxdWVzdEgAElIKHmdldF9jb252ZXJzYXRpb25fbGlzdF9yZXNwb25zZRgEIAEoCzIoLnNvY2lhbC5jaGF0LkdldENvbnZlcnNhdGlvbkxpc3RSZXNwb25zZUgAEj4KEGdldF9tZXNzYWdlX2xpc3QYBSABKAsyIi5zb2NpYWwuY2hhdC5HZXRNZXNzYWdlTGlzdFJlcXVlc3RIABJIChlnZXRfbWVzc2FnZV9saXN0X3Jlc3BvbnNlGAYgASgLMiMuc29jaWFsLmNoYXQuR2V0TWVzc2FnZUxpc3RSZXNwb25zZUgAEjYKDG1hcmtfYXNfcmVhZBgHIAEoCzIeLnNvY2lhbC5jaGF0Lk1hcmtBc1JlYWRSZXF1ZXN0SAASQAoVbWFya19hc19yZWFkX3Jlc3BvbnNlGAggASgLMh8uc29jaWFsLmNoYXQuTWFya0FzUmVhZFJlc3BvbnNlSAASRQoTY3JlYXRlX2NvbnZlcnNhdGlvbhgJIAEoCzImLnNvY2lhbC5jaGF0LkNyZWF0ZUNvbnZlcnNhdGlvblJlcXVlc3RIABJPChxjcmVhdGVfY29udmVyc2F0aW9uX3Jlc3BvbnNlGAogASgLMicuc29jaWFsLmNoYXQuQ3JlYXRlQ29udmVyc2F0aW9uUmVzcG9uc2VIABIwCgxtZXNzYWdlX3B1c2gYCyABKAsyGC5zb2NpYWwuY2hhdC5NZXNzYWdlUHVzaEgAEjoKEWNvbnZlcnNhdGlvbl9wdXNoGAwgASgLMh0uc29jaWFsLmNoYXQuQ29udmVyc2F0aW9uUHVzaEgAEj4KEGdldF9ncm91cF9kZXRhaWwYGSABKAsyIi5zb2NpYWwuY2hhdC5HZXRHcm91cERldGFpbFJlcXVlc3RIABJIChlnZXRfZ3JvdXBfZGV0YWlsX3Jlc3BvbnNlGBogASgLMiMuc29jaWFsLmNoYXQuR2V0R3JvdXBEZXRhaWxSZXNwb25zZUgAEkYKFHVwZGF0ZV9ncm91cF9wcm9maWxlGBsgASgLMiYuc29jaWFsLmNoYXQuVXBkYXRlR3JvdXBQcm9maWxlUmVxdWVzdEgAElAKHXVwZGF0ZV9ncm91cF9wcm9maWxlX3Jlc3BvbnNlGBwgASgLMicuc29jaWFsLmNoYXQuVXBkYXRlR3JvdXBQcm9maWxlUmVzcG9uc2VIABJQChl1cGRhdGVfZ3JvdXBfYW5ub3VuY2VtZW50GB0gASgLMisuc29jaWFsLmNoYXQuVXBkYXRlR3JvdXBBbm5vdW5jZW1lbnRSZXF1ZXN0SAASWgoidXBkYXRlX2dyb3VwX2Fubm91bmNlbWVudF9yZXNwb25zZRgeIAEoCzIsLnNvY2lhbC5jaGF0LlVwZGF0ZUdyb3VwQW5ub3VuY2VtZW50UmVzcG9uc2VIABJAChFnZXRfZ3JvdXBfbWVtYmVycxgfIAEoCzIjLnNvY2lhbC5jaGF0LkdldEdyb3VwTWVtYmVyc1JlcXVlc3RIABJKChpnZXRfZ3JvdXBfbWVtYmVyc19yZXNwb25zZRggIAEoCzIkLnNvY2lhbC5jaGF0LkdldEdyb3VwTWVtYmVyc1Jlc3BvbnNlSAASTQoYdXBkYXRlX2dyb3VwX21lbWJlcl9yb2xlGCEgASgLMikuc29jaWFsLmNoYXQuVXBkYXRlR3JvdXBNZW1iZXJSb2xlUmVxdWVzdEgAElcKIXVwZGF0ZV9ncm91cF9tZW1iZXJfcm9sZV9yZXNwb25zZRgiIAEoCzIqLnNvY2lhbC5jaGF0LlVwZGF0ZUdyb3VwTWVtYmVyUm9sZVJlc3BvbnNlSAASTgoYdHJhbnNmZXJfZ3JvdXBfb3duZXJzaGlwGCMgASgLMiouc29jaWFsLmNoYXQuVHJhbnNmZXJHcm91cE93bmVyc2hpcFJlcXVlc3RIABJYCiF0cmFuc2Zlcl9ncm91cF9vd25lcnNoaXBfcmVzcG9uc2UYJCABKAsyKy5zb2NpYWwuY2hhdC5UcmFuc2Zlckdyb3VwT3duZXJzaGlwUmVzcG9uc2VIABJEChNyZW1vdmVfZ3JvdXBfbWVtYmVyGCUgASgLMiUuc29jaWFsLmNoYXQuUmVtb3ZlR3JvdXBNZW1iZXJSZXF1ZXN0SAASTgoccmVtb3ZlX2dyb3VwX21lbWJlcl9yZXNwb25zZRgmIAEoCzImLnNvY2lhbC5jaGF0LlJlbW92ZUdyb3VwTWVtYmVyUmVzcG9uc2VIABI1CgtsZWF2ZV9ncm91cBgnIAEoCzIeLnNvY2lhbC5jaGF0LkxlYXZlR3JvdXBSZXF1ZXN0SAASPwoUbGVhdmVfZ3JvdXBfcmVzcG9uc2UYKCABKAsyHy5zb2NpYWwuY2hhdC5MZWF2ZUdyb3VwUmVzcG9uc2VIABI7Cg5kaXNzb2x2ZV9ncm91cBgpIAEoCzIhLnNvY2lhbC5jaGF0LkRpc3NvbHZlR3JvdXBSZXF1ZXN0SAASRQoXZGlzc29sdmVfZ3JvdXBfcmVzcG9uc2UYKiABKAsyIi5zb2NpYWwuY2hhdC5EaXNzb2x2ZUdyb3VwUmVzcG9uc2VIABJDChNhcHBseV90b19qb2luX2dyb3VwGCsgASgLMiQuc29jaWFsLmNoYXQuQXBwbHlUb0pvaW5Hcm91cFJlcXVlc3RIABJNChxhcHBseV90b19qb2luX2dyb3VwX3Jlc3BvbnNlGCwgASgLMiUuc29jaWFsLmNoYXQuQXBwbHlUb0pvaW5Hcm91cFJlc3BvbnNlSAASSwoXZ2V0X2dyb3VwX2pvaW5fcmVxdWVzdHMYLSABKAsyKC5zb2NpYWwuY2hhdC5HZXRHcm91cEpvaW5SZXF1ZXN0c1JlcXVlc3RIABJVCiBnZXRfZ3JvdXBfam9pbl9yZXF1ZXN0c19yZXNwb25zZRguIAEoCzIpLnNvY2lhbC5jaGF0LkdldEdyb3VwSm9pblJlcXVlc3RzUmVzcG9uc2VIABJPChlyZXZpZXdfZ3JvdXBfam9pbl9yZXF1ZXN0GC8gASgLMiouc29jaWFsLmNoYXQuUmV2aWV3R3JvdXBKb2luUmVxdWVzdFJlcXVlc3RIABJZCiJyZXZpZXdfZ3JvdXBfam9pbl9yZXF1ZXN0X3Jlc3BvbnNlGDAgASgLMisuc29jaWFsLmNoYXQuUmV2aWV3R3JvdXBKb2luUmVxdWVzdFJlc3BvbnNlSAASPAoPaW52aXRlX3RvX2dyb3VwGDEgASgLMiEuc29jaWFsLmNoYXQuSW52aXRlVG9Hcm91cFJlcXVlc3RIABJGChhpbnZpdGVfdG9fZ3JvdXBfcmVzcG9uc2UYMiABKAsyIi5zb2NpYWwuY2hhdC5JbnZpdGVUb0dyb3VwUmVzcG9uc2VIABJNChhnZXRfbXlfZ3JvdXBfaW52aXRhdGlvbnMYMyABKAsyKS5zb2NpYWwuY2hhdC5HZXRNeUdyb3VwSW52aXRhdGlvbnNSZXF1ZXN0SAASVwohZ2V0X215X2dyb3VwX2ludml0YXRpb25zX3Jlc3BvbnNlGDQgASgLMiouc29jaWFsLmNoYXQuR2V0TXlHcm91cEludml0YXRpb25zUmVzcG9uc2VIABJOChhyZXNwb25kX2dyb3VwX2ludml0YXRpb24YNSABKAsyKi5zb2NpYWwuY2hhdC5SZXNwb25kR3JvdXBJbnZpdGF0aW9uUmVxdWVzdEgAElgKIXJlc3BvbmRfZ3JvdXBfaW52aXRhdGlvbl9yZXNwb25zZRg2IAEoCzIrLnNvY2lhbC5jaGF0LlJlc3BvbmRHcm91cEludml0YXRpb25SZXNwb25zZUgAEjsKEmdyb3VwX3VwZGF0ZWRfcHVzaBg3IAEoCzIdLnNvY2lhbC5jaGF0Lkdyb3VwVXBkYXRlZFB1c2hIABJKChpncm91cF9tZW1iZXJzX3VwZGF0ZWRfcHVzaBg4IAEoCzIkLnNvY2lhbC5jaGF0Lkdyb3VwTWVtYmVyc1VwZGF0ZWRQdXNoSAASUwofZ3JvdXBfam9pbl9yZXF1ZXN0X3VwZGF0ZWRfcHVzaBg5IAEoCzIoLnNvY2lhbC5jaGF0Lkdyb3VwSm9pblJlcXVlc3RVcGRhdGVkUHVzaEgAElAKHWdyb3VwX2ludml0YXRpb25fdXBkYXRlZF9wdXNoGDogASgLMicuc29jaWFsLmNoYXQuR3JvdXBJbnZpdGF0aW9uVXBkYXRlZFB1c2hIABJDChNnZXRfdG9waWNfcm9vbV9saXN0GA0gASgLMiQuc29jaWFsLmNoYXQuR2V0VG9waWNSb29tTGlzdFJlcXVlc3RIABJNChxnZXRfdG9waWNfcm9vbV9saXN0X3Jlc3BvbnNlGA4gASgLMiUuc29jaWFsLmNoYXQuR2V0VG9waWNSb29tTGlzdFJlc3BvbnNlSAASPAoPam9pbl90b3BpY19yb29tGA8gASgLMiEuc29jaWFsLmNoYXQuSm9pblRvcGljUm9vbVJlcXVlc3RIABJGChhqb2luX3RvcGljX3Jvb21fcmVzcG9uc2UYECABKAsyIi5zb2NpYWwuY2hhdC5Kb2luVG9waWNSb29tUmVzcG9uc2VIABI+ChBsZWF2ZV90b3BpY19yb29tGBEgASgLMiIuc29jaWFsLmNoYXQuTGVhdmVUb3BpY1Jvb21SZXF1ZXN0SAASSAoZbGVhdmVfdG9waWNfcm9vbV9yZXNwb25zZRgSIAEoCzIjLnNvY2lhbC5jaGF0LkxlYXZlVG9waWNSb29tUmVzcG9uc2VIABJLChdzZW5kX3RvcGljX3Jvb21fbWVzc2FnZRgTIAEoCzIoLnNvY2lhbC5jaGF0LlNlbmRUb3BpY1Jvb21NZXNzYWdlUmVxdWVzdEgAElUKIHNlbmRfdG9waWNfcm9vbV9tZXNzYWdlX3Jlc3BvbnNlGBQgASgLMikuc29jaWFsLmNoYXQuU2VuZFRvcGljUm9vbU1lc3NhZ2VSZXNwb25zZUgAEkkKFmdldF90b3BpY19yb29tX21lbWJlcnMYFSABKAsyJy5zb2NpYWwuY2hhdC5HZXRUb3BpY1Jvb21NZW1iZXJzUmVxdWVzdEgAElMKH2dldF90b3BpY19yb29tX21lbWJlcnNfcmVzcG9uc2UYFiABKAsyKC5zb2NpYWwuY2hhdC5HZXRUb3BpY1Jvb21NZW1iZXJzUmVzcG9uc2VIABJEChd0b3BpY19yb29tX21lc3NhZ2VfcHVzaBgXIAEoCzIhLnNvY2lhbC5jaGF0LlRvcGljUm9vbU1lc3NhZ2VQdXNoSAASRAoXdG9waWNfcm9vbV9tZW1iZXJzX3B1c2gYGCABKAsyIS5zb2NpYWwuY2hhdC5Ub3BpY1Jvb21NZW1iZXJzUHVzaEgAQgkKB3BheWxvYWQqcQoQQ29udmVyc2F0aW9uVHlwZRIhCh1DT05WRVJTQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEh0KGUNPTlZFUlNBVElPTl9UWVBFX1BSSVZBVEUQARIbChdDT05WRVJTQVRJT05fVFlQRV9HUk9VUBACKl8KCUdyb3VwS2luZBIaChZHUk9VUF9LSU5EX1VOU1BFQ0lGSUVEEAASFwoTR1JPVVBfS0lORF9PRkZJQ0lBTBABEh0KGUdST1VQX0tJTkRfUExBWUVSX0NSRUFURUQQAiqHAQoNR3JvdXBKb2luTW9kZRIfChtHUk9VUF9KT0lOX01PREVfVU5TUEVDSUZJRUQQABIbChdHUk9VUF9KT0lOX01PREVfUFJJVkFURRABEhwKGEdST1VQX0pPSU5fTU9ERV9BUFBST1ZBTBACEhoKFkdST1VQX0pPSU5fTU9ERV9QVUJMSUMQAypgCgtHcm91cFN0YXR1cxIcChhHUk9VUF9TVEFUVVNfVU5TUEVDSUZJRUQQABIXChNHUk9VUF9TVEFUVVNfQUNUSVZFEAESGgoWR1JPVVBfU1RBVFVTX0RJU1NPTFZFRBACKowBCg9Hcm91cE1lbWJlclJvbGUSIQodR1JPVVBfTUVNQkVSX1JPTEVfVU5TUEVDSUZJRUQQABIbChdHUk9VUF9NRU1CRVJfUk9MRV9PV05FUhABEhsKF0dST1VQX01FTUJFUl9ST0xFX0FETUlOEAISHAoYR1JPVVBfTUVNQkVSX1JPTEVfTUVNQkVSEAMq4wEKFkdyb3VwSm9pblJlcXVlc3RTdGF0dXMSKQolR1JPVVBfSk9JTl9SRVFVRVNUX1NUQVRVU19VTlNQRUNJRklFRBAAEiUKIUdST1VQX0pPSU5fUkVRVUVTVF9TVEFUVVNfUEVORElORxABEiYKIkdST1VQX0pPSU5fUkVRVUVTVF9TVEFUVVNfQVBQUk9WRUQQAhImCiJHUk9VUF9KT0lOX1JFUVVFU1RfU1RBVFVTX1JFSkVDVEVEEAMSJwojR1JPVVBfSk9JTl9SRVFVRVNUX1NUQVRVU19DQU5DRUxMRUQQBCr9AQoVR3JvdXBJbnZpdGF0aW9uU3RhdHVzEicKI0dST1VQX0lOVklUQVRJT05fU1RBVFVTX1VOU1BFQ0lGSUVEEAASIwofR1JPVVBfSU5WSVRBVElPTl9TVEFUVVNfUEVORElORxABEiQKIEdST1VQX0lOVklUQVRJT05fU1RBVFVTX0FDQ0VQVEVEEAISJAogR1JPVVBfSU5WSVRBVElPTl9TVEFUVVNfUkVKRUNURUQQAxIlCiFHUk9VUF9JTlZJVEFUSU9OX1NUQVRVU19DQU5DRUxMRUQQBBIjCh9HUk9VUF9JTlZJVEFUSU9OX1NUQVRVU19FWFBJUkVEEAUqcwoLTWVzc2FnZVR5cGUSHAoYTUVTU0FHRV9UWVBFX1VOU1BFQ0lGSUVEEAASFQoRTUVTU0FHRV9UWVBFX1RFWFQQARIWChJNRVNTQUdFX1RZUEVfSU1BR0UQAhIXChNNRVNTQUdFX1RZUEVfU1lTVEVNEANCJVojc29jaWFsX2FwcC9pbnRlcm5hbC9wcm90by9jaGF0O2NoYXRiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * 基础会话结构
@@ -60,6 +60,46 @@ export type Conversation = Message$1<"social.chat.Conversation"> & {
    * @generated from field: google.protobuf.Timestamp updated_at = 7;
    */
   updatedAt?: Timestamp;
+
+  /**
+   * @generated from field: string description = 8;
+   */
+  description: string;
+
+  /**
+   * @generated from field: string announcement = 9;
+   */
+  announcement: string;
+
+  /**
+   * @generated from field: social.chat.GroupKind group_kind = 10;
+   */
+  groupKind: GroupKind;
+
+  /**
+   * @generated from field: social.chat.GroupJoinMode join_mode = 11;
+   */
+  joinMode: GroupJoinMode;
+
+  /**
+   * @generated from field: social.chat.GroupStatus status = 12;
+   */
+  status: GroupStatus;
+
+  /**
+   * @generated from field: uint64 owner_id = 13;
+   */
+  ownerId: bigint;
+
+  /**
+   * @generated from field: social.chat.GroupMemberRole my_role = 14;
+   */
+  myRole: GroupMemberRole;
+
+  /**
+   * @generated from field: uint32 member_count = 15;
+   */
+  memberCount: number;
 };
 
 /**
@@ -68,6 +108,177 @@ export type Conversation = Message$1<"social.chat.Conversation"> & {
  */
 export const ConversationSchema: GenMessage<Conversation> = /*@__PURE__*/
   messageDesc(file_chat_chat, 0);
+
+/**
+ * @generated from message social.chat.GroupMember
+ */
+export type GroupMember = Message$1<"social.chat.GroupMember"> & {
+  /**
+   * @generated from field: uint64 user_id = 1;
+   */
+  userId: bigint;
+
+  /**
+   * @generated from field: string username = 2;
+   */
+  username: string;
+
+  /**
+   * @generated from field: string nickname = 3;
+   */
+  nickname: string;
+
+  /**
+   * @generated from field: string avatar = 4;
+   */
+  avatar: string;
+
+  /**
+   * @generated from field: social.chat.GroupMemberRole role = 5;
+   */
+  role: GroupMemberRole;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp joined_at = 6;
+   */
+  joinedAt?: Timestamp;
+};
+
+/**
+ * Describes the message social.chat.GroupMember.
+ * Use `create(GroupMemberSchema)` to create a new message.
+ */
+export const GroupMemberSchema: GenMessage<GroupMember> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 1);
+
+/**
+ * @generated from message social.chat.GroupJoinRequest
+ */
+export type GroupJoinRequest = Message$1<"social.chat.GroupJoinRequest"> & {
+  /**
+   * @generated from field: uint64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: uint64 conversation_id = 2;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: uint64 applicant_id = 3;
+   */
+  applicantId: bigint;
+
+  /**
+   * @generated from field: string applicant_username = 4;
+   */
+  applicantUsername: string;
+
+  /**
+   * @generated from field: string applicant_nickname = 5;
+   */
+  applicantNickname: string;
+
+  /**
+   * @generated from field: string applicant_avatar = 6;
+   */
+  applicantAvatar: string;
+
+  /**
+   * @generated from field: string message = 7;
+   */
+  message: string;
+
+  /**
+   * @generated from field: social.chat.GroupJoinRequestStatus status = 8;
+   */
+  status: GroupJoinRequestStatus;
+
+  /**
+   * @generated from field: uint64 reviewed_by = 9;
+   */
+  reviewedBy: bigint;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp reviewed_at = 10;
+   */
+  reviewedAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 11;
+   */
+  createdAt?: Timestamp;
+};
+
+/**
+ * Describes the message social.chat.GroupJoinRequest.
+ * Use `create(GroupJoinRequestSchema)` to create a new message.
+ */
+export const GroupJoinRequestSchema: GenMessage<GroupJoinRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 2);
+
+/**
+ * @generated from message social.chat.GroupInvitation
+ */
+export type GroupInvitation = Message$1<"social.chat.GroupInvitation"> & {
+  /**
+   * @generated from field: uint64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: uint64 conversation_id = 2;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: uint64 inviter_id = 3;
+   */
+  inviterId: bigint;
+
+  /**
+   * @generated from field: string inviter_username = 4;
+   */
+  inviterUsername: string;
+
+  /**
+   * @generated from field: string inviter_nickname = 5;
+   */
+  inviterNickname: string;
+
+  /**
+   * @generated from field: string inviter_avatar = 6;
+   */
+  inviterAvatar: string;
+
+  /**
+   * @generated from field: social.chat.GroupInvitationStatus status = 7;
+   */
+  status: GroupInvitationStatus;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 8;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * @generated from field: string group_name = 9;
+   */
+  groupName: string;
+
+  /**
+   * @generated from field: string group_avatar = 10;
+   */
+  groupAvatar: string;
+};
+
+/**
+ * Describes the message social.chat.GroupInvitation.
+ * Use `create(GroupInvitationSchema)` to create a new message.
+ */
+export const GroupInvitationSchema: GenMessage<GroupInvitation> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 3);
 
 /**
  * @generated from message social.chat.SenderInfo
@@ -99,7 +310,7 @@ export type SenderInfo = Message$1<"social.chat.SenderInfo"> & {
  * Use `create(SenderInfoSchema)` to create a new message.
  */
 export const SenderInfoSchema: GenMessage<SenderInfo> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 1);
+  messageDesc(file_chat_chat, 4);
 
 /**
  * 基础消息结构
@@ -155,7 +366,7 @@ export type Message = Message$1<"social.chat.Message"> & {
  * Use `create(MessageSchema)` to create a new message.
  */
 export const MessageSchema: GenMessage<Message> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 2);
+  messageDesc(file_chat_chat, 5);
 
 /**
  * 1. 发送消息
@@ -186,7 +397,7 @@ export type SendMessageRequest = Message$1<"social.chat.SendMessageRequest"> & {
  * Use `create(SendMessageRequestSchema)` to create a new message.
  */
 export const SendMessageRequestSchema: GenMessage<SendMessageRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 3);
+  messageDesc(file_chat_chat, 6);
 
 /**
  * @generated from message social.chat.SendMessageResponse
@@ -205,7 +416,7 @@ export type SendMessageResponse = Message$1<"social.chat.SendMessageResponse"> &
  * Use `create(SendMessageResponseSchema)` to create a new message.
  */
 export const SendMessageResponseSchema: GenMessage<SendMessageResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 4);
+  messageDesc(file_chat_chat, 7);
 
 /**
  * 2. 获取会话列表 (支持分页)
@@ -233,7 +444,7 @@ export type GetConversationListRequest = Message$1<"social.chat.GetConversationL
  * Use `create(GetConversationListRequestSchema)` to create a new message.
  */
 export const GetConversationListRequestSchema: GenMessage<GetConversationListRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 5);
+  messageDesc(file_chat_chat, 8);
 
 /**
  * @generated from message social.chat.GetConversationListResponse
@@ -257,7 +468,7 @@ export type GetConversationListResponse = Message$1<"social.chat.GetConversation
  * Use `create(GetConversationListResponseSchema)` to create a new message.
  */
 export const GetConversationListResponseSchema: GenMessage<GetConversationListResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 6);
+  messageDesc(file_chat_chat, 9);
 
 /**
  * 3. 获取消息列表 (支持分页)
@@ -290,7 +501,7 @@ export type GetMessageListRequest = Message$1<"social.chat.GetMessageListRequest
  * Use `create(GetMessageListRequestSchema)` to create a new message.
  */
 export const GetMessageListRequestSchema: GenMessage<GetMessageListRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 7);
+  messageDesc(file_chat_chat, 10);
 
 /**
  * @generated from message social.chat.GetMessageListResponse
@@ -314,7 +525,7 @@ export type GetMessageListResponse = Message$1<"social.chat.GetMessageListRespon
  * Use `create(GetMessageListResponseSchema)` to create a new message.
  */
 export const GetMessageListResponseSchema: GenMessage<GetMessageListResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 8);
+  messageDesc(file_chat_chat, 11);
 
 /**
  * 4. 标记已读
@@ -348,7 +559,7 @@ export type MarkAsReadRequest = Message$1<"social.chat.MarkAsReadRequest"> & {
  * Use `create(MarkAsReadRequestSchema)` to create a new message.
  */
 export const MarkAsReadRequestSchema: GenMessage<MarkAsReadRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 9);
+  messageDesc(file_chat_chat, 12);
 
 /**
  * @generated from message social.chat.MarkAsReadResponse
@@ -370,7 +581,7 @@ export type MarkAsReadResponse = Message$1<"social.chat.MarkAsReadResponse"> & {
  * Use `create(MarkAsReadResponseSchema)` to create a new message.
  */
 export const MarkAsReadResponseSchema: GenMessage<MarkAsReadResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 10);
+  messageDesc(file_chat_chat, 13);
 
 /**
  * 5. 创建会话 (单聊或群聊)
@@ -403,6 +614,21 @@ export type CreateConversationRequest = Message$1<"social.chat.CreateConversatio
    * @generated from field: string avatar = 4;
    */
   avatar: string;
+
+  /**
+   * @generated from field: string description = 5;
+   */
+  description: string;
+
+  /**
+   * @generated from field: social.chat.GroupKind group_kind = 6;
+   */
+  groupKind: GroupKind;
+
+  /**
+   * @generated from field: social.chat.GroupJoinMode join_mode = 7;
+   */
+  joinMode: GroupJoinMode;
 };
 
 /**
@@ -410,7 +636,7 @@ export type CreateConversationRequest = Message$1<"social.chat.CreateConversatio
  * Use `create(CreateConversationRequestSchema)` to create a new message.
  */
 export const CreateConversationRequestSchema: GenMessage<CreateConversationRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 11);
+  messageDesc(file_chat_chat, 14);
 
 /**
  * @generated from message social.chat.CreateConversationResponse
@@ -427,7 +653,7 @@ export type CreateConversationResponse = Message$1<"social.chat.CreateConversati
  * Use `create(CreateConversationResponseSchema)` to create a new message.
  */
 export const CreateConversationResponseSchema: GenMessage<CreateConversationResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 12);
+  messageDesc(file_chat_chat, 15);
 
 /**
  * 6. 消息推送 (服务端 -> 客户端)
@@ -446,7 +672,7 @@ export type MessagePush = Message$1<"social.chat.MessagePush"> & {
  * Use `create(MessagePushSchema)` to create a new message.
  */
 export const MessagePushSchema: GenMessage<MessagePush> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 13);
+  messageDesc(file_chat_chat, 16);
 
 /**
  * @generated from message social.chat.ConversationPush
@@ -463,7 +689,686 @@ export type ConversationPush = Message$1<"social.chat.ConversationPush"> & {
  * Use `create(ConversationPushSchema)` to create a new message.
  */
 export const ConversationPushSchema: GenMessage<ConversationPush> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 14);
+  messageDesc(file_chat_chat, 17);
+
+/**
+ * @generated from message social.chat.GetGroupDetailRequest
+ */
+export type GetGroupDetailRequest = Message$1<"social.chat.GetGroupDetailRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+};
+
+/**
+ * Describes the message social.chat.GetGroupDetailRequest.
+ * Use `create(GetGroupDetailRequestSchema)` to create a new message.
+ */
+export const GetGroupDetailRequestSchema: GenMessage<GetGroupDetailRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 18);
+
+/**
+ * @generated from message social.chat.GetGroupDetailResponse
+ */
+export type GetGroupDetailResponse = Message$1<"social.chat.GetGroupDetailResponse"> & {
+  /**
+   * @generated from field: social.chat.Conversation conversation = 1;
+   */
+  conversation?: Conversation;
+};
+
+/**
+ * Describes the message social.chat.GetGroupDetailResponse.
+ * Use `create(GetGroupDetailResponseSchema)` to create a new message.
+ */
+export const GetGroupDetailResponseSchema: GenMessage<GetGroupDetailResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 19);
+
+/**
+ * @generated from message social.chat.UpdateGroupProfileRequest
+ */
+export type UpdateGroupProfileRequest = Message$1<"social.chat.UpdateGroupProfileRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string avatar = 3;
+   */
+  avatar: string;
+
+  /**
+   * @generated from field: string description = 4;
+   */
+  description: string;
+
+  /**
+   * @generated from field: social.chat.GroupJoinMode join_mode = 5;
+   */
+  joinMode: GroupJoinMode;
+};
+
+/**
+ * Describes the message social.chat.UpdateGroupProfileRequest.
+ * Use `create(UpdateGroupProfileRequestSchema)` to create a new message.
+ */
+export const UpdateGroupProfileRequestSchema: GenMessage<UpdateGroupProfileRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 20);
+
+/**
+ * @generated from message social.chat.UpdateGroupProfileResponse
+ */
+export type UpdateGroupProfileResponse = Message$1<"social.chat.UpdateGroupProfileResponse"> & {
+  /**
+   * @generated from field: social.chat.Conversation conversation = 1;
+   */
+  conversation?: Conversation;
+};
+
+/**
+ * Describes the message social.chat.UpdateGroupProfileResponse.
+ * Use `create(UpdateGroupProfileResponseSchema)` to create a new message.
+ */
+export const UpdateGroupProfileResponseSchema: GenMessage<UpdateGroupProfileResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 21);
+
+/**
+ * @generated from message social.chat.UpdateGroupAnnouncementRequest
+ */
+export type UpdateGroupAnnouncementRequest = Message$1<"social.chat.UpdateGroupAnnouncementRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: string announcement = 2;
+   */
+  announcement: string;
+};
+
+/**
+ * Describes the message social.chat.UpdateGroupAnnouncementRequest.
+ * Use `create(UpdateGroupAnnouncementRequestSchema)` to create a new message.
+ */
+export const UpdateGroupAnnouncementRequestSchema: GenMessage<UpdateGroupAnnouncementRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 22);
+
+/**
+ * @generated from message social.chat.UpdateGroupAnnouncementResponse
+ */
+export type UpdateGroupAnnouncementResponse = Message$1<"social.chat.UpdateGroupAnnouncementResponse"> & {
+  /**
+   * @generated from field: social.chat.Conversation conversation = 1;
+   */
+  conversation?: Conversation;
+};
+
+/**
+ * Describes the message social.chat.UpdateGroupAnnouncementResponse.
+ * Use `create(UpdateGroupAnnouncementResponseSchema)` to create a new message.
+ */
+export const UpdateGroupAnnouncementResponseSchema: GenMessage<UpdateGroupAnnouncementResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 23);
+
+/**
+ * @generated from message social.chat.GetGroupMembersRequest
+ */
+export type GetGroupMembersRequest = Message$1<"social.chat.GetGroupMembersRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+};
+
+/**
+ * Describes the message social.chat.GetGroupMembersRequest.
+ * Use `create(GetGroupMembersRequestSchema)` to create a new message.
+ */
+export const GetGroupMembersRequestSchema: GenMessage<GetGroupMembersRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 24);
+
+/**
+ * @generated from message social.chat.GetGroupMembersResponse
+ */
+export type GetGroupMembersResponse = Message$1<"social.chat.GetGroupMembersResponse"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: repeated social.chat.GroupMember members = 2;
+   */
+  members: GroupMember[];
+};
+
+/**
+ * Describes the message social.chat.GetGroupMembersResponse.
+ * Use `create(GetGroupMembersResponseSchema)` to create a new message.
+ */
+export const GetGroupMembersResponseSchema: GenMessage<GetGroupMembersResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 25);
+
+/**
+ * @generated from message social.chat.UpdateGroupMemberRoleRequest
+ */
+export type UpdateGroupMemberRoleRequest = Message$1<"social.chat.UpdateGroupMemberRoleRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: uint64 target_user_id = 2;
+   */
+  targetUserId: bigint;
+
+  /**
+   * @generated from field: social.chat.GroupMemberRole role = 3;
+   */
+  role: GroupMemberRole;
+};
+
+/**
+ * Describes the message social.chat.UpdateGroupMemberRoleRequest.
+ * Use `create(UpdateGroupMemberRoleRequestSchema)` to create a new message.
+ */
+export const UpdateGroupMemberRoleRequestSchema: GenMessage<UpdateGroupMemberRoleRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 26);
+
+/**
+ * @generated from message social.chat.UpdateGroupMemberRoleResponse
+ */
+export type UpdateGroupMemberRoleResponse = Message$1<"social.chat.UpdateGroupMemberRoleResponse"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: social.chat.GroupMember member = 2;
+   */
+  member?: GroupMember;
+};
+
+/**
+ * Describes the message social.chat.UpdateGroupMemberRoleResponse.
+ * Use `create(UpdateGroupMemberRoleResponseSchema)` to create a new message.
+ */
+export const UpdateGroupMemberRoleResponseSchema: GenMessage<UpdateGroupMemberRoleResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 27);
+
+/**
+ * @generated from message social.chat.TransferGroupOwnershipRequest
+ */
+export type TransferGroupOwnershipRequest = Message$1<"social.chat.TransferGroupOwnershipRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: uint64 target_user_id = 2;
+   */
+  targetUserId: bigint;
+};
+
+/**
+ * Describes the message social.chat.TransferGroupOwnershipRequest.
+ * Use `create(TransferGroupOwnershipRequestSchema)` to create a new message.
+ */
+export const TransferGroupOwnershipRequestSchema: GenMessage<TransferGroupOwnershipRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 28);
+
+/**
+ * @generated from message social.chat.TransferGroupOwnershipResponse
+ */
+export type TransferGroupOwnershipResponse = Message$1<"social.chat.TransferGroupOwnershipResponse"> & {
+  /**
+   * @generated from field: social.chat.Conversation conversation = 1;
+   */
+  conversation?: Conversation;
+};
+
+/**
+ * Describes the message social.chat.TransferGroupOwnershipResponse.
+ * Use `create(TransferGroupOwnershipResponseSchema)` to create a new message.
+ */
+export const TransferGroupOwnershipResponseSchema: GenMessage<TransferGroupOwnershipResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 29);
+
+/**
+ * @generated from message social.chat.RemoveGroupMemberRequest
+ */
+export type RemoveGroupMemberRequest = Message$1<"social.chat.RemoveGroupMemberRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: uint64 target_user_id = 2;
+   */
+  targetUserId: bigint;
+};
+
+/**
+ * Describes the message social.chat.RemoveGroupMemberRequest.
+ * Use `create(RemoveGroupMemberRequestSchema)` to create a new message.
+ */
+export const RemoveGroupMemberRequestSchema: GenMessage<RemoveGroupMemberRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 30);
+
+/**
+ * @generated from message social.chat.RemoveGroupMemberResponse
+ */
+export type RemoveGroupMemberResponse = Message$1<"social.chat.RemoveGroupMemberResponse"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: uint64 target_user_id = 2;
+   */
+  targetUserId: bigint;
+};
+
+/**
+ * Describes the message social.chat.RemoveGroupMemberResponse.
+ * Use `create(RemoveGroupMemberResponseSchema)` to create a new message.
+ */
+export const RemoveGroupMemberResponseSchema: GenMessage<RemoveGroupMemberResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 31);
+
+/**
+ * @generated from message social.chat.LeaveGroupRequest
+ */
+export type LeaveGroupRequest = Message$1<"social.chat.LeaveGroupRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+};
+
+/**
+ * Describes the message social.chat.LeaveGroupRequest.
+ * Use `create(LeaveGroupRequestSchema)` to create a new message.
+ */
+export const LeaveGroupRequestSchema: GenMessage<LeaveGroupRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 32);
+
+/**
+ * @generated from message social.chat.LeaveGroupResponse
+ */
+export type LeaveGroupResponse = Message$1<"social.chat.LeaveGroupResponse"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+};
+
+/**
+ * Describes the message social.chat.LeaveGroupResponse.
+ * Use `create(LeaveGroupResponseSchema)` to create a new message.
+ */
+export const LeaveGroupResponseSchema: GenMessage<LeaveGroupResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 33);
+
+/**
+ * @generated from message social.chat.DissolveGroupRequest
+ */
+export type DissolveGroupRequest = Message$1<"social.chat.DissolveGroupRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+};
+
+/**
+ * Describes the message social.chat.DissolveGroupRequest.
+ * Use `create(DissolveGroupRequestSchema)` to create a new message.
+ */
+export const DissolveGroupRequestSchema: GenMessage<DissolveGroupRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 34);
+
+/**
+ * @generated from message social.chat.DissolveGroupResponse
+ */
+export type DissolveGroupResponse = Message$1<"social.chat.DissolveGroupResponse"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+};
+
+/**
+ * Describes the message social.chat.DissolveGroupResponse.
+ * Use `create(DissolveGroupResponseSchema)` to create a new message.
+ */
+export const DissolveGroupResponseSchema: GenMessage<DissolveGroupResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 35);
+
+/**
+ * @generated from message social.chat.ApplyToJoinGroupRequest
+ */
+export type ApplyToJoinGroupRequest = Message$1<"social.chat.ApplyToJoinGroupRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message social.chat.ApplyToJoinGroupRequest.
+ * Use `create(ApplyToJoinGroupRequestSchema)` to create a new message.
+ */
+export const ApplyToJoinGroupRequestSchema: GenMessage<ApplyToJoinGroupRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 36);
+
+/**
+ * @generated from message social.chat.ApplyToJoinGroupResponse
+ */
+export type ApplyToJoinGroupResponse = Message$1<"social.chat.ApplyToJoinGroupResponse"> & {
+  /**
+   * @generated from field: social.chat.GroupJoinRequest join_request = 1;
+   */
+  joinRequest?: GroupJoinRequest;
+};
+
+/**
+ * Describes the message social.chat.ApplyToJoinGroupResponse.
+ * Use `create(ApplyToJoinGroupResponseSchema)` to create a new message.
+ */
+export const ApplyToJoinGroupResponseSchema: GenMessage<ApplyToJoinGroupResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 37);
+
+/**
+ * @generated from message social.chat.GetGroupJoinRequestsRequest
+ */
+export type GetGroupJoinRequestsRequest = Message$1<"social.chat.GetGroupJoinRequestsRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+};
+
+/**
+ * Describes the message social.chat.GetGroupJoinRequestsRequest.
+ * Use `create(GetGroupJoinRequestsRequestSchema)` to create a new message.
+ */
+export const GetGroupJoinRequestsRequestSchema: GenMessage<GetGroupJoinRequestsRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 38);
+
+/**
+ * @generated from message social.chat.GetGroupJoinRequestsResponse
+ */
+export type GetGroupJoinRequestsResponse = Message$1<"social.chat.GetGroupJoinRequestsResponse"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: repeated social.chat.GroupJoinRequest requests = 2;
+   */
+  requests: GroupJoinRequest[];
+};
+
+/**
+ * Describes the message social.chat.GetGroupJoinRequestsResponse.
+ * Use `create(GetGroupJoinRequestsResponseSchema)` to create a new message.
+ */
+export const GetGroupJoinRequestsResponseSchema: GenMessage<GetGroupJoinRequestsResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 39);
+
+/**
+ * @generated from message social.chat.ReviewGroupJoinRequestRequest
+ */
+export type ReviewGroupJoinRequestRequest = Message$1<"social.chat.ReviewGroupJoinRequestRequest"> & {
+  /**
+   * @generated from field: uint64 request_id = 1;
+   */
+  requestId: bigint;
+
+  /**
+   * @generated from field: bool approve = 2;
+   */
+  approve: boolean;
+};
+
+/**
+ * Describes the message social.chat.ReviewGroupJoinRequestRequest.
+ * Use `create(ReviewGroupJoinRequestRequestSchema)` to create a new message.
+ */
+export const ReviewGroupJoinRequestRequestSchema: GenMessage<ReviewGroupJoinRequestRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 40);
+
+/**
+ * @generated from message social.chat.ReviewGroupJoinRequestResponse
+ */
+export type ReviewGroupJoinRequestResponse = Message$1<"social.chat.ReviewGroupJoinRequestResponse"> & {
+  /**
+   * @generated from field: social.chat.GroupJoinRequest join_request = 1;
+   */
+  joinRequest?: GroupJoinRequest;
+};
+
+/**
+ * Describes the message social.chat.ReviewGroupJoinRequestResponse.
+ * Use `create(ReviewGroupJoinRequestResponseSchema)` to create a new message.
+ */
+export const ReviewGroupJoinRequestResponseSchema: GenMessage<ReviewGroupJoinRequestResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 41);
+
+/**
+ * @generated from message social.chat.InviteToGroupRequest
+ */
+export type InviteToGroupRequest = Message$1<"social.chat.InviteToGroupRequest"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: uint64 invitee_id = 2;
+   */
+  inviteeId: bigint;
+};
+
+/**
+ * Describes the message social.chat.InviteToGroupRequest.
+ * Use `create(InviteToGroupRequestSchema)` to create a new message.
+ */
+export const InviteToGroupRequestSchema: GenMessage<InviteToGroupRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 42);
+
+/**
+ * @generated from message social.chat.InviteToGroupResponse
+ */
+export type InviteToGroupResponse = Message$1<"social.chat.InviteToGroupResponse"> & {
+  /**
+   * @generated from field: social.chat.GroupInvitation invitation = 1;
+   */
+  invitation?: GroupInvitation;
+};
+
+/**
+ * Describes the message social.chat.InviteToGroupResponse.
+ * Use `create(InviteToGroupResponseSchema)` to create a new message.
+ */
+export const InviteToGroupResponseSchema: GenMessage<InviteToGroupResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 43);
+
+/**
+ * @generated from message social.chat.GetMyGroupInvitationsRequest
+ */
+export type GetMyGroupInvitationsRequest = Message$1<"social.chat.GetMyGroupInvitationsRequest"> & {
+};
+
+/**
+ * Describes the message social.chat.GetMyGroupInvitationsRequest.
+ * Use `create(GetMyGroupInvitationsRequestSchema)` to create a new message.
+ */
+export const GetMyGroupInvitationsRequestSchema: GenMessage<GetMyGroupInvitationsRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 44);
+
+/**
+ * @generated from message social.chat.GetMyGroupInvitationsResponse
+ */
+export type GetMyGroupInvitationsResponse = Message$1<"social.chat.GetMyGroupInvitationsResponse"> & {
+  /**
+   * @generated from field: repeated social.chat.GroupInvitation invitations = 1;
+   */
+  invitations: GroupInvitation[];
+};
+
+/**
+ * Describes the message social.chat.GetMyGroupInvitationsResponse.
+ * Use `create(GetMyGroupInvitationsResponseSchema)` to create a new message.
+ */
+export const GetMyGroupInvitationsResponseSchema: GenMessage<GetMyGroupInvitationsResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 45);
+
+/**
+ * @generated from message social.chat.RespondGroupInvitationRequest
+ */
+export type RespondGroupInvitationRequest = Message$1<"social.chat.RespondGroupInvitationRequest"> & {
+  /**
+   * @generated from field: uint64 invitation_id = 1;
+   */
+  invitationId: bigint;
+
+  /**
+   * @generated from field: bool accept = 2;
+   */
+  accept: boolean;
+};
+
+/**
+ * Describes the message social.chat.RespondGroupInvitationRequest.
+ * Use `create(RespondGroupInvitationRequestSchema)` to create a new message.
+ */
+export const RespondGroupInvitationRequestSchema: GenMessage<RespondGroupInvitationRequest> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 46);
+
+/**
+ * @generated from message social.chat.RespondGroupInvitationResponse
+ */
+export type RespondGroupInvitationResponse = Message$1<"social.chat.RespondGroupInvitationResponse"> & {
+  /**
+   * @generated from field: social.chat.GroupInvitation invitation = 1;
+   */
+  invitation?: GroupInvitation;
+
+  /**
+   * @generated from field: social.chat.Conversation conversation = 2;
+   */
+  conversation?: Conversation;
+};
+
+/**
+ * Describes the message social.chat.RespondGroupInvitationResponse.
+ * Use `create(RespondGroupInvitationResponseSchema)` to create a new message.
+ */
+export const RespondGroupInvitationResponseSchema: GenMessage<RespondGroupInvitationResponse> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 47);
+
+/**
+ * @generated from message social.chat.GroupUpdatedPush
+ */
+export type GroupUpdatedPush = Message$1<"social.chat.GroupUpdatedPush"> & {
+  /**
+   * @generated from field: social.chat.Conversation conversation = 1;
+   */
+  conversation?: Conversation;
+};
+
+/**
+ * Describes the message social.chat.GroupUpdatedPush.
+ * Use `create(GroupUpdatedPushSchema)` to create a new message.
+ */
+export const GroupUpdatedPushSchema: GenMessage<GroupUpdatedPush> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 48);
+
+/**
+ * @generated from message social.chat.GroupMembersUpdatedPush
+ */
+export type GroupMembersUpdatedPush = Message$1<"social.chat.GroupMembersUpdatedPush"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: repeated social.chat.GroupMember members = 2;
+   */
+  members: GroupMember[];
+};
+
+/**
+ * Describes the message social.chat.GroupMembersUpdatedPush.
+ * Use `create(GroupMembersUpdatedPushSchema)` to create a new message.
+ */
+export const GroupMembersUpdatedPushSchema: GenMessage<GroupMembersUpdatedPush> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 49);
+
+/**
+ * @generated from message social.chat.GroupJoinRequestUpdatedPush
+ */
+export type GroupJoinRequestUpdatedPush = Message$1<"social.chat.GroupJoinRequestUpdatedPush"> & {
+  /**
+   * @generated from field: uint64 conversation_id = 1;
+   */
+  conversationId: bigint;
+
+  /**
+   * @generated from field: social.chat.GroupJoinRequest join_request = 2;
+   */
+  joinRequest?: GroupJoinRequest;
+};
+
+/**
+ * Describes the message social.chat.GroupJoinRequestUpdatedPush.
+ * Use `create(GroupJoinRequestUpdatedPushSchema)` to create a new message.
+ */
+export const GroupJoinRequestUpdatedPushSchema: GenMessage<GroupJoinRequestUpdatedPush> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 50);
+
+/**
+ * @generated from message social.chat.GroupInvitationUpdatedPush
+ */
+export type GroupInvitationUpdatedPush = Message$1<"social.chat.GroupInvitationUpdatedPush"> & {
+  /**
+   * @generated from field: social.chat.GroupInvitation invitation = 1;
+   */
+  invitation?: GroupInvitation;
+
+  /**
+   * @generated from field: social.chat.Conversation conversation = 2;
+   */
+  conversation?: Conversation;
+};
+
+/**
+ * Describes the message social.chat.GroupInvitationUpdatedPush.
+ * Use `create(GroupInvitationUpdatedPushSchema)` to create a new message.
+ */
+export const GroupInvitationUpdatedPushSchema: GenMessage<GroupInvitationUpdatedPush> = /*@__PURE__*/
+  messageDesc(file_chat_chat, 51);
 
 /**
  * @generated from message social.chat.TopicRoom
@@ -500,7 +1405,7 @@ export type TopicRoom = Message$1<"social.chat.TopicRoom"> & {
  * Use `create(TopicRoomSchema)` to create a new message.
  */
 export const TopicRoomSchema: GenMessage<TopicRoom> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 15);
+  messageDesc(file_chat_chat, 52);
 
 /**
  * @generated from message social.chat.TopicRoomMessage
@@ -542,7 +1447,7 @@ export type TopicRoomMessage = Message$1<"social.chat.TopicRoomMessage"> & {
  * Use `create(TopicRoomMessageSchema)` to create a new message.
  */
 export const TopicRoomMessageSchema: GenMessage<TopicRoomMessage> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 16);
+  messageDesc(file_chat_chat, 53);
 
 /**
  * @generated from message social.chat.TopicRoomMember
@@ -574,7 +1479,7 @@ export type TopicRoomMember = Message$1<"social.chat.TopicRoomMember"> & {
  * Use `create(TopicRoomMemberSchema)` to create a new message.
  */
 export const TopicRoomMemberSchema: GenMessage<TopicRoomMember> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 17);
+  messageDesc(file_chat_chat, 54);
 
 /**
  * @generated from message social.chat.GetTopicRoomListRequest
@@ -587,7 +1492,7 @@ export type GetTopicRoomListRequest = Message$1<"social.chat.GetTopicRoomListReq
  * Use `create(GetTopicRoomListRequestSchema)` to create a new message.
  */
 export const GetTopicRoomListRequestSchema: GenMessage<GetTopicRoomListRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 18);
+  messageDesc(file_chat_chat, 55);
 
 /**
  * @generated from message social.chat.GetTopicRoomListResponse
@@ -609,7 +1514,7 @@ export type GetTopicRoomListResponse = Message$1<"social.chat.GetTopicRoomListRe
  * Use `create(GetTopicRoomListResponseSchema)` to create a new message.
  */
 export const GetTopicRoomListResponseSchema: GenMessage<GetTopicRoomListResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 19);
+  messageDesc(file_chat_chat, 56);
 
 /**
  * @generated from message social.chat.JoinTopicRoomRequest
@@ -626,7 +1531,7 @@ export type JoinTopicRoomRequest = Message$1<"social.chat.JoinTopicRoomRequest">
  * Use `create(JoinTopicRoomRequestSchema)` to create a new message.
  */
 export const JoinTopicRoomRequestSchema: GenMessage<JoinTopicRoomRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 20);
+  messageDesc(file_chat_chat, 57);
 
 /**
  * @generated from message social.chat.JoinTopicRoomResponse
@@ -653,7 +1558,7 @@ export type JoinTopicRoomResponse = Message$1<"social.chat.JoinTopicRoomResponse
  * Use `create(JoinTopicRoomResponseSchema)` to create a new message.
  */
 export const JoinTopicRoomResponseSchema: GenMessage<JoinTopicRoomResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 21);
+  messageDesc(file_chat_chat, 58);
 
 /**
  * @generated from message social.chat.LeaveTopicRoomRequest
@@ -670,7 +1575,7 @@ export type LeaveTopicRoomRequest = Message$1<"social.chat.LeaveTopicRoomRequest
  * Use `create(LeaveTopicRoomRequestSchema)` to create a new message.
  */
 export const LeaveTopicRoomRequestSchema: GenMessage<LeaveTopicRoomRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 22);
+  messageDesc(file_chat_chat, 59);
 
 /**
  * @generated from message social.chat.LeaveTopicRoomResponse
@@ -687,7 +1592,7 @@ export type LeaveTopicRoomResponse = Message$1<"social.chat.LeaveTopicRoomRespon
  * Use `create(LeaveTopicRoomResponseSchema)` to create a new message.
  */
 export const LeaveTopicRoomResponseSchema: GenMessage<LeaveTopicRoomResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 23);
+  messageDesc(file_chat_chat, 60);
 
 /**
  * @generated from message social.chat.SendTopicRoomMessageRequest
@@ -709,7 +1614,7 @@ export type SendTopicRoomMessageRequest = Message$1<"social.chat.SendTopicRoomMe
  * Use `create(SendTopicRoomMessageRequestSchema)` to create a new message.
  */
 export const SendTopicRoomMessageRequestSchema: GenMessage<SendTopicRoomMessageRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 24);
+  messageDesc(file_chat_chat, 61);
 
 /**
  * @generated from message social.chat.SendTopicRoomMessageResponse
@@ -726,7 +1631,7 @@ export type SendTopicRoomMessageResponse = Message$1<"social.chat.SendTopicRoomM
  * Use `create(SendTopicRoomMessageResponseSchema)` to create a new message.
  */
 export const SendTopicRoomMessageResponseSchema: GenMessage<SendTopicRoomMessageResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 25);
+  messageDesc(file_chat_chat, 62);
 
 /**
  * @generated from message social.chat.GetTopicRoomMembersRequest
@@ -743,7 +1648,7 @@ export type GetTopicRoomMembersRequest = Message$1<"social.chat.GetTopicRoomMemb
  * Use `create(GetTopicRoomMembersRequestSchema)` to create a new message.
  */
 export const GetTopicRoomMembersRequestSchema: GenMessage<GetTopicRoomMembersRequest> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 26);
+  messageDesc(file_chat_chat, 63);
 
 /**
  * @generated from message social.chat.GetTopicRoomMembersResponse
@@ -765,7 +1670,7 @@ export type GetTopicRoomMembersResponse = Message$1<"social.chat.GetTopicRoomMem
  * Use `create(GetTopicRoomMembersResponseSchema)` to create a new message.
  */
 export const GetTopicRoomMembersResponseSchema: GenMessage<GetTopicRoomMembersResponse> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 27);
+  messageDesc(file_chat_chat, 64);
 
 /**
  * @generated from message social.chat.TopicRoomMessagePush
@@ -782,7 +1687,7 @@ export type TopicRoomMessagePush = Message$1<"social.chat.TopicRoomMessagePush">
  * Use `create(TopicRoomMessagePushSchema)` to create a new message.
  */
 export const TopicRoomMessagePushSchema: GenMessage<TopicRoomMessagePush> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 28);
+  messageDesc(file_chat_chat, 65);
 
 /**
  * @generated from message social.chat.TopicRoomMembersPush
@@ -809,7 +1714,7 @@ export type TopicRoomMembersPush = Message$1<"social.chat.TopicRoomMembersPush">
  * Use `create(TopicRoomMembersPushSchema)` to create a new message.
  */
 export const TopicRoomMembersPushSchema: GenMessage<TopicRoomMembersPush> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 29);
+  messageDesc(file_chat_chat, 66);
 
 /**
  * ----------------------
@@ -900,6 +1805,210 @@ export type ChatPayload = Message$1<"social.chat.ChatPayload"> & {
     case: "conversationPush";
   } | {
     /**
+     * @generated from field: social.chat.GetGroupDetailRequest get_group_detail = 25;
+     */
+    value: GetGroupDetailRequest;
+    case: "getGroupDetail";
+  } | {
+    /**
+     * @generated from field: social.chat.GetGroupDetailResponse get_group_detail_response = 26;
+     */
+    value: GetGroupDetailResponse;
+    case: "getGroupDetailResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.UpdateGroupProfileRequest update_group_profile = 27;
+     */
+    value: UpdateGroupProfileRequest;
+    case: "updateGroupProfile";
+  } | {
+    /**
+     * @generated from field: social.chat.UpdateGroupProfileResponse update_group_profile_response = 28;
+     */
+    value: UpdateGroupProfileResponse;
+    case: "updateGroupProfileResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.UpdateGroupAnnouncementRequest update_group_announcement = 29;
+     */
+    value: UpdateGroupAnnouncementRequest;
+    case: "updateGroupAnnouncement";
+  } | {
+    /**
+     * @generated from field: social.chat.UpdateGroupAnnouncementResponse update_group_announcement_response = 30;
+     */
+    value: UpdateGroupAnnouncementResponse;
+    case: "updateGroupAnnouncementResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.GetGroupMembersRequest get_group_members = 31;
+     */
+    value: GetGroupMembersRequest;
+    case: "getGroupMembers";
+  } | {
+    /**
+     * @generated from field: social.chat.GetGroupMembersResponse get_group_members_response = 32;
+     */
+    value: GetGroupMembersResponse;
+    case: "getGroupMembersResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.UpdateGroupMemberRoleRequest update_group_member_role = 33;
+     */
+    value: UpdateGroupMemberRoleRequest;
+    case: "updateGroupMemberRole";
+  } | {
+    /**
+     * @generated from field: social.chat.UpdateGroupMemberRoleResponse update_group_member_role_response = 34;
+     */
+    value: UpdateGroupMemberRoleResponse;
+    case: "updateGroupMemberRoleResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.TransferGroupOwnershipRequest transfer_group_ownership = 35;
+     */
+    value: TransferGroupOwnershipRequest;
+    case: "transferGroupOwnership";
+  } | {
+    /**
+     * @generated from field: social.chat.TransferGroupOwnershipResponse transfer_group_ownership_response = 36;
+     */
+    value: TransferGroupOwnershipResponse;
+    case: "transferGroupOwnershipResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.RemoveGroupMemberRequest remove_group_member = 37;
+     */
+    value: RemoveGroupMemberRequest;
+    case: "removeGroupMember";
+  } | {
+    /**
+     * @generated from field: social.chat.RemoveGroupMemberResponse remove_group_member_response = 38;
+     */
+    value: RemoveGroupMemberResponse;
+    case: "removeGroupMemberResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.LeaveGroupRequest leave_group = 39;
+     */
+    value: LeaveGroupRequest;
+    case: "leaveGroup";
+  } | {
+    /**
+     * @generated from field: social.chat.LeaveGroupResponse leave_group_response = 40;
+     */
+    value: LeaveGroupResponse;
+    case: "leaveGroupResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.DissolveGroupRequest dissolve_group = 41;
+     */
+    value: DissolveGroupRequest;
+    case: "dissolveGroup";
+  } | {
+    /**
+     * @generated from field: social.chat.DissolveGroupResponse dissolve_group_response = 42;
+     */
+    value: DissolveGroupResponse;
+    case: "dissolveGroupResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.ApplyToJoinGroupRequest apply_to_join_group = 43;
+     */
+    value: ApplyToJoinGroupRequest;
+    case: "applyToJoinGroup";
+  } | {
+    /**
+     * @generated from field: social.chat.ApplyToJoinGroupResponse apply_to_join_group_response = 44;
+     */
+    value: ApplyToJoinGroupResponse;
+    case: "applyToJoinGroupResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.GetGroupJoinRequestsRequest get_group_join_requests = 45;
+     */
+    value: GetGroupJoinRequestsRequest;
+    case: "getGroupJoinRequests";
+  } | {
+    /**
+     * @generated from field: social.chat.GetGroupJoinRequestsResponse get_group_join_requests_response = 46;
+     */
+    value: GetGroupJoinRequestsResponse;
+    case: "getGroupJoinRequestsResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.ReviewGroupJoinRequestRequest review_group_join_request = 47;
+     */
+    value: ReviewGroupJoinRequestRequest;
+    case: "reviewGroupJoinRequest";
+  } | {
+    /**
+     * @generated from field: social.chat.ReviewGroupJoinRequestResponse review_group_join_request_response = 48;
+     */
+    value: ReviewGroupJoinRequestResponse;
+    case: "reviewGroupJoinRequestResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.InviteToGroupRequest invite_to_group = 49;
+     */
+    value: InviteToGroupRequest;
+    case: "inviteToGroup";
+  } | {
+    /**
+     * @generated from field: social.chat.InviteToGroupResponse invite_to_group_response = 50;
+     */
+    value: InviteToGroupResponse;
+    case: "inviteToGroupResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.GetMyGroupInvitationsRequest get_my_group_invitations = 51;
+     */
+    value: GetMyGroupInvitationsRequest;
+    case: "getMyGroupInvitations";
+  } | {
+    /**
+     * @generated from field: social.chat.GetMyGroupInvitationsResponse get_my_group_invitations_response = 52;
+     */
+    value: GetMyGroupInvitationsResponse;
+    case: "getMyGroupInvitationsResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.RespondGroupInvitationRequest respond_group_invitation = 53;
+     */
+    value: RespondGroupInvitationRequest;
+    case: "respondGroupInvitation";
+  } | {
+    /**
+     * @generated from field: social.chat.RespondGroupInvitationResponse respond_group_invitation_response = 54;
+     */
+    value: RespondGroupInvitationResponse;
+    case: "respondGroupInvitationResponse";
+  } | {
+    /**
+     * @generated from field: social.chat.GroupUpdatedPush group_updated_push = 55;
+     */
+    value: GroupUpdatedPush;
+    case: "groupUpdatedPush";
+  } | {
+    /**
+     * @generated from field: social.chat.GroupMembersUpdatedPush group_members_updated_push = 56;
+     */
+    value: GroupMembersUpdatedPush;
+    case: "groupMembersUpdatedPush";
+  } | {
+    /**
+     * @generated from field: social.chat.GroupJoinRequestUpdatedPush group_join_request_updated_push = 57;
+     */
+    value: GroupJoinRequestUpdatedPush;
+    case: "groupJoinRequestUpdatedPush";
+  } | {
+    /**
+     * @generated from field: social.chat.GroupInvitationUpdatedPush group_invitation_updated_push = 58;
+     */
+    value: GroupInvitationUpdatedPush;
+    case: "groupInvitationUpdatedPush";
+  } | {
+    /**
      * Topic Room
      *
      * @generated from field: social.chat.GetTopicRoomListRequest get_topic_room_list = 13;
@@ -980,7 +2089,7 @@ export type ChatPayload = Message$1<"social.chat.ChatPayload"> & {
  * Use `create(ChatPayloadSchema)` to create a new message.
  */
 export const ChatPayloadSchema: GenMessage<ChatPayload> = /*@__PURE__*/
-  messageDesc(file_chat_chat, 30);
+  messageDesc(file_chat_chat, 67);
 
 /**
  * 会话类型
@@ -1015,6 +2124,197 @@ export const ConversationTypeSchema: GenEnum<ConversationType> = /*@__PURE__*/
   enumDesc(file_chat_chat, 0);
 
 /**
+ * @generated from enum social.chat.GroupKind
+ */
+export enum GroupKind {
+  /**
+   * @generated from enum value: GROUP_KIND_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: GROUP_KIND_OFFICIAL = 1;
+   */
+  OFFICIAL = 1,
+
+  /**
+   * @generated from enum value: GROUP_KIND_PLAYER_CREATED = 2;
+   */
+  PLAYER_CREATED = 2,
+}
+
+/**
+ * Describes the enum social.chat.GroupKind.
+ */
+export const GroupKindSchema: GenEnum<GroupKind> = /*@__PURE__*/
+  enumDesc(file_chat_chat, 1);
+
+/**
+ * @generated from enum social.chat.GroupJoinMode
+ */
+export enum GroupJoinMode {
+  /**
+   * @generated from enum value: GROUP_JOIN_MODE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: GROUP_JOIN_MODE_PRIVATE = 1;
+   */
+  PRIVATE = 1,
+
+  /**
+   * @generated from enum value: GROUP_JOIN_MODE_APPROVAL = 2;
+   */
+  APPROVAL = 2,
+
+  /**
+   * @generated from enum value: GROUP_JOIN_MODE_PUBLIC = 3;
+   */
+  PUBLIC = 3,
+}
+
+/**
+ * Describes the enum social.chat.GroupJoinMode.
+ */
+export const GroupJoinModeSchema: GenEnum<GroupJoinMode> = /*@__PURE__*/
+  enumDesc(file_chat_chat, 2);
+
+/**
+ * @generated from enum social.chat.GroupStatus
+ */
+export enum GroupStatus {
+  /**
+   * @generated from enum value: GROUP_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: GROUP_STATUS_ACTIVE = 1;
+   */
+  ACTIVE = 1,
+
+  /**
+   * @generated from enum value: GROUP_STATUS_DISSOLVED = 2;
+   */
+  DISSOLVED = 2,
+}
+
+/**
+ * Describes the enum social.chat.GroupStatus.
+ */
+export const GroupStatusSchema: GenEnum<GroupStatus> = /*@__PURE__*/
+  enumDesc(file_chat_chat, 3);
+
+/**
+ * @generated from enum social.chat.GroupMemberRole
+ */
+export enum GroupMemberRole {
+  /**
+   * @generated from enum value: GROUP_MEMBER_ROLE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: GROUP_MEMBER_ROLE_OWNER = 1;
+   */
+  OWNER = 1,
+
+  /**
+   * @generated from enum value: GROUP_MEMBER_ROLE_ADMIN = 2;
+   */
+  ADMIN = 2,
+
+  /**
+   * @generated from enum value: GROUP_MEMBER_ROLE_MEMBER = 3;
+   */
+  MEMBER = 3,
+}
+
+/**
+ * Describes the enum social.chat.GroupMemberRole.
+ */
+export const GroupMemberRoleSchema: GenEnum<GroupMemberRole> = /*@__PURE__*/
+  enumDesc(file_chat_chat, 4);
+
+/**
+ * @generated from enum social.chat.GroupJoinRequestStatus
+ */
+export enum GroupJoinRequestStatus {
+  /**
+   * @generated from enum value: GROUP_JOIN_REQUEST_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: GROUP_JOIN_REQUEST_STATUS_PENDING = 1;
+   */
+  PENDING = 1,
+
+  /**
+   * @generated from enum value: GROUP_JOIN_REQUEST_STATUS_APPROVED = 2;
+   */
+  APPROVED = 2,
+
+  /**
+   * @generated from enum value: GROUP_JOIN_REQUEST_STATUS_REJECTED = 3;
+   */
+  REJECTED = 3,
+
+  /**
+   * @generated from enum value: GROUP_JOIN_REQUEST_STATUS_CANCELLED = 4;
+   */
+  CANCELLED = 4,
+}
+
+/**
+ * Describes the enum social.chat.GroupJoinRequestStatus.
+ */
+export const GroupJoinRequestStatusSchema: GenEnum<GroupJoinRequestStatus> = /*@__PURE__*/
+  enumDesc(file_chat_chat, 5);
+
+/**
+ * @generated from enum social.chat.GroupInvitationStatus
+ */
+export enum GroupInvitationStatus {
+  /**
+   * @generated from enum value: GROUP_INVITATION_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: GROUP_INVITATION_STATUS_PENDING = 1;
+   */
+  PENDING = 1,
+
+  /**
+   * @generated from enum value: GROUP_INVITATION_STATUS_ACCEPTED = 2;
+   */
+  ACCEPTED = 2,
+
+  /**
+   * @generated from enum value: GROUP_INVITATION_STATUS_REJECTED = 3;
+   */
+  REJECTED = 3,
+
+  /**
+   * @generated from enum value: GROUP_INVITATION_STATUS_CANCELLED = 4;
+   */
+  CANCELLED = 4,
+
+  /**
+   * @generated from enum value: GROUP_INVITATION_STATUS_EXPIRED = 5;
+   */
+  EXPIRED = 5,
+}
+
+/**
+ * Describes the enum social.chat.GroupInvitationStatus.
+ */
+export const GroupInvitationStatusSchema: GenEnum<GroupInvitationStatus> = /*@__PURE__*/
+  enumDesc(file_chat_chat, 6);
+
+/**
  * 消息类型
  *
  * @generated from enum social.chat.MessageType
@@ -1045,5 +2345,5 @@ export enum MessageType {
  * Describes the enum social.chat.MessageType.
  */
 export const MessageTypeSchema: GenEnum<MessageType> = /*@__PURE__*/
-  enumDesc(file_chat_chat, 1);
+  enumDesc(file_chat_chat, 7);
 

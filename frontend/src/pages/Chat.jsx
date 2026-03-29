@@ -2,6 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { create } from "@bufbuild/protobuf";
 import ThemeSwitcher from "../components/ThemeSwitcher";
+import GroupAnnouncementCard from "../components/chat/GroupAnnouncementCard";
+import GroupCreateModal from "../components/chat/GroupCreateModal";
+import GroupJoinRequestsCard from "../components/chat/GroupJoinRequestsCard";
+import GroupMembersCard from "../components/chat/GroupMembersCard";
+import GroupProfileCard from "../components/chat/GroupProfileCard";
 import { useThemeMode } from "../lib/useThemeMode";
 import { Button, Input } from "../lib/vercel-ui";
 import { loginWithUid } from "../lib/api";
@@ -33,19 +38,38 @@ import {
 import { WsMessageSchema, WsMessageType } from "../proto/ws_pb";
 import { ErrorCode } from "../proto/common/error_code_pb";
 import {
+  ApplyToJoinGroupRequestSchema,
   ChatPayloadSchema,
   ConversationType,
   CreateConversationRequestSchema,
+  DissolveGroupRequestSchema,
+  GetGroupDetailRequestSchema,
+  GetGroupJoinRequestsRequestSchema,
+  GetGroupMembersRequestSchema,
+  GetMyGroupInvitationsRequestSchema,
   GetConversationListRequestSchema,
   GetMessageListRequestSchema,
   GetTopicRoomListRequestSchema,
+  GroupJoinMode,
+  GroupJoinRequestStatus,
+  GroupKind,
+  GroupMemberRole,
+  InviteToGroupRequestSchema,
   GetTopicRoomMembersRequestSchema,
   JoinTopicRoomRequestSchema,
+  LeaveGroupRequestSchema,
   LeaveTopicRoomRequestSchema,
   MarkAsReadRequestSchema,
   MessageType,
+  RemoveGroupMemberRequestSchema,
+  RespondGroupInvitationRequestSchema,
+  ReviewGroupJoinRequestRequestSchema,
   SendTopicRoomMessageRequestSchema,
   SendMessageRequestSchema,
+  TransferGroupOwnershipRequestSchema,
+  UpdateGroupMemberRoleRequestSchema,
+  UpdateGroupProfileRequestSchema,
+  UpdateGroupAnnouncementRequestSchema,
 } from "../proto/chat/chat_pb";
 
 const CONVERSATION_TYPE_PRIVATE =
@@ -53,6 +77,14 @@ const CONVERSATION_TYPE_PRIVATE =
 const CONVERSATION_TYPE_GROUP =
   ConversationType.GROUP ?? ConversationType.CONVERSATION_TYPE_GROUP ?? 2;
 const MESSAGE_TYPE_TEXT = MessageType.TEXT ?? MessageType.MESSAGE_TYPE_TEXT ?? 1;
+const GROUP_KIND_PLAYER_CREATED = GroupKind.PLAYER_CREATED ?? 2;
+const GROUP_JOIN_MODE_PRIVATE = GroupJoinMode.PRIVATE ?? 1;
+const GROUP_JOIN_MODE_APPROVAL = GroupJoinMode.APPROVAL ?? 2;
+const GROUP_JOIN_MODE_PUBLIC = GroupJoinMode.PUBLIC ?? 3;
+const GROUP_ROLE_OWNER = GroupMemberRole.OWNER ?? 1;
+const GROUP_ROLE_ADMIN = GroupMemberRole.ADMIN ?? 2;
+const GROUP_ROLE_MEMBER = GroupMemberRole.MEMBER ?? 3;
+const GROUP_JOIN_REQUEST_PENDING = GroupJoinRequestStatus.PENDING ?? 1;
 
 function toIdString(value) {
   if (value === null || value === undefined) return "";
@@ -175,7 +207,16 @@ export default function Chat() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [createGroupName, setCreateGroupName] = useState("");
   const [createGroupAvatar, setCreateGroupAvatar] = useState("");
+  const [createGroupDescription, setCreateGroupDescription] = useState("");
+  const [createGroupJoinMode, setCreateGroupJoinMode] = useState(GROUP_JOIN_MODE_PRIVATE);
   const [createGroupMemberIds, setCreateGroupMemberIds] = useState([]);
+
+  const [groupDetails, setGroupDetails] = useState({});
+  const [groupMembersMap, setGroupMembersMap] = useState({});
+  const [groupJoinRequestsMap, setGroupJoinRequestsMap] = useState({});
+  const [myGroupInvitations, setMyGroupInvitations] = useState([]);
+  const [groupAnnouncementDraft, setGroupAnnouncementDraft] = useState("");
+  const [groupInviteTargetId, setGroupInviteTargetId] = useState("");
 
   const [followModalOpen, setFollowModalOpen] = useState(false);
   const [followTargetId, setFollowTargetId] = useState("");
@@ -401,6 +442,28 @@ export default function Chat() {
     target.send(encodeWsMessage(wsMsg));
   };
 
+  const sendGetMyGroupInvitations = (socket) => {
+    const target = socket || wsRef.current;
+    if (!target || target.readyState !== WebSocket.OPEN) return;
+    const req = create(GetMyGroupInvitationsRequestSchema, {});
+    const payload = create(ChatPayloadSchema, {
+      payload: {
+        case: "getMyGroupInvitations",
+        value: req,
+      },
+    });
+    const wsMsg = create(WsMessageSchema, {
+      requestId: BigInt(Date.now()),
+      type: WsMessageType.WS_TYPE_CHAT_GET_MY_GROUP_INVITATIONS,
+      timestamp: BigInt(Date.now()),
+      payload: {
+        case: "chat",
+        value: payload,
+      },
+    });
+    target.send(encodeWsMessage(wsMsg));
+  };
+
   const sendChatWsRequest = (type, payloadCase, payloadValue) => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
     const payload = create(ChatPayloadSchema, {
@@ -454,6 +517,8 @@ export default function Chat() {
   const resetCreateConversationForm = () => {
     setCreateGroupName("");
     setCreateGroupAvatar("");
+    setCreateGroupDescription("");
+    setCreateGroupJoinMode(GROUP_JOIN_MODE_PRIVATE);
     setCreateGroupMemberIds([]);
   };
 
@@ -584,6 +649,127 @@ export default function Chat() {
               toIdString(conv.id) === responseConvId ? { ...conv, unreadCount } : conv,
             ),
           );
+          break;
+        }
+        case "getGroupDetailResponse": {
+          const conv = payload.value?.conversation;
+          if (conv) {
+            const convId = toIdString(conv.id);
+            setGroupDetails((prev) => ({ ...prev, [convId]: conv }));
+            setGroupAnnouncementDraft(conv.announcement || "");
+          }
+          break;
+        }
+        case "getGroupMembersResponse": {
+          const convId = toIdString(payload.value?.conversationId);
+          if (convId) {
+            setGroupMembersMap((prev) => ({ ...prev, [convId]: payload.value?.members || [] }));
+          }
+          break;
+        }
+        case "getMyGroupInvitationsResponse": {
+          setMyGroupInvitations(payload.value?.invitations || []);
+          break;
+        }
+        case "getGroupJoinRequestsResponse": {
+          const convId = toIdString(payload.value?.conversationId);
+          if (convId) {
+            setGroupJoinRequestsMap((prev) => ({ ...prev, [convId]: payload.value?.requests || [] }));
+          }
+          break;
+        }
+        case "updateGroupProfileResponse":
+        case "updateGroupAnnouncementResponse":
+        case "groupUpdatedPush": {
+          const conv = payload.value?.conversation;
+          if (conv) {
+            const convId = toIdString(conv.id);
+            setGroupDetails((prev) => ({ ...prev, [convId]: conv }));
+            setConversations((prev) => prev.map((item) => (toIdString(item.id) === convId ? { ...item, ...conv } : item)));
+          }
+          break;
+        }
+        case "groupMembersUpdatedPush": {
+          const convId = toIdString(payload.value?.conversationId);
+          if (convId) {
+            setGroupMembersMap((prev) => ({ ...prev, [convId]: payload.value?.members || [] }));
+          }
+          break;
+        }
+        case "reviewGroupJoinRequestResponse":
+        case "groupJoinRequestUpdatedPush": {
+          const joinRequest = payload.value?.joinRequest;
+          const convId = toIdString(payload.value?.conversationId || joinRequest?.conversationId);
+          if (convId && joinRequest) {
+            setGroupJoinRequestsMap((prev) => {
+              const current = prev[convId] || [];
+              const next = current.some((item) => toIdString(item.id) === toIdString(joinRequest.id))
+                ? current.map((item) => (toIdString(item.id) === toIdString(joinRequest.id) ? joinRequest : item))
+                : [joinRequest, ...current];
+              return { ...prev, [convId]: next };
+            });
+          }
+          break;
+        }
+        case "inviteToGroupResponse":
+        case "respondGroupInvitationResponse":
+        case "groupInvitationUpdatedPush": {
+          const invitation = payload.value?.invitation;
+          const conversation = payload.value?.conversation;
+          if (invitation) {
+            setMyGroupInvitations((prev) => {
+              const exists = prev.some((item) => toIdString(item.id) === toIdString(invitation.id));
+              if (exists) {
+                return prev.map((item) => (toIdString(item.id) === toIdString(invitation.id) ? invitation : item));
+              }
+              return [invitation, ...prev];
+            });
+          }
+          if (conversation) {
+            const convId = toIdString(conversation.id);
+            setConversations((prev) => [conversation, ...prev.filter((item) => toIdString(item.id) !== convId)]);
+          }
+          break;
+        }
+        case "updateGroupMemberRoleResponse":
+        case "removeGroupMemberResponse": {
+          if (activeConvId) {
+            requestGroupDetail(activeConvId);
+          }
+          break;
+        }
+        case "transferGroupOwnershipResponse": {
+          const conv = payload.value?.conversation;
+          if (conv) {
+            const convId = toIdString(conv.id);
+            setGroupDetails((prev) => ({ ...prev, [convId]: conv }));
+            setConversations((prev) => prev.map((item) => (toIdString(item.id) === convId ? { ...item, ...conv } : item)));
+            requestGroupDetail(convId);
+          }
+          break;
+        }
+        case "leaveGroupResponse": {
+          const convId = toIdString(payload.value?.conversationId);
+          if (convId) {
+            setConversations((prev) => prev.filter((item) => toIdString(item.id) !== convId));
+            if (activeConvIdRef.current === convId) {
+              setActiveConvId("");
+            }
+          }
+          break;
+        }
+        case "dissolveGroupResponse": {
+          if (activeConvId) {
+            requestGroupDetail(activeConvId);
+          }
+          break;
+        }
+        case "applyToJoinGroupResponse": {
+          const joinRequest = payload.value?.joinRequest;
+          if (joinRequest?.conversationId) {
+            const convId = toIdString(joinRequest.conversationId);
+            setGroupJoinRequestsMap((prev) => ({ ...prev, [convId]: [joinRequest, ...(prev[convId] || [])] }));
+          }
           break;
         }
         case "getTopicRoomListResponse": {
@@ -753,6 +939,7 @@ export default function Chat() {
       socket.send(encodeWsMessage(buildAccountPing()));
       sendGetConversationList(socket);
       sendGetTopicRoomList(socket);
+      sendGetMyGroupInvitations(socket);
       socket.send(encodeWsMessage(buildGetFollowingRequest()));
       socket.send(encodeWsMessage(buildGetFollowersRequest()));
       socket.send(encodeWsMessage(buildGetBlockedRequest()));
@@ -819,6 +1006,15 @@ export default function Chat() {
       wsRef.current = null;
     };
   }, [authStatus, uid, navigate]);
+
+  useEffect(() => {
+    if (!activeConvId) return;
+    const activeConversation = conversations.find((item) => toIdString(item.id) === activeConvId);
+    if (!activeConversation) return;
+    if (Number(activeConversation.type) === CONVERSATION_TYPE_GROUP) {
+      requestGroupDetail(activeConvId);
+    }
+  }, [activeConvId, conversations]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -955,12 +1151,183 @@ export default function Chat() {
       participantIds: participantIDs.map((id) => toIdBigInt(id)),
       name: groupName,
       avatar: createGroupAvatar.trim(),
+      description: createGroupDescription.trim(),
+      groupKind: GROUP_KIND_PLAYER_CREATED,
+      joinMode: createGroupJoinMode,
     });
     sendChatWsRequest(
       WsMessageType.WS_TYPE_CHAT_CREATE_CONVERSATION,
       "createConversation",
       req,
     );
+  };
+
+  const requestGroupDetail = (conversationId) => {
+    if (!conversationId) return;
+    const req = create(GetGroupDetailRequestSchema, {
+      conversationId: toIdBigInt(conversationId),
+    });
+    sendChatWsRequest(WsMessageType.WS_TYPE_CHAT_GET_GROUP_DETAIL, "getGroupDetail", req);
+
+    const membersReq = create(GetGroupMembersRequestSchema, {
+      conversationId: toIdBigInt(conversationId),
+    });
+    sendChatWsRequest(WsMessageType.WS_TYPE_CHAT_GET_GROUP_MEMBERS, "getGroupMembers", membersReq);
+
+    const requestsReq = create(GetGroupJoinRequestsRequestSchema, {
+      conversationId: toIdBigInt(conversationId),
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_GET_GROUP_JOIN_REQUESTS,
+      "getGroupJoinRequests",
+      requestsReq,
+    );
+  };
+
+  const handleSaveGroupProfile = () => {
+    if (!activeConvId) return;
+    const detail = groupDetails[activeConvId];
+    if (!detail) return;
+    const req = create(UpdateGroupProfileRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+      name: detail.name || "",
+      avatar: detail.avatar || "",
+      description: detail.description || "",
+      joinMode: detail.joinMode || GROUP_JOIN_MODE_PRIVATE,
+    });
+    sendChatWsRequest(WsMessageType.WS_TYPE_CHAT_UPDATE_GROUP_PROFILE, "updateGroupProfile", req);
+  };
+
+  const handleSaveGroupAnnouncement = () => {
+    if (!activeConvId) return;
+    const req = create(UpdateGroupAnnouncementRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+      announcement: groupAnnouncementDraft,
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_UPDATE_GROUP_ANNOUNCEMENT,
+      "updateGroupAnnouncement",
+      req,
+    );
+  };
+
+  const handleInviteToGroup = (targetId = groupInviteTargetId) => {
+    if (!activeConvId) return;
+    const normalized = parseUid(targetId);
+    if (!normalized) {
+      setRequestError("请输入有效的邀请 UID");
+      return;
+    }
+    const req = create(InviteToGroupRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+      inviteeId: toIdBigInt(normalized),
+    });
+    sendChatWsRequest(WsMessageType.WS_TYPE_CHAT_INVITE_TO_GROUP, "inviteToGroup", req);
+    setGroupInviteTargetId("");
+  };
+
+  const handleRespondInvitation = (invitationId, accept) => {
+    const req = create(RespondGroupInvitationRequestSchema, {
+      invitationId: toIdBigInt(invitationId),
+      accept,
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_RESPOND_GROUP_INVITATION,
+      "respondGroupInvitation",
+      req,
+    );
+  };
+
+  const handleReviewJoinRequest = (requestId, approve) => {
+    const req = create(ReviewGroupJoinRequestRequestSchema, {
+      requestId: toIdBigInt(requestId),
+      approve,
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_REVIEW_GROUP_JOIN_REQUEST,
+      "reviewGroupJoinRequest",
+      req,
+    );
+  };
+
+  const handleUpdateMemberRole = (targetUserId, role) => {
+    if (!activeConvId) return;
+    const req = create(UpdateGroupMemberRoleRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+      targetUserId: toIdBigInt(targetUserId),
+      role,
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_UPDATE_GROUP_MEMBER_ROLE,
+      "updateGroupMemberRole",
+      req,
+    );
+  };
+
+  const handleTransferOwnership = (targetUserId) => {
+    if (!activeConvId) return;
+    if (!window.confirm("确认转让群主？转让后你将变成普通成员。")) return;
+    const req = create(TransferGroupOwnershipRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+      targetUserId: toIdBigInt(targetUserId),
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_TRANSFER_GROUP_OWNERSHIP,
+      "transferGroupOwnership",
+      req,
+    );
+  };
+
+  const handleRemoveMember = (targetUserId) => {
+    if (!activeConvId) return;
+    if (!window.confirm("确认移出该成员？")) return;
+    const req = create(RemoveGroupMemberRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+      targetUserId: toIdBigInt(targetUserId),
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_REMOVE_GROUP_MEMBER,
+      "removeGroupMember",
+      req,
+    );
+  };
+
+  const handleLeaveGroup = () => {
+    if (!activeConvId) return;
+    if (!window.confirm("确认退出该群？")) return;
+    const req = create(LeaveGroupRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+    });
+    sendChatWsRequest(WsMessageType.WS_TYPE_CHAT_LEAVE_GROUP, "leaveGroup", req);
+  };
+
+  const handleDissolveGroup = () => {
+    if (!activeConvId) return;
+    if (!window.confirm("确认解散该群？解散后将不可恢复且历史消息不可查看。")) return;
+    const req = create(DissolveGroupRequestSchema, {
+      conversationId: toIdBigInt(activeConvId),
+    });
+    sendChatWsRequest(WsMessageType.WS_TYPE_CHAT_DISSOLVE_GROUP, "dissolveGroup", req);
+  };
+
+  const handleApplyToJoinGroup = (conversationId) => {
+    const req = create(ApplyToJoinGroupRequestSchema, {
+      conversationId: toIdBigInt(conversationId),
+      message: "申请加入群聊",
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_APPLY_TO_JOIN_GROUP,
+      "applyToJoinGroup",
+      req,
+    );
+  };
+
+  const updateActiveGroupDetail = (partial) => {
+    if (!activeConvId) return;
+    setGroupDetails((prev) => ({
+      ...prev,
+      [activeConvId]: { ...prev[activeConvId], ...partial },
+    }));
   };
 
   const handleFollowUser = (targetId = followTargetId) => {
@@ -1114,6 +1481,12 @@ export default function Chat() {
         : followersList;
   const activeMessages = activeConvId ? messages[activeConvId] || [] : [];
   const activeConv = conversations.find((conv) => toIdString(conv.id) === activeConvId) || null;
+  const activeGroupDetail = activeConvId ? groupDetails[activeConvId] || null : null;
+  const activeGroupMembers = activeConvId ? groupMembersMap[activeConvId] || [] : [];
+  const activeGroupJoinRequests = activeConvId ? groupJoinRequestsMap[activeConvId] || [] : [];
+  const activeGroupRole = Number(activeGroupDetail?.myRole || 0);
+  const canManageGroup = activeGroupRole === GROUP_ROLE_OWNER || activeGroupRole === GROUP_ROLE_ADMIN;
+  const canTransferOwnership = activeGroupRole === GROUP_ROLE_OWNER;
   const activeTopicRoom = topicRooms.find((room) => toIdString(room.id) === activeTopicRoomId) || null;
   const activeTopicMessages = activeTopicRoomId ? topicMessages[activeTopicRoomId] || [] : [];
   const wsLabel = {
@@ -1163,7 +1536,21 @@ export default function Chat() {
     avatar: member.avatar || "",
     badge: "在线",
   }));
-  const memberPanelList = activeTopicRoomId ? topicMemberPanelList : defaultMemberPanelList;
+  const memberPanelList = activeTopicRoomId
+    ? topicMemberPanelList
+    : Number(activeConv?.type) === Number(CONVERSATION_TYPE_GROUP) && activeGroupMembers.length > 0
+      ? activeGroupMembers.map((member) => ({
+          id: toIdString(member.userId),
+          name: member.nickname || member.username || `UID ${toIdString(member.userId)}`,
+          avatar: member.avatar || "",
+          badge:
+            Number(member.role) === GROUP_ROLE_OWNER
+              ? "群主"
+              : Number(member.role) === GROUP_ROLE_ADMIN
+                ? "管理员"
+                : "成员",
+        }))
+      : defaultMemberPanelList;
 
   return (
     <div className="flex h-screen flex-col bg-[#1e1f22] text-slate-100 md:flex-row">
@@ -1293,6 +1680,27 @@ export default function Chat() {
             {conversations.length === 0 ? (
               <div className="rounded-lg border border-[#3a3d43] bg-[#232428] p-3 text-sm text-slate-400">
                 还没有会话，点击右上角创建私聊或群聊。
+              </div>
+            ) : null}
+            {myGroupInvitations.length > 0 ? (
+              <div className="mb-3 rounded-lg border border-[#3a3d43] bg-[#232428] p-2">
+                <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                  我的群邀请
+                </div>
+                {myGroupInvitations.map((invitation) => (
+                  <div key={toIdString(invitation.id)} className="mb-2 rounded-md border border-[#3a3d43] bg-[#1e1f22] p-2 text-xs last:mb-0">
+                    <p className="font-semibold text-slate-100">{invitation.groupName || `群 ${toIdString(invitation.conversationId)}`}</p>
+                    <p className="mt-1 text-slate-400">邀请人：{invitation.inviterNickname || invitation.inviterUsername || invitation.inviterId}</p>
+                    <div className="mt-2 flex gap-2">
+                      <DiscordButton className="!h-8 !px-3 !text-xs" onClick={() => handleRespondInvitation(invitation.id, true)}>
+                        接受
+                      </DiscordButton>
+                      <DiscordSecondaryButton className="!h-8 !px-3 !text-xs" onClick={() => handleRespondInvitation(invitation.id, false)}>
+                        拒绝
+                      </DiscordSecondaryButton>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : null}
             {conversationGroups.map((group) => (
@@ -1653,6 +2061,74 @@ export default function Chat() {
           ) : activeConvId ? (
             <>
               <div className="flex-1 overflow-y-auto px-4 py-4">
+                {Number(activeConv?.type) === Number(CONVERSATION_TYPE_GROUP) && activeGroupDetail ? (
+                  <div className="mb-4 rounded-xl border border-[#3a3d43] bg-[#2b2d31] p-4">
+                    <div className="grid gap-3 lg:grid-cols-2">
+                      <GroupProfileCard
+                        detail={activeGroupDetail}
+                        canManageGroup={canManageGroup}
+                        inviteTargetId={groupInviteTargetId}
+                        onChangeDetail={updateActiveGroupDetail}
+                        onChangeInviteTarget={setGroupInviteTargetId}
+                        onSaveProfile={handleSaveGroupProfile}
+                        onInvite={() => handleInviteToGroup()}
+                        DiscordButton={DiscordButton}
+                        DiscordInput={DiscordInput}
+                        joinModePrivate={GROUP_JOIN_MODE_PRIVATE}
+                        joinModeApproval={GROUP_JOIN_MODE_APPROVAL}
+                        joinModePublic={GROUP_JOIN_MODE_PUBLIC}
+                      />
+                      <div className="space-y-3">
+                        <GroupAnnouncementCard
+                          roleLabel={activeGroupRole === GROUP_ROLE_OWNER ? "群主" : activeGroupRole === GROUP_ROLE_ADMIN ? "管理员" : "普通成员"}
+                          memberCount={Number(activeGroupDetail.memberCount || 0)}
+                          groupKindLabel={Number(activeGroupDetail.groupKind) === 1 ? "官方群" : "玩家自建群"}
+                          announcementDraft={groupAnnouncementDraft}
+                          canManageGroup={canManageGroup}
+                          onChangeAnnouncement={setGroupAnnouncementDraft}
+                          onSaveAnnouncement={handleSaveGroupAnnouncement}
+                          DiscordButton={DiscordButton}
+                        />
+                        <GroupMembersCard
+                          members={activeGroupMembers}
+                          currentUserId={user?.id}
+                          activeGroupRole={activeGroupRole}
+                          groupRoleOwner={GROUP_ROLE_OWNER}
+                          groupRoleAdmin={GROUP_ROLE_ADMIN}
+                          groupRoleMember={GROUP_ROLE_MEMBER}
+                          canManageGroup={canManageGroup}
+                          canTransferOwnership={canTransferOwnership}
+                          onSetAdmin={(memberId) => handleUpdateMemberRole(memberId, GROUP_ROLE_ADMIN)}
+                          onUnsetAdmin={(memberId) => handleUpdateMemberRole(memberId, GROUP_ROLE_MEMBER)}
+                          onTransferOwnership={handleTransferOwnership}
+                          onRemoveMember={handleRemoveMember}
+                          DiscordSecondaryButton={DiscordSecondaryButton}
+                        />
+                        {canManageGroup ? (
+                          <GroupJoinRequestsCard
+                            requests={activeGroupJoinRequests}
+                            pendingStatus={GROUP_JOIN_REQUEST_PENDING}
+                            onApprove={(requestId) => handleReviewJoinRequest(requestId, true)}
+                            onReject={(requestId) => handleReviewJoinRequest(requestId, false)}
+                            DiscordButton={DiscordButton}
+                            DiscordSecondaryButton={DiscordSecondaryButton}
+                          />
+                        ) : null}
+                        <div className="flex gap-2">
+                          {activeGroupRole === GROUP_ROLE_OWNER ? (
+                            <DiscordSecondaryButton className="!border-[#5f2a33] !bg-[#3b1f24] !text-[#ffb4bf] hover:!bg-[#4a252d]" onClick={handleDissolveGroup}>
+                              解散群
+                            </DiscordSecondaryButton>
+                          ) : (
+                            <DiscordSecondaryButton onClick={handleLeaveGroup}>
+                              退群
+                            </DiscordSecondaryButton>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
                 {activeMessages.length === 0 ? (
                   <div className="rounded-xl border border-[#3a3d43] bg-[#2b2d31] p-4 text-sm text-slate-400">
                     开始发送第一条消息吧。
@@ -1815,99 +2291,35 @@ export default function Chat() {
         </aside>
       </main>
 
-      {createModalOpen ? (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/65 p-4">
-          <div className="discord-surface w-full max-w-4xl rounded-xl p-5">
-            <h3 className="font-display text-xl font-bold text-white">创建群聊</h3>
-            <p className="mt-1 text-sm text-slate-400">
-              填写群信息，并从右侧好友列表中勾选成员。
-            </p>
-
-            <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,360px)]">
-              <div className="space-y-3">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-300">群聊名称</label>
-                  <DiscordInput
-                    value={createGroupName}
-                    onChange={(event) => setCreateGroupName(event.target.value)}
-                    placeholder="例如 产品讨论组"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-300">群头像 URL（可选）</label>
-                  <DiscordInput
-                    value={createGroupAvatar}
-                    onChange={(event) => setCreateGroupAvatar(event.target.value)}
-                    placeholder="https://..."
-                  />
-                </div>
-                <div className="rounded-md border border-[#3f4248] bg-[#232428] px-3 py-2 text-xs text-slate-400">
-                  需选择至少 2 位好友（不包含自己）才能创建群聊。
-                </div>
-              </div>
-
-              <div className="min-h-0 rounded-md border border-[#3f4248] bg-[#1e1f22]">
-                <div className="flex items-center justify-between border-b border-[#2a2c30] px-3 py-2">
-                  <label className="block text-xs font-semibold text-slate-300">群成员（仅好友）</label>
-                  <span className="text-[11px] text-slate-400">已选 {createGroupMemberIds.length} 人</span>
-                </div>
-                <div className="max-h-72 overflow-y-auto">
-                  {friendCandidates.length === 0 ? (
-                    <p className="px-3 py-4 text-xs text-slate-400">
-                      暂无可邀请好友，请先与对方互相关注。
-                    </p>
-                  ) : (
-                    friendCandidates.map((member) => {
-                      const memberId = toIdString(member.id);
-                      const selected = createGroupMemberIds.includes(memberId);
-                      const memberName = member.nickname || member.username || `UID ${memberId}`;
-                      return (
-                        <label
-                          key={memberId}
-                          className={`flex cursor-pointer items-center gap-2 border-b border-[#2a2c30] px-3 py-2 transition last:border-b-0 ${
-                            selected ? "bg-[#2a315a]" : "hover:bg-[#2a2c30]"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selected}
-                            onChange={() => toggleCreateGroupMember(memberId)}
-                            className="h-4 w-4 accent-[#5865f2]"
-                          />
-                          <div
-                            className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full text-[10px] font-bold text-white"
-                            style={{
-                              backgroundColor: member.avatar ? "transparent" : getAvatarColor(memberId),
-                            }}
-                          >
-                            {member.avatar ? (
-                              <img src={member.avatar} alt="avatar" className="h-full w-full object-cover" />
-                            ) : (
-                              getInitials(memberName)
-                            )}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate text-xs font-semibold text-slate-100">
-                              {memberName}
-                            </p>
-                            <p className="truncate text-[11px] text-slate-400">UID: {memberId}</p>
-                          </div>
-                        </label>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <DiscordSecondaryButton onClick={closeCreateConversationModal}>
-                取消
-              </DiscordSecondaryButton>
-              <DiscordButton onClick={handleCreateConversation}>创建群聊</DiscordButton>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <GroupCreateModal
+        open={createModalOpen}
+        form={{
+          name: createGroupName,
+          avatar: createGroupAvatar,
+          description: createGroupDescription,
+          joinMode: createGroupJoinMode,
+        }}
+        selectedMemberIds={createGroupMemberIds}
+        friendCandidates={friendCandidates}
+        onChangeForm={(partial) => {
+          if (partial.name !== undefined) setCreateGroupName(partial.name);
+          if (partial.avatar !== undefined) setCreateGroupAvatar(partial.avatar);
+          if (partial.description !== undefined) setCreateGroupDescription(partial.description);
+          if (partial.joinMode !== undefined) setCreateGroupJoinMode(partial.joinMode);
+        }}
+        onToggleMember={toggleCreateGroupMember}
+        onClose={closeCreateConversationModal}
+        onSubmit={handleCreateConversation}
+        DiscordButton={DiscordButton}
+        DiscordSecondaryButton={DiscordSecondaryButton}
+        DiscordInput={DiscordInput}
+        getAvatarColor={getAvatarColor}
+        getInitials={getInitials}
+        toIdString={toIdString}
+        joinModePrivate={GROUP_JOIN_MODE_PRIVATE}
+        joinModeApproval={GROUP_JOIN_MODE_APPROVAL}
+        joinModePublic={GROUP_JOIN_MODE_PUBLIC}
+      />
 
       {followModalOpen ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/65 p-4">

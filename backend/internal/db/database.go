@@ -53,6 +53,8 @@ func autoMigrate() error {
 		&models.Message{},
 		&models.Conversation{},
 		&models.ConversationParticipant{},
+		&models.GroupJoinRequest{},
+		&models.GroupInvitation{},
 		&models.Relation{},
 		&models.BlockRelation{},
 	)

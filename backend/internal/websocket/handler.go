@@ -112,6 +112,21 @@ func (s *Server) HandleMessage(client *Client, message []byte) {
 		proto.WsMessageType_WS_TYPE_CHAT_GET_MESSAGE_LIST,
 		proto.WsMessageType_WS_TYPE_CHAT_MARK_AS_READ,
 		proto.WsMessageType_WS_TYPE_CHAT_CREATE_CONVERSATION,
+		proto.WsMessageType_WS_TYPE_CHAT_GET_GROUP_DETAIL,
+		proto.WsMessageType_WS_TYPE_CHAT_UPDATE_GROUP_PROFILE,
+		proto.WsMessageType_WS_TYPE_CHAT_UPDATE_GROUP_ANNOUNCEMENT,
+		proto.WsMessageType_WS_TYPE_CHAT_GET_GROUP_MEMBERS,
+		proto.WsMessageType_WS_TYPE_CHAT_UPDATE_GROUP_MEMBER_ROLE,
+		proto.WsMessageType_WS_TYPE_CHAT_TRANSFER_GROUP_OWNERSHIP,
+		proto.WsMessageType_WS_TYPE_CHAT_REMOVE_GROUP_MEMBER,
+		proto.WsMessageType_WS_TYPE_CHAT_LEAVE_GROUP,
+		proto.WsMessageType_WS_TYPE_CHAT_DISSOLVE_GROUP,
+		proto.WsMessageType_WS_TYPE_CHAT_APPLY_TO_JOIN_GROUP,
+		proto.WsMessageType_WS_TYPE_CHAT_GET_GROUP_JOIN_REQUESTS,
+		proto.WsMessageType_WS_TYPE_CHAT_REVIEW_GROUP_JOIN_REQUEST,
+		proto.WsMessageType_WS_TYPE_CHAT_INVITE_TO_GROUP,
+		proto.WsMessageType_WS_TYPE_CHAT_GET_MY_GROUP_INVITATIONS,
+		proto.WsMessageType_WS_TYPE_CHAT_RESPOND_GROUP_INVITATION,
 		proto.WsMessageType_WS_TYPE_CHAT_GET_TOPIC_ROOM_LIST,
 		proto.WsMessageType_WS_TYPE_CHAT_JOIN_TOPIC_ROOM,
 		proto.WsMessageType_WS_TYPE_CHAT_LEAVE_TOPIC_ROOM,
@@ -566,6 +581,178 @@ func (s *Server) handleChatMessage(client *Client, msg *proto.WsMessage, payload
 				},
 			},
 		}
+	}
+
+	if req := payload.GetGetGroupDetail(); req != nil {
+		conversation, err := s.chatService.GetGroupDetail(uint64(client.ID), req.ConversationId)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_GET_GROUP_DETAIL_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GetGroupDetailResponse{GetGroupDetailResponse: &chatpb.GetGroupDetailResponse{Conversation: conversation}}}}}
+	}
+
+	if req := payload.GetUpdateGroupProfile(); req != nil {
+		conversation, err := s.chatService.UpdateGroupProfile(uint64(client.ID), req)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		participantIDs, _ := s.chatService.GetConversationParticipantIDs(req.ConversationId)
+		pushMsg := &proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupUpdatedPush{GroupUpdatedPush: &chatpb.GroupUpdatedPush{Conversation: conversation}}}}}
+		if data, err := goproto.Marshal(pushMsg); err == nil {
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_UPDATE_GROUP_PROFILE_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_UpdateGroupProfileResponse{UpdateGroupProfileResponse: &chatpb.UpdateGroupProfileResponse{Conversation: conversation}}}}}
+	}
+
+	if req := payload.GetUpdateGroupAnnouncement(); req != nil {
+		conversation, err := s.chatService.UpdateGroupAnnouncement(uint64(client.ID), req)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		participantIDs, _ := s.chatService.GetConversationParticipantIDs(req.ConversationId)
+		pushMsg := &proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupUpdatedPush{GroupUpdatedPush: &chatpb.GroupUpdatedPush{Conversation: conversation}}}}}
+		if data, err := goproto.Marshal(pushMsg); err == nil {
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_UPDATE_GROUP_ANNOUNCEMENT_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_UpdateGroupAnnouncementResponse{UpdateGroupAnnouncementResponse: &chatpb.UpdateGroupAnnouncementResponse{Conversation: conversation}}}}}
+	}
+
+	if req := payload.GetGetGroupMembers(); req != nil {
+		members, err := s.chatService.GetGroupMembers(uint64(client.ID), req.ConversationId)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_GET_GROUP_MEMBERS_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GetGroupMembersResponse{GetGroupMembersResponse: &chatpb.GetGroupMembersResponse{ConversationId: req.ConversationId, Members: members}}}}}
+	}
+
+	if req := payload.GetUpdateGroupMemberRole(); req != nil {
+		member, err := s.chatService.UpdateGroupMemberRole(uint64(client.ID), req)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		members, _ := s.chatService.GetGroupMembers(uint64(client.ID), req.ConversationId)
+		pushMsg := &proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_MEMBERS_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupMembersUpdatedPush{GroupMembersUpdatedPush: &chatpb.GroupMembersUpdatedPush{ConversationId: req.ConversationId, Members: members}}}}}
+		if data, err := goproto.Marshal(pushMsg); err == nil {
+			participantIDs, _ := s.chatService.GetConversationParticipantIDs(req.ConversationId)
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_UPDATE_GROUP_MEMBER_ROLE_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_UpdateGroupMemberRoleResponse{UpdateGroupMemberRoleResponse: &chatpb.UpdateGroupMemberRoleResponse{ConversationId: req.ConversationId, Member: member}}}}}
+	}
+
+	if req := payload.GetTransferGroupOwnership(); req != nil {
+		conversation, err := s.chatService.TransferGroupOwnership(uint64(client.ID), req)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		participantIDs, _ := s.chatService.GetConversationParticipantIDs(req.ConversationId)
+		members, _ := s.chatService.GetGroupMembers(req.TargetUserId, req.ConversationId)
+		if data, err := goproto.Marshal(&proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupUpdatedPush{GroupUpdatedPush: &chatpb.GroupUpdatedPush{Conversation: conversation}}}}}); err == nil {
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		if data, err := goproto.Marshal(&proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_MEMBERS_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupMembersUpdatedPush{GroupMembersUpdatedPush: &chatpb.GroupMembersUpdatedPush{ConversationId: req.ConversationId, Members: members}}}}}); err == nil {
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_TRANSFER_GROUP_OWNERSHIP_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_TransferGroupOwnershipResponse{TransferGroupOwnershipResponse: &chatpb.TransferGroupOwnershipResponse{Conversation: conversation}}}}}
+	}
+
+	if req := payload.GetRemoveGroupMember(); req != nil {
+		if err := s.chatService.RemoveGroupMember(uint64(client.ID), req); err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		participantIDs, _ := s.chatService.GetConversationParticipantIDs(req.ConversationId)
+		members, _ := s.chatService.GetGroupMembers(uint64(client.ID), req.ConversationId)
+		if data, err := goproto.Marshal(&proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_MEMBERS_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupMembersUpdatedPush{GroupMembersUpdatedPush: &chatpb.GroupMembersUpdatedPush{ConversationId: req.ConversationId, Members: members}}}}}); err == nil {
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_REMOVE_GROUP_MEMBER_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_RemoveGroupMemberResponse{RemoveGroupMemberResponse: &chatpb.RemoveGroupMemberResponse{ConversationId: req.ConversationId, TargetUserId: req.TargetUserId}}}}}
+	}
+
+	if req := payload.GetLeaveGroup(); req != nil {
+		if err := s.chatService.LeaveGroup(uint64(client.ID), req.ConversationId); err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		participantIDs, _ := s.chatService.GetConversationParticipantIDs(req.ConversationId)
+		members, _ := s.chatService.GetGroupMembers(participantIDs[0], req.ConversationId)
+		if data, err := goproto.Marshal(&proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_MEMBERS_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupMembersUpdatedPush{GroupMembersUpdatedPush: &chatpb.GroupMembersUpdatedPush{ConversationId: req.ConversationId, Members: members}}}}}); err == nil {
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_LEAVE_GROUP_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_LeaveGroupResponse{LeaveGroupResponse: &chatpb.LeaveGroupResponse{ConversationId: req.ConversationId}}}}}
+	}
+
+	if req := payload.GetDissolveGroup(); req != nil {
+		if err := s.chatService.DissolveGroup(uint64(client.ID), req.ConversationId); err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		conversation, _ := s.chatService.GetConversationForUser(req.ConversationId, uint64(client.ID))
+		participantIDs, _ := s.chatService.GetConversationParticipantIDs(req.ConversationId)
+		if data, err := goproto.Marshal(&proto.WsMessage{Type: proto.WsMessageType_WS_TYPE_CHAT_GROUP_UPDATED_PUSH, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GroupUpdatedPush{GroupUpdatedPush: &chatpb.GroupUpdatedPush{Conversation: conversation}}}}}); err == nil {
+			for _, uid := range participantIDs {
+				s.SendToUser(uint(uid), data)
+			}
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_DISSOLVE_GROUP_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_DissolveGroupResponse{DissolveGroupResponse: &chatpb.DissolveGroupResponse{ConversationId: req.ConversationId}}}}}
+	}
+
+	if req := payload.GetApplyToJoinGroup(); req != nil {
+		joinRequest, err := s.chatService.ApplyToJoinGroup(uint64(client.ID), req)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_APPLY_TO_JOIN_GROUP_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_ApplyToJoinGroupResponse{ApplyToJoinGroupResponse: &chatpb.ApplyToJoinGroupResponse{JoinRequest: joinRequest}}}}}
+	}
+
+	if req := payload.GetGetGroupJoinRequests(); req != nil {
+		requests, err := s.chatService.GetGroupJoinRequests(uint64(client.ID), req.ConversationId)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_GET_GROUP_JOIN_REQUESTS_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GetGroupJoinRequestsResponse{GetGroupJoinRequestsResponse: &chatpb.GetGroupJoinRequestsResponse{ConversationId: req.ConversationId, Requests: requests}}}}}
+	}
+
+	if req := payload.GetReviewGroupJoinRequest(); req != nil {
+		joinRequest, err := s.chatService.ReviewGroupJoinRequest(uint64(client.ID), req)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_REVIEW_GROUP_JOIN_REQUEST_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_ReviewGroupJoinRequestResponse{ReviewGroupJoinRequestResponse: &chatpb.ReviewGroupJoinRequestResponse{JoinRequest: joinRequest}}}}}
+	}
+
+	if req := payload.GetInviteToGroup(); req != nil {
+		invitation, err := s.chatService.InviteToGroup(uint64(client.ID), req)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_INVITE_TO_GROUP_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_InviteToGroupResponse{InviteToGroupResponse: &chatpb.InviteToGroupResponse{Invitation: invitation}}}}}
+	}
+
+	if payload.GetGetMyGroupInvitations() != nil {
+		invitations, err := s.chatService.GetMyGroupInvitations(uint64(client.ID))
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_GET_MY_GROUP_INVITATIONS_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_GetMyGroupInvitationsResponse{GetMyGroupInvitationsResponse: &chatpb.GetMyGroupInvitationsResponse{Invitations: invitations}}}}}
+	}
+
+	if req := payload.GetRespondGroupInvitation(); req != nil {
+		invitation, conversation, err := s.chatService.RespondGroupInvitation(uint64(client.ID), req.InvitationId, req.Accept)
+		if err != nil {
+			return s.createErrorResponse(msg.RequestId, err.Error())
+		}
+		return &proto.WsMessage{RequestId: msg.RequestId, Type: proto.WsMessageType_WS_TYPE_CHAT_RESPOND_GROUP_INVITATION_RESPONSE, Timestamp: time.Now().UnixMilli(), Payload: &proto.WsMessage_Chat{Chat: &chatpb.ChatPayload{Payload: &chatpb.ChatPayload_RespondGroupInvitationResponse{RespondGroupInvitationResponse: &chatpb.RespondGroupInvitationResponse{Invitation: invitation, Conversation: conversation}}}}}
 	}
 
 	if payload.GetGetTopicRoomList() != nil {
