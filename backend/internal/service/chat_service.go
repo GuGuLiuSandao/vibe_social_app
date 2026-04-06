@@ -1,10 +1,14 @@
 package service
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"hash/crc32"
+	"io"
+	"net/http"
+	"os"
 	"social_app/internal/db"
 	"social_app/internal/models"
 	pb "social_app/internal/proto/chat"
@@ -31,6 +35,36 @@ type npcMemoryState struct {
 	Name   string   `json:"name,omitempty"`
 	Likes  []string `json:"likes,omitempty"`
 	Topics []string `json:"topics,omitempty"`
+}
+
+type llmConfig struct {
+	BaseURL string
+	APIKey  string
+	Model   string
+	Timeout time.Duration
+}
+
+type llmChatCompletionMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type llmChatCompletionRequest struct {
+	Model       string                     `json:"model"`
+	Messages    []llmChatCompletionMessage `json:"messages"`
+	Temperature float64                    `json:"temperature,omitempty"`
+	MaxTokens   int                        `json:"max_tokens,omitempty"`
+}
+
+type llmChatCompletionResponse struct {
+	Choices []struct {
+		Message struct {
+			Content string `json:"content"`
+		} `json:"message"`
+	} `json:"choices"`
+	Error *struct {
+		Message string `json:"message"`
+	} `json:"error,omitempty"`
 }
 
 const (
@@ -231,6 +265,170 @@ func buildNPCMemorySummary(state npcMemoryState) string {
 	return strings.Join(parts, "；")
 }
 
+func loadLLMConfigFromEnv() (llmConfig, bool) {
+	apiKey := strings.TrimSpace(os.Getenv("LLM_API_KEY"))
+	if apiKey == "" {
+		apiKey = strings.TrimSpace(os.Getenv("OPENAI_API_KEY"))
+	}
+	if apiKey == "" {
+		return llmConfig{}, false
+	}
+
+	baseURL := strings.TrimSpace(os.Getenv("LLM_BASE_URL"))
+	if baseURL == "" {
+		baseURL = strings.TrimSpace(os.Getenv("OPENAI_BASE_URL"))
+	}
+	if baseURL == "" {
+		baseURL = "https://api.openai.com/v1"
+	}
+
+	model := strings.TrimSpace(os.Getenv("LLM_MODEL"))
+	if model == "" {
+		model = "gpt-4o-mini"
+	}
+
+	timeoutSeconds := 20
+	if raw := strings.TrimSpace(os.Getenv("LLM_TIMEOUT_SECONDS")); raw != "" {
+		if parsed, err := strconv.Atoi(raw); err == nil && parsed > 0 && parsed <= 180 {
+			timeoutSeconds = parsed
+		}
+	}
+
+	return llmConfig{
+		BaseURL: strings.TrimRight(baseURL, "/"),
+		APIKey:  apiKey,
+		Model:   model,
+		Timeout: time.Duration(timeoutSeconds) * time.Second,
+	}, true
+}
+
+func buildChatCompletionsEndpoint(baseURL string) string {
+	endpoint := strings.TrimRight(baseURL, "/")
+	if strings.HasSuffix(endpoint, "/chat/completions") {
+		return endpoint
+	}
+	return endpoint + "/chat/completions"
+}
+
+func buildNPCSystemPrompt(memoryState npcMemoryState) string {
+	parts := []string{
+		"你是魔兽世界风格的酒馆老板，语气豪爽、友好、简洁。",
+		"回复请使用中文，长度控制在1-3句，避免长篇说教。",
+		"若用户询问你是否记得，请结合记忆自然回应。",
+	}
+	if summary := buildNPCMemorySummary(memoryState); summary != "" {
+		parts = append(parts, "当前已知用户记忆："+summary)
+	}
+	return strings.Join(parts, "\n")
+}
+
+func (s *ChatService) buildNPCChatCompletionMessagesTx(tx *gorm.DB, conversationID uint64, memoryState npcMemoryState) ([]llmChatCompletionMessage, error) {
+	messages := []llmChatCompletionMessage{
+		{
+			Role:    "system",
+			Content: buildNPCSystemPrompt(memoryState),
+		},
+	}
+
+	var recentMessages []models.Message
+	if err := tx.Where("conversation_id = ?", conversationID).
+		Order("local_id DESC").
+		Limit(12).
+		Find(&recentMessages).Error; err != nil {
+		return nil, err
+	}
+
+	for idx := len(recentMessages) - 1; idx >= 0; idx-- {
+		msg := recentMessages[idx]
+		content := strings.TrimSpace(msg.Content)
+		if content == "" {
+			continue
+		}
+		role := "user"
+		if msg.SenderID == npcSystemUserID {
+			role = "assistant"
+		}
+		messages = append(messages, llmChatCompletionMessage{
+			Role:    role,
+			Content: content,
+		})
+	}
+
+	return messages, nil
+}
+
+func requestChatCompletion(cfg llmConfig, messages []llmChatCompletionMessage) (string, error) {
+	reqBody := llmChatCompletionRequest{
+		Model:       cfg.Model,
+		Messages:    messages,
+		Temperature: 0.8,
+		MaxTokens:   220,
+	}
+	payload, err := json.Marshal(reqBody)
+	if err != nil {
+		return "", err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, buildChatCompletionsEndpoint(cfg.BaseURL), bytes.NewReader(payload))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+cfg.APIKey)
+
+	client := &http.Client{Timeout: cfg.Timeout}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	respBytes, err := io.ReadAll(io.LimitReader(resp.Body, 2<<20))
+	if err != nil {
+		return "", err
+	}
+
+	var llmResp llmChatCompletionResponse
+	if err := json.Unmarshal(respBytes, &llmResp); err != nil {
+		if resp.StatusCode >= http.StatusBadRequest {
+			return "", fmt.Errorf("chat/completions returned status %d: %s", resp.StatusCode, string(respBytes))
+		}
+		return "", err
+	}
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		if llmResp.Error != nil && strings.TrimSpace(llmResp.Error.Message) != "" {
+			return "", fmt.Errorf("chat/completions returned status %d: %s", resp.StatusCode, llmResp.Error.Message)
+		}
+		return "", fmt.Errorf("chat/completions returned status %d", resp.StatusCode)
+	}
+
+	if llmResp.Error != nil && strings.TrimSpace(llmResp.Error.Message) != "" {
+		return "", errors.New(llmResp.Error.Message)
+	}
+	if len(llmResp.Choices) == 0 {
+		return "", errors.New("chat/completions returned empty choices")
+	}
+
+	content := strings.TrimSpace(llmResp.Choices[0].Message.Content)
+	if content == "" {
+		return "", errors.New("chat/completions returned empty content")
+	}
+	return content, nil
+}
+
+func (s *ChatService) generateNPCReplyViaLLMTx(tx *gorm.DB, conversationID uint64, memoryState npcMemoryState) (string, error) {
+	cfg, enabled := loadLLMConfigFromEnv()
+	if !enabled {
+		return "", errors.New("llm is not configured")
+	}
+	messages, err := s.buildNPCChatCompletionMessagesTx(tx, conversationID, memoryState)
+	if err != nil {
+		return "", err
+	}
+	return requestChatCompletion(cfg, messages)
+}
+
 func generateNPCReplyContent(userContent string, memoryState npcMemoryState) string {
 	text := strings.TrimSpace(userContent)
 	name := memoryState.Name
@@ -342,13 +540,18 @@ func (s *ChatService) GenerateNPCReply(conversationID uint64, userID uint64, use
 			return err
 		}
 
+		replyContent := generateNPCReplyContent(userContent, memoryState)
+		if llmReply, err := s.generateNPCReplyViaLLMTx(tx, conversationID, memoryState); err == nil {
+			replyContent = llmReply
+		}
+
 		now := time.Now()
 		newLocalID := conversation.LastLocalID + 1
 		npcReply = &models.Message{
 			ConversationID: conversationID,
 			LocalID:        newLocalID,
 			SenderID:       npcSystemUserID,
-			Content:        generateNPCReplyContent(userContent, memoryState),
+			Content:        replyContent,
 			Type:           int(pb.MessageType_MESSAGE_TYPE_TEXT),
 			CreatedAt:      now,
 		}

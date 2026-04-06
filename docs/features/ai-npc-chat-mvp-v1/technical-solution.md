@@ -11,11 +11,12 @@
   - 新增会话类型 `NPC`，与现有聊天类别并列。
   - 提供默认 NPC（魔兽酒馆老板）1v1 会话能力。
   - 用户发送消息后由服务端自动生成 NPC 回复并写入消息流。
+  - NPC 回复调用 OpenAI 兼容 `chat/completions`，支持可配置 API URL / API Key / Model。
   - 实现跨 Session 记忆持久化。
 - 非目标：
   - 不实现用户自定义 NPC 人设。
   - 不实现 NPC 邀请最多 4 人群聊。
-  - 不接入外部 LLM 平台。
+  - 不做多供应商路由与熔断编排平台化。
 
 ## 3. 方案概述
 1. 协议层：在 `ConversationType` 增加 `CONVERSATION_TYPE_NPC = 3`。
@@ -23,7 +24,8 @@
 3. 会话层：`CreateConversation(type=NPC)` 返回用户唯一默认 NPC 会话（存在即复用）。
 4. 消息层：用户向 NPC 会话发送消息后，后端同步触发 NPC 回答：
    - 读取记忆 + 最近消息上下文
-   - 生成酒馆老板风格回复
+   - 调用 `chat/completions` 生成酒馆老板风格回复
+   - 当外部接口失败或超时时，降级为本地模板回复
    - 持久化为 NPC 发送消息
 5. 推送层：在原有 `message_push` 通道向用户补发 NPC 回复，无需新增 WS 事件类型。
 6. 前端层：聊天列表新增“AI NPC”分组和“+ AI NPC”按钮，展示/进入 NPC 会话。
@@ -35,9 +37,13 @@
 - Backend:
   - `backend/internal/models/chat.go`
   - `backend/internal/db/database.go`
+  - `backend/internal/config/config.go`
   - `backend/internal/service/chat_service.go`
   - `backend/internal/service/chat_service_test.go`
   - `backend/internal/websocket/handler.go`
+  - `backend/.env.example`
+- Infra:
+  - `docker-compose.yml`
 - Frontend:
   - `frontend/src/pages/Chat.jsx`
 - Docs/Test:
@@ -65,11 +71,12 @@
    - 默认 NPC 用户自动创建（缺失时自动补齐）
    - NPC 会话创建/复用
    - NPC 记忆读写
-   - NPC 回复生成与落库
-4. 在 WS handler 里接入“用户发言后自动推送 NPC 回复”。
-5. 在前端 `Chat.jsx` 增加 NPC 分类与快速入口。
-6. 增加/更新单测并执行全量测试。
-7. 回填 code review 记录。
+   - NPC 回复调用 `chat/completions` 与失败降级落库
+4. 新增后端环境变量并注入容器：`LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL`（可选 `LLM_TIMEOUT_SECONDS`）。
+5. 在 WS handler 里接入“用户发言后自动推送 NPC 回复”。
+6. 在前端 `Chat.jsx` 增加 NPC 分类与快速入口。
+7. 增加/更新单测并执行全量测试。
+8. 回填 code review 记录。
 
 ## 7. 测试方案
 - 自动化：
@@ -77,12 +84,12 @@
   - `cd frontend && npm test`
 - 新增重点断言：
   - `CreateConversation(type=NPC)` 可重复调用且复用同一会话
-  - NPC 会话发送消息后会自动产生 NPC 回复
+  - 配置 `chat/completions` 后 NPC 回复来自外部接口
   - NPC 记忆在服务重建后仍可读取
 
 ## 8. 风险与回滚
 - 风险：
-  - 规则式回复可读性有限，可能被感知为“模板化”。
+  - 外部接口超时/限流可能导致回复延迟或失败。
   - 若消息发送路径异常，可能导致用户消息成功但 NPC 回复失败。
 - 回滚：
   - 回退 `ConversationType=NPC` 入口按钮与后端 NPC 自动回复逻辑即可；不影响原有私聊/群聊/话题房。

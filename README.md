@@ -41,6 +41,11 @@ go run cmd/api/main.go
 ```
 - HTTP API: `http://localhost:8080/api/v1`
 - WebSocket: `ws://localhost:8080/ws?token=<JWT>`
+- AI NPC 模型调用（OpenAI 兼容 `chat/completions`）：
+  - `LLM_BASE_URL`（默认 `https://api.openai.com/v1`）
+  - `LLM_API_KEY`（必填才会启用外部模型）
+  - `LLM_MODEL`（默认 `gpt-4o-mini`）
+  - `LLM_TIMEOUT_SECONDS`（默认 `20`）
 
 ### 4) 启动前端
 ```bash

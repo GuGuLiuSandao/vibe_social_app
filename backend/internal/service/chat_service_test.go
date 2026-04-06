@@ -1,7 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -17,6 +20,12 @@ import (
 func setupChatServiceTestDB(t *testing.T) *ChatService {
 	t.Helper()
 	logger.Init()
+	t.Setenv("LLM_API_KEY", "")
+	t.Setenv("OPENAI_API_KEY", "")
+	t.Setenv("LLM_BASE_URL", "")
+	t.Setenv("OPENAI_BASE_URL", "")
+	t.Setenv("LLM_MODEL", "")
+	t.Setenv("LLM_TIMEOUT_SECONDS", "")
 
 	gormDB, err := gorm.Open(sqlite.Open("file:chat_service_test?mode=memory&cache=shared"), &gorm.Config{})
 	if err != nil {
@@ -313,6 +322,77 @@ func TestCreateNPCConversationReusesExistingConversation(t *testing.T) {
 	}
 	if len(participants) != 2 {
 		t.Fatalf("expected 2 participants, got %d", len(participants))
+	}
+}
+
+func TestNPCReplyUsesChatCompletionsWhenConfigured(t *testing.T) {
+	chatService := setupChatServiceTestDB(t)
+	user := mustCreateChatTestUser(t, 10000125)
+
+	conv, err := chatService.CreateConversation(user.UID, &pb.CreateConversationRequest{
+		Type: pb.ConversationType_CONVERSATION_TYPE_NPC,
+	})
+	if err != nil {
+		t.Fatalf("create npc conversation failed: %v", err)
+	}
+
+	var (
+		seenAuthHeader string
+		seenPath       string
+		seenModel      string
+	)
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		seenAuthHeader = r.Header.Get("Authorization")
+		seenPath = r.URL.Path
+
+		defer r.Body.Close()
+		var reqBody map[string]any
+		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(`{"error":{"message":"bad request"}}`))
+			return
+		}
+		if model, ok := reqBody["model"].(string); ok {
+			seenModel = model
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"先坐下喝一杯，我记住你了，旅人。"}}]}`))
+	}))
+	defer mockServer.Close()
+
+	t.Setenv("LLM_BASE_URL", mockServer.URL+"/v1")
+	t.Setenv("LLM_API_KEY", "test-api-key")
+	t.Setenv("LLM_MODEL", "gpt-4o-mini")
+
+	_, err = chatService.SendMessage(user.UID, &pb.SendMessageRequest{
+		ConversationId: conv.ID,
+		Content:        "今天刚从副本回来。",
+		Type:           pb.MessageType_MESSAGE_TYPE_TEXT,
+	})
+	if err != nil {
+		t.Fatalf("send npc user message failed: %v", err)
+	}
+
+	reply, err := chatService.GenerateNPCReply(conv.ID, user.UID, "今天刚从副本回来。")
+	if err != nil {
+		t.Fatalf("generate npc reply failed: %v", err)
+	}
+	if reply == nil {
+		t.Fatalf("expected npc reply")
+	}
+	if reply.Content != "先坐下喝一杯，我记住你了，旅人。" {
+		t.Fatalf("expected reply from chat/completions, got: %s", reply.Content)
+	}
+
+	if seenPath != "/v1/chat/completions" {
+		t.Fatalf("unexpected completion path: %s", seenPath)
+	}
+	if seenAuthHeader != "Bearer test-api-key" {
+		t.Fatalf("unexpected auth header: %s", seenAuthHeader)
+	}
+	if seenModel != "gpt-4o-mini" {
+		t.Fatalf("unexpected model: %s", seenModel)
 	}
 }
 

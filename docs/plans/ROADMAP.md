@@ -66,7 +66,7 @@ MVP（Web）范围（已确认）：
 
 当前补充说明（2026-04-06）：
 - 已新增 AI NPC 聊天 MVP 需求：`docs/features/ai-npc-chat-mvp-v1/`。
-- 已落地范围：新增 NPC 会话类型（与官方群/群聊同层）、默认“魔兽酒馆老板”1v1 聊天、跨 Session 记忆持久化、前端 AI NPC 分类与入口。
+- 已落地范围：新增 NPC 会话类型（与官方群/群聊同层）、默认“魔兽酒馆老板”1v1 聊天、跨 Session 记忆持久化、前端 AI NPC 分类与入口、OpenAI 兼容 `chat/completions` 接入。
 - 当前状态：已通过 `cd backend && go test ./...` 与 `cd frontend && npm test`。
 
 验收标准：

@@ -1,6 +1,4 @@
-# syntax=docker/dockerfile:1.6
-
-FROM node:20-alpine
+FROM docker.m.daocloud.io/library/node:20-alpine
 WORKDIR /app
 
 COPY frontend/package.json frontend/package-lock.json ./

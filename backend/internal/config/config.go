@@ -18,6 +18,10 @@ type Config struct {
 	RedisDB       int
 	ServerPort    string
 	JWTSecret     string
+	LLMBaseURL    string
+	LLMAPIKey     string
+	LLMModel      string
+	LLMTimeoutSec string
 }
 
 func Load() *Config {
@@ -35,6 +39,10 @@ func Load() *Config {
 		RedisDB:       0,
 		ServerPort:    getEnv("SERVER_PORT", "8080"),
 		JWTSecret:     getEnv("JWT_SECRET", "your-secret-key-change-in-production"),
+		LLMBaseURL:    getEnv("LLM_BASE_URL", "https://api.openai.com/v1"),
+		LLMAPIKey:     getEnv("LLM_API_KEY", ""),
+		LLMModel:      getEnv("LLM_MODEL", "gpt-4o-mini"),
+		LLMTimeoutSec: getEnv("LLM_TIMEOUT_SECONDS", "20"),
 	}
 }
 
