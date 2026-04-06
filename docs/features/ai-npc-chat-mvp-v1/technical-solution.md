@@ -88,5 +88,5 @@
   - 回退 `ConversationType=NPC` 入口按钮与后端 NPC 自动回复逻辑即可；不影响原有私聊/群聊/话题房。
 
 ## 9. Commit 记录
-- Commit Hash:
-- Commit Message:
+- Commit Hash: `42ead99`
+- Commit Message: `feat: add ai npc chat mvp with persistent memory`
