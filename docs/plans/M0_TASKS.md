@@ -119,6 +119,17 @@ M0 目标是把当前“能跑但不稳定”的状态收敛成“可持续迭�
 - 已启动 2.0 社群系统 1.1 子阶段需求设计，新增目录 `docs/features/community-management-v1-1/`，当前完成 `requirement.md` 初稿，后续进入技术方案阶段。
 - `docs/features/community-management-v1-1/technical-solution.md` 已完成首版，方案基于现有 `conversations` / `conversation_participants` 演进群管理能力，并新增申请/邀请模型。
 
+## T8 M1 体验收敛：shadcn/ui 统一与留白优化
+- [x] 新增并完成需求与技术方案文档：`docs/features/ui-shadcn-refactor-v1/`
+- [x] 前端基础组件统一到 `shadcn/ui`，移除 `vercel-ui` 使用路径
+- [x] 登录页、聊天页、群管理组件完成留白与层级优化
+- [x] 更新 `AGENTS.md` UI 组件规范，并完成前端回归测试
+
+验收：
+- `cd frontend && npm test` 全绿
+- 结果（2026-04-04）：通过
+- 说明：该任务映射到 `ROADMAP.md` 的 M1「私聊/群聊体验收敛」，已完成 `npm test` 与 `npm run build` 验证
+
 ## 3. 执行节奏建议（单人 + AI）
 
 Week 1：

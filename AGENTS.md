@@ -25,6 +25,7 @@ This repository is a split frontend/backend social app with shared Protocol Buff
 ## Coding Style & Naming Conventions
 - Go: follow `gofmt` defaults (tabs, standard formatting), lowercase package names, and keep new business logic under `backend/internal/<domain>`.
 - React: component/page files use PascalCase (for example `Login.jsx`), utility modules use lowercase/camelCase names in `src/lib`.
+- Frontend UI components must default to `shadcn/ui` primitives under `frontend/src/components/ui`; avoid introducing new third-party UI kits for core controls.
 - Match existing JS style in this repo: ESM imports, double quotes, semicolons.
 - Do not hand-edit generated protobuf output under `backend/internal/proto` or `frontend/src/proto`; regenerate from `proto/`.
 

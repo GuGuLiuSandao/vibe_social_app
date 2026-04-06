@@ -2,7 +2,10 @@ import { useThemeMode } from "../lib/useThemeMode";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from "../lib/vercel-ui";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 import { loginWithPassword, loginWithUid, registerWithProtobuf } from "../lib/api";
 import { setLastUid, setToken, setUser } from "../lib/storage";
 import { isWhitelistUid, parseUid } from "../lib/uid";
@@ -31,15 +34,6 @@ const STAR_LAYOUT = [
   { left: "76%", top: "86%", size: 2, delay: "-1.9s", duration: "6.3s", opacity: 0.78 },
   { left: "88%", top: "8%", size: 2, delay: "-2.8s", duration: "4.7s", opacity: 0.71 },
 ];
-
-function FieldLabel({ children, htmlFor, tone = "muted" }) {
-  const colorClass = tone === "light" ? "text-slate-200" : "text-slate-300";
-  return (
-    <label htmlFor={htmlFor} className={`text-xs font-semibold tracking-wide ${colorClass}`}>
-      {children}
-    </label>
-  );
-}
 
 export default function Login() {
   const navigate = useNavigate();
@@ -134,71 +128,71 @@ export default function Login() {
       </div>
 
       <div className="auth-center px-4 py-8 md:px-8">
-        <section className="auth-card discord-surface w-full max-w-[460px] rounded-3xl p-6 shadow-glow md:p-8">
-          <div className="mb-5 space-y-2 text-center">
-            <div className="mx-auto inline-flex items-center rounded-full border border-[var(--border-subtle)] bg-[var(--chip-bg)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-soft)]">
+        <Card className="auth-card w-full max-w-[500px] rounded-3xl border-border bg-card shadow-glow backdrop-blur-xl">
+          <CardHeader className="space-y-3 pb-4 text-center">
+            <div className="mx-auto inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
               Vibe Social
             </div>
-            <h1 className="font-display text-3xl font-extrabold text-white md:text-[34px]">
+            <CardTitle className="font-display text-3xl font-extrabold text-foreground md:text-[34px]">
               {isRegister ? "创建账号" : "欢迎回来"}
-            </h1>
-            <p className="text-sm leading-6 text-slate-300">
+            </CardTitle>
+            <CardDescription className="text-sm leading-6 text-muted-foreground">
               {isRegister ? "填写信息后即可进入实时社交会话。" : "使用账号继续访问你的实时社交会话。"}
-            </p>
-          </div>
+            </CardDescription>
+          </CardHeader>
 
+          <CardContent className="space-y-6 px-6 pb-7 pt-0 md:px-8 md:pb-8">
           {isRegister ? (
-            <form onSubmit={handleRegister} className="space-y-4">
-              <div className="space-y-2">
-                <FieldLabel htmlFor="register-username" tone="light">用户名</FieldLabel>
+            <form onSubmit={handleRegister} className="space-y-5">
+              <div className="space-y-2.5">
+                <Label htmlFor="register-username" className="text-xs font-semibold tracking-wide text-foreground">用户名</Label>
                 <Input
                   id="register-username"
                   value={registerUsername}
                   onChange={(event) => setRegisterUsername(event.target.value)}
                   placeholder="请输入用户名"
-                  className="auth-input !h-11 !rounded-xl !border-[var(--input-border)] !bg-[var(--input-bg)] !text-slate-100 !placeholder:text-slate-500 focus:!border-[var(--accent)]"
+                  className="auth-input h-11 rounded-xl border-input bg-background text-foreground placeholder:text-muted-foreground"
                 />
               </div>
-              <div className="space-y-2">
-                <FieldLabel htmlFor="register-email" tone="light">邮箱</FieldLabel>
+              <div className="space-y-2.5">
+                <Label htmlFor="register-email" className="text-xs font-semibold tracking-wide text-foreground">邮箱</Label>
                 <Input
                   id="register-email"
                   value={registerEmail}
                   onChange={(event) => setRegisterEmail(event.target.value)}
                   placeholder="you@example.com"
-                  className="auth-input !h-11 !rounded-xl !border-[var(--input-border)] !bg-[var(--input-bg)] !text-slate-100 !placeholder:text-slate-500 focus:!border-[var(--accent)]"
+                  className="auth-input h-11 rounded-xl border-input bg-background text-foreground placeholder:text-muted-foreground"
                 />
               </div>
-              <div className="space-y-2">
-                <FieldLabel htmlFor="register-password" tone="light">密码</FieldLabel>
+              <div className="space-y-2.5">
+                <Label htmlFor="register-password" className="text-xs font-semibold tracking-wide text-foreground">密码</Label>
                 <Input
                   id="register-password"
                   value={registerPassword}
                   onChange={(event) => setRegisterPassword(event.target.value)}
                   type="password"
                   placeholder="至少 6 位"
-                  className="auth-input !h-11 !rounded-xl !border-[var(--input-border)] !bg-[var(--input-bg)] !text-slate-100 !placeholder:text-slate-500 focus:!border-[var(--accent)]"
+                  className="auth-input h-11 rounded-xl border-input bg-background text-foreground placeholder:text-muted-foreground"
                 />
               </div>
               {registerError ? (
-                <div className="rounded-lg border border-[#5f2a33] bg-[#3b1f24] px-3 py-2 text-sm text-[#ffb4bf]">
+                <div className="rounded-lg border border-destructive bg-destructive px-3 py-2 text-sm text-destructive-foreground">
                   {registerError}
                 </div>
               ) : null}
               <Button
                 type="submit"
                 loading={registerLoading}
-                variant="black"
-                className="!h-11 !w-full !rounded-xl !border-[var(--accent)] !bg-[var(--accent)] !text-white hover:!bg-[var(--accent-hover)]"
+                className="h-11 w-full rounded-xl text-sm font-semibold"
               >
                 创建账号
               </Button>
-              <p className="text-center text-xs text-slate-400">
+              <p className="text-center text-xs text-muted-foreground">
                 已有账号？
                 {" "}
                 <button
                   type="button"
-                  className="font-semibold text-[var(--accent-soft)] transition-colors hover:text-white"
+                  className="font-semibold text-primary transition-colors hover:text-foreground"
                   onClick={() => {
                     setMode("login");
                     setRegisterError("");
@@ -209,47 +203,46 @@ export default function Login() {
               </p>
             </form>
           ) : (
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <FieldLabel htmlFor="login-email" tone="light">邮箱</FieldLabel>
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div className="space-y-2.5">
+                <Label htmlFor="login-email" className="text-xs font-semibold tracking-wide text-foreground">邮箱</Label>
                 <Input
                   id="login-email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="you@example.com"
-                  className="auth-input !h-11 !rounded-xl !border-[var(--input-border)] !bg-[var(--input-bg)] !text-slate-100 !placeholder:text-slate-500 focus:!border-[var(--accent)]"
+                  className="auth-input h-11 rounded-xl border-input bg-background text-foreground placeholder:text-muted-foreground"
                 />
               </div>
-              <div className="space-y-2">
-                <FieldLabel htmlFor="login-password" tone="light">密码</FieldLabel>
+              <div className="space-y-2.5">
+                <Label htmlFor="login-password" className="text-xs font-semibold tracking-wide text-foreground">密码</Label>
                 <Input
                   id="login-password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   type="password"
                   placeholder="••••••"
-                  className="auth-input !h-11 !rounded-xl !border-[var(--input-border)] !bg-[var(--input-bg)] !text-slate-100 !placeholder:text-slate-500 focus:!border-[var(--accent)]"
+                  className="auth-input h-11 rounded-xl border-input bg-background text-foreground placeholder:text-muted-foreground"
                 />
               </div>
               {error ? (
-                <div className="rounded-lg border border-[#5f2a33] bg-[#3b1f24] px-3 py-2 text-sm text-[#ffb4bf]">
+                <div className="rounded-lg border border-destructive bg-destructive px-3 py-2 text-sm text-destructive-foreground">
                   {error}
                 </div>
               ) : null}
               <Button
                 type="submit"
                 loading={loading}
-                variant="black"
-                className="!h-11 !w-full !rounded-xl !border-[var(--accent)] !bg-[var(--accent)] !text-white hover:!bg-[var(--accent-hover)]"
+                className="h-11 w-full rounded-xl text-sm font-semibold"
               >
                 登录
               </Button>
-              <p className="text-center text-xs text-slate-400">
+              <p className="text-center text-xs text-muted-foreground">
                 没有账号？
                 {" "}
                 <button
                   type="button"
-                  className="font-semibold text-[var(--accent-soft)] transition-colors hover:text-white"
+                  className="font-semibold text-primary transition-colors hover:text-foreground"
                   onClick={() => {
                     setMode("register");
                     setError("");
@@ -260,7 +253,8 @@ export default function Login() {
               </p>
             </form>
           )}
-        </section>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

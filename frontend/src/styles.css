@@ -15,8 +15,8 @@
   --surface-elev: #313338;
   --surface-soft: #3a3d43;
   --chip-bg: #232428;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-strong: #3f4248;
+  --border-subtle: rgba(255, 255, 255, 0.055);
+  --border-strong: #32353b;
   --text-primary: #f2f3f5;
   --text-secondary: #d7dce8;
   --text-muted: #8f97a9;
@@ -29,7 +29,7 @@
   --success-bg: #1f6f43;
   --success-text: #b7f7cc;
   --input-bg: #1e1f22;
-  --input-border: #3f4248;
+  --input-border: #353942;
   --scrollbar-thumb: #2b2d31;
   --scrollbar-thumb-hover: #3f4248;
   --shadow-soft: 0 14px 36px rgba(0, 0, 0, 0.26);
@@ -43,6 +43,23 @@
   --chat-bubble-self-text: #f8faff;
   --chat-bubble-other-shadow: 0 10px 24px rgba(5, 8, 16, 0.34), 0 0 0 1px rgba(208, 214, 255, 0.07);
   --chat-bubble-self-shadow: 0 10px 22px rgba(34, 48, 145, 0.35);
+  --background: var(--bg-body);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text-secondary);
+  --muted: var(--chip-bg);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: #ffffff;
+  --destructive: var(--danger-bg);
+  --destructive-foreground: var(--danger-text);
+  --border: color-mix(in srgb, var(--border-strong) 62%, transparent);
+  --input: color-mix(in srgb, var(--input-border) 74%, transparent);
+  --ring: color-mix(in srgb, var(--accent) 72%, #ffffff 28%);
+  --radius: 0.85rem;
 }
 
 :root[data-theme="light"] {
@@ -55,8 +72,8 @@
   --surface-elev: #f5f8ff;
   --surface-soft: #e7eefb;
   --chip-bg: #eef3ff;
-  --border-subtle: rgba(23, 32, 51, 0.14);
-  --border-strong: #c8d4ee;
+  --border-subtle: rgba(23, 32, 51, 0.1);
+  --border-strong: #cfd9ee;
   --text-primary: #172033;
   --text-secondary: #33415f;
   --text-muted: #627190;
@@ -69,7 +86,7 @@
   --success-bg: #dff5e8;
   --success-text: #1b7d4e;
   --input-bg: #f7faff;
-  --input-border: #c8d4ee;
+  --input-border: #c7d3ea;
   --scrollbar-thumb: #cad6f0;
   --scrollbar-thumb-hover: #b4c3e5;
   --shadow-soft: 0 10px 30px rgba(27, 39, 72, 0.12);
@@ -83,6 +100,23 @@
   --chat-bubble-self-text: #172033;
   --chat-bubble-other-shadow: 0 7px 15px rgba(27, 39, 72, 0.1);
   --chat-bubble-self-shadow: 0 9px 19px rgba(56, 85, 180, 0.16);
+  --background: var(--bg-body);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text-secondary);
+  --muted: var(--chip-bg);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: #ffffff;
+  --destructive: var(--danger-bg);
+  --destructive-foreground: var(--danger-text);
+  --border: color-mix(in srgb, var(--border-strong) 64%, transparent);
+  --input: color-mix(in srgb, var(--input-border) 78%, transparent);
+  --ring: color-mix(in srgb, var(--accent) 72%, #ffffff 28%);
+  --radius: 0.85rem;
 }
 
 :root[data-theme="cold"] {
@@ -95,8 +129,8 @@
   --surface-elev: #182437;
   --surface-soft: #1e2d46;
   --chip-bg: #101928;
-  --border-subtle: rgba(122, 146, 186, 0.17);
-  --border-strong: #2a3f62;
+  --border-subtle: rgba(122, 146, 186, 0.12);
+  --border-strong: #243651;
   --text-primary: #e8eefb;
   --text-secondary: #c2cfe6;
   --text-muted: #7e93bb;
@@ -109,7 +143,7 @@
   --success-bg: #1d4d4f;
   --success-text: #9ddfd0;
   --input-bg: #101b2f;
-  --input-border: #2b4469;
+  --input-border: #2a4264;
   --scrollbar-thumb: #1c2d49;
   --scrollbar-thumb-hover: #2d4367;
   --shadow-soft: 0 16px 34px rgba(3, 8, 20, 0.44);
@@ -123,6 +157,23 @@
   --chat-bubble-self-text: #f0f5ff;
   --chat-bubble-other-shadow: 0 10px 24px rgba(3, 8, 20, 0.34);
   --chat-bubble-self-shadow: 0 12px 26px rgba(35, 53, 120, 0.42);
+  --background: var(--bg-body);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text-secondary);
+  --muted: var(--chip-bg);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: #ffffff;
+  --destructive: var(--danger-bg);
+  --destructive-foreground: var(--danger-text);
+  --border: color-mix(in srgb, var(--border-strong) 64%, transparent);
+  --input: color-mix(in srgb, var(--input-border) 76%, transparent);
+  --ring: color-mix(in srgb, var(--accent) 72%, #ffffff 28%);
+  --radius: 0.85rem;
 }
 
 :root[data-theme="neon"] {
@@ -135,8 +186,8 @@
   --surface-elev: #162241;
   --surface-soft: #253764;
   --chip-bg: #101733;
-  --border-subtle: rgba(130, 173, 255, 0.27);
-  --border-strong: #3552a2;
+  --border-subtle: rgba(130, 173, 255, 0.15);
+  --border-strong: #2a4278;
   --text-primary: #eef5ff;
   --text-secondary: #d4e3ff;
   --text-muted: #93afe9;
@@ -149,7 +200,7 @@
   --success-bg: #165d53;
   --success-text: #9ffce1;
   --input-bg: #0d1633;
-  --input-border: #3656a2;
+  --input-border: #305089;
   --scrollbar-thumb: #233b71;
   --scrollbar-thumb-hover: #2f5294;
   --shadow-soft: 0 18px 44px rgba(2, 6, 22, 0.54);
@@ -163,6 +214,23 @@
   --chat-bubble-self-text: #f8fbff;
   --chat-bubble-other-shadow: 0 11px 26px rgba(4, 10, 30, 0.42);
   --chat-bubble-self-shadow: 0 14px 30px rgba(21, 105, 186, 0.34);
+  --background: var(--bg-body);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text-secondary);
+  --muted: var(--chip-bg);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: #ffffff;
+  --destructive: var(--danger-bg);
+  --destructive-foreground: var(--danger-text);
+  --border: color-mix(in srgb, var(--border-strong) 64%, transparent);
+  --input: color-mix(in srgb, var(--input-border) 76%, transparent);
+  --ring: color-mix(in srgb, var(--accent) 72%, #ffffff 28%);
+  --radius: 0.85rem;
 }
 
 html,
@@ -475,7 +543,7 @@ body {
 [class*="border-[#41444d]"],
 [class*="border-[#3a3d43]"],
 [class*="border-[#3c3f45]"] {
-  border-color: var(--border-strong) !important;
+  border-color: var(--border) !important;
 }
 
 [class*="border-[#5f2a33]"] {

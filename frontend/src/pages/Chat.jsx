@@ -7,8 +7,11 @@ import GroupCreateModal from "../components/chat/GroupCreateModal";
 import GroupJoinRequestsCard from "../components/chat/GroupJoinRequestsCard";
 import GroupMembersCard from "../components/chat/GroupMembersCard";
 import GroupProfileCard from "../components/chat/GroupProfileCard";
+import { Badge } from "../components/ui/badge";
 import { useThemeMode } from "../lib/useThemeMode";
-import { Button, Input } from "../lib/vercel-ui";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
 import { loginWithUid } from "../lib/api";
 import {
   getLastUid,
@@ -142,8 +145,7 @@ function isTokenValid(token) {
 function DiscordButton({ className = "", ...props }) {
   return (
     <Button
-      variant="black"
-      className={`!h-10 !rounded-md !border-[#5865f2] !bg-[#5865f2] !px-4 !text-white hover:!bg-[#4752c4] ${className}`}
+      className={`h-10 rounded-lg px-4 text-sm font-semibold shadow-none ${className}`}
       {...props}
     />
   );
@@ -153,17 +155,28 @@ function DiscordSecondaryButton({ className = "", ...props }) {
   return (
     <Button
       variant="secondary"
-      className={`!h-10 !rounded-md !border-[#4f545c] !bg-[#2b2d31] !px-4 !text-slate-100 hover:!bg-[#32353b] ${className}`}
+      className={`h-10 rounded-lg border border-border bg-secondary px-4 text-sm text-secondary-foreground shadow-none hover:bg-secondary ${className}`}
       {...props}
     />
   );
 }
 
 function DiscordInput(props) {
+  const { className, ...rest } = props;
   return (
     <Input
-      {...props}
-      className={`!h-10 !rounded-md !border-[#3f4248] !bg-[#1e1f22] !text-slate-100 !placeholder:text-slate-500 focus:!border-[#5865f2] ${props.className || ""}`}
+      {...rest}
+      className={`h-10 rounded-lg border-input bg-background text-foreground placeholder:text-muted-foreground ${className || ""}`}
+    />
+  );
+}
+
+function DiscordTextarea(props) {
+  const { className, ...rest } = props;
+  return (
+    <Textarea
+      {...rest}
+      className={`min-h-[44px] resize-none rounded-lg border-input bg-background text-foreground placeholder:text-muted-foreground ${className || ""}`}
     />
   );
 }
@@ -1454,7 +1467,7 @@ export default function Chat() {
 
   if (authStatus === "loading") {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#1e1f22] text-slate-300">
+      <div className="theme-page-bg flex h-screen items-center justify-center text-muted-foreground">
         正在连接聊天服务...
       </div>
     );
@@ -1462,10 +1475,10 @@ export default function Chat() {
 
   if (authStatus === "error") {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#1e1f22] p-4">
-        <div className="discord-surface w-full max-w-lg rounded-xl p-6 text-center">
-          <p className="text-sm text-[#ffb4bf]">Error: {authError}</p>
-          <DiscordButton className="mt-4 w-full" onClick={() => navigate("/login", { replace: true })}>
+      <div className="theme-page-bg flex h-screen items-center justify-center p-4">
+        <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-8 text-center shadow-glow">
+          <p className="text-sm text-destructive-foreground">Error: {authError}</p>
+          <DiscordButton className="mt-5 w-full" onClick={() => navigate("/login", { replace: true })}>
             返回登录页
           </DiscordButton>
         </div>
@@ -1553,13 +1566,13 @@ export default function Chat() {
       : defaultMemberPanelList;
 
   return (
-    <div className="flex h-screen flex-col bg-[#1e1f22] text-slate-100 md:flex-row">
-      <aside className="flex h-[72px] w-full items-center border-b discord-divider bg-[#191a1d] px-3 md:h-auto md:w-[72px] md:flex-col md:items-center md:border-b-0 md:border-r md:px-0 md:py-3">
+    <div className="theme-page-bg flex h-screen flex-col gap-3 p-3 text-foreground md:flex-row md:gap-4 md:p-4">
+      <aside className="flex h-[74px] w-full items-center rounded-2xl border border-border bg-card px-3 shadow-sm md:h-auto md:w-[86px] md:flex-col md:items-center md:px-2 md:py-4">
         <button
           type="button"
           title={`User: ${user?.username || ""}`}
           onClick={openProfileModal}
-          className="mr-2 flex h-12 w-12 items-center justify-center rounded-2xl border border-[#3d4047] bg-[#2b2d31] text-sm font-bold transition hover:rounded-xl hover:bg-[#5865f2] md:mb-3 md:mr-0"
+          className="mr-2 flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-muted text-sm font-bold transition hover:bg-primary hover:text-primary-foreground md:mb-3 md:mr-0"
           style={user?.avatar ? { backgroundColor: "transparent", overflow: "hidden" } : undefined}
         >
           {user?.avatar ? (
@@ -1572,10 +1585,10 @@ export default function Chat() {
         <button
           type="button"
           onClick={() => setActiveTab("messages")}
-          className={`mr-2 h-11 w-11 rounded-2xl border border-[#3d4047] text-[11px] font-semibold transition md:mb-2 md:mr-0 md:h-12 md:w-12 ${
+          className={`mr-2 h-11 w-11 rounded-xl border text-[11px] font-semibold transition md:mb-2 md:mr-0 md:h-12 md:w-12 ${
             activeTab === "messages"
-              ? "bg-[#5865f2] text-white"
-              : "bg-[#2b2d31] text-slate-300 hover:bg-[#3a3d43]"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-muted text-muted-foreground hover:bg-secondary"
           }`}
         >
           聊天
@@ -1588,55 +1601,45 @@ export default function Chat() {
             }
             setActiveTab("contacts");
           }}
-          className={`h-11 w-11 rounded-2xl border border-[#3d4047] text-[11px] font-semibold transition md:mb-2 md:h-12 md:w-12 ${
+          className={`h-11 w-11 rounded-xl border text-[11px] font-semibold transition md:mb-2 md:h-12 md:w-12 ${
             activeTab === "contacts"
-              ? "bg-[#5865f2] text-white"
-              : "bg-[#2b2d31] text-slate-300 hover:bg-[#3a3d43]"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-muted text-muted-foreground hover:bg-secondary"
           }`}
         >
           关系
         </button>
 
-        <div className="ml-auto rounded-full border border-[#3d4047] bg-[#232428] px-2 py-0.5 text-[10px] text-slate-400 md:ml-0 md:mt-auto">
-          {wsLabel}
-        </div>
+        <Badge className="ml-auto border-border bg-muted text-[10px] text-muted-foreground md:ml-0 md:mt-auto" variant="outline">{wsLabel}</Badge>
       </aside>
 
-      <aside className="flex max-h-[42vh] w-full flex-col border-b discord-divider bg-[#2b2d31] md:max-h-none md:w-[320px] md:border-b-0 md:border-r">
-        <div className="border-b discord-divider px-4 py-3">
+      <aside className="flex max-h-[43vh] w-full flex-col rounded-2xl border border-border bg-card shadow-sm md:max-h-none md:w-[340px]">
+        <div className="border-b border-border px-5 py-4">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="font-display text-sm font-bold uppercase tracking-wider text-slate-200">
+            <h2 className="font-display text-sm font-bold uppercase tracking-wider text-foreground">
               {activeTab === "messages" ? "Conversations" : "Relations"}
             </h2>
             {activeTab === "messages" ? (
-              <button
-                type="button"
-                onClick={openCreateConversationModal}
-                className="rounded-md border border-[#42454d] bg-[#35373c] px-2 py-1 text-xs text-slate-200 transition hover:bg-[#464952]"
-              >
+              <Button size="sm" variant="secondary" onClick={openCreateConversationModal} className="h-8 px-3 text-xs">
                 + 群聊
-              </button>
+              </Button>
             ) : (
-              <button
-                type="button"
-                onClick={() => setFollowModalOpen(true)}
-                className="rounded-md border border-[#42454d] bg-[#35373c] px-2 py-1 text-xs text-slate-200 transition hover:bg-[#464952]"
-              >
+              <Button size="sm" variant="secondary" onClick={() => setFollowModalOpen(true)} className="h-8 px-3 text-xs">
                 + 关注
-              </button>
+              </Button>
             )}
           </div>
-          <DiscordInput className="mt-3 !h-9" placeholder="搜索会话 / UID..." />
+          <DiscordInput className="mt-4 h-10" placeholder="搜索会话 / UID..." />
         </div>
 
         {activeTab === "messages" ? (
-          <div className="flex-1 overflow-y-auto px-2 pb-2 pt-1">
-            <div className="mb-2">
-              <div className="flex items-center justify-between px-2 py-1">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+          <div className="flex-1 overflow-y-auto px-3 pb-4 pt-3">
+            <div className="mb-4">
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   官方社区
                 </p>
-                <span className="text-[11px] text-slate-500">{topicRooms.length}</span>
+                <span className="text-[11px] text-muted-foreground">{topicRooms.length}</span>
               </div>
               {topicRooms.map((room) => {
                 const roomId = toIdString(room.id);
@@ -1646,14 +1649,14 @@ export default function Chat() {
                     key={roomId}
                     type="button"
                     onClick={() => handleSelectTopicRoom(room)}
-                    className={`mb-1 flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition ${
+                    className={`mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
                       selected
-                        ? "bg-[#404249] shadow-[inset_3px_0_0_0_#5865f2]"
-                        : "hover:bg-[#35373c]"
+                        ? "bg-secondary ring-1 ring-primary"
+                        : "hover:bg-secondary"
                     }`}
                   >
                     <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#232428] text-xs font-bold text-white"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-xs font-bold text-foreground"
                     >
                       {room.icon ? (
                         <img src={room.icon} alt="icon" className="h-full w-full object-cover" />
@@ -1662,40 +1665,40 @@ export default function Chat() {
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-slate-100">
+                      <p className="truncate text-sm font-semibold text-foreground">
                         {room.name || roomId}
                       </p>
-                      <p className="truncate text-xs text-slate-400">
+                      <p className="truncate text-xs text-muted-foreground">
                         {room.description || "官方话题聊天室"}
                       </p>
                     </div>
-                    <span className="rounded-full border border-[#41444d] bg-[#232428] px-2 py-0.5 text-[10px] text-slate-300">
+                    <Badge variant="outline" className="rounded-full border-border bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">
                       {room.onlineCount || 0}
-                    </span>
+                    </Badge>
                   </button>
                 );
               })}
             </div>
 
             {conversations.length === 0 ? (
-              <div className="rounded-lg border border-[#3a3d43] bg-[#232428] p-3 text-sm text-slate-400">
+              <div className="rounded-xl border border-border bg-muted p-4 text-sm text-muted-foreground">
                 还没有会话，点击右上角创建私聊或群聊。
               </div>
             ) : null}
             {myGroupInvitations.length > 0 ? (
-              <div className="mb-3 rounded-lg border border-[#3a3d43] bg-[#232428] p-2">
-                <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              <div className="mb-4 rounded-xl border border-border bg-muted p-3">
+                <div className="mb-3 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   我的群邀请
                 </div>
                 {myGroupInvitations.map((invitation) => (
-                  <div key={toIdString(invitation.id)} className="mb-2 rounded-md border border-[#3a3d43] bg-[#1e1f22] p-2 text-xs last:mb-0">
-                    <p className="font-semibold text-slate-100">{invitation.groupName || `群 ${toIdString(invitation.conversationId)}`}</p>
-                    <p className="mt-1 text-slate-400">邀请人：{invitation.inviterNickname || invitation.inviterUsername || invitation.inviterId}</p>
-                    <div className="mt-2 flex gap-2">
-                      <DiscordButton className="!h-8 !px-3 !text-xs" onClick={() => handleRespondInvitation(invitation.id, true)}>
+                  <div key={toIdString(invitation.id)} className="mb-3 rounded-lg border border-border bg-card p-3 text-xs last:mb-0">
+                    <p className="font-semibold text-foreground">{invitation.groupName || `群 ${toIdString(invitation.conversationId)}`}</p>
+                    <p className="mt-1 text-muted-foreground">邀请人：{invitation.inviterNickname || invitation.inviterUsername || invitation.inviterId}</p>
+                    <div className="mt-3 flex gap-2">
+                      <DiscordButton className="h-8 px-3 text-xs" onClick={() => handleRespondInvitation(invitation.id, true)}>
                         接受
                       </DiscordButton>
-                      <DiscordSecondaryButton className="!h-8 !px-3 !text-xs" onClick={() => handleRespondInvitation(invitation.id, false)}>
+                      <DiscordSecondaryButton className="h-8 px-3 text-xs" onClick={() => handleRespondInvitation(invitation.id, false)}>
                         拒绝
                       </DiscordSecondaryButton>
                     </div>
@@ -1704,12 +1707,12 @@ export default function Chat() {
               </div>
             ) : null}
             {conversationGroups.map((group) => (
-              <div key={group.id} className="mb-2">
-                <div className="flex items-center justify-between px-2 py-1">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              <div key={group.id} className="mb-3">
+                <div className="flex items-center justify-between px-2 py-1.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                     {group.label}
                   </p>
-                  <span className="text-[11px] text-slate-500">{group.items.length}</span>
+                  <span className="text-[11px] text-muted-foreground">{group.items.length}</span>
                 </div>
                 {group.items.map((conv) => {
                   const convId = toIdString(conv.id);
@@ -1720,14 +1723,14 @@ export default function Chat() {
                       key={convId}
                       type="button"
                       onClick={() => handleSelectConversation(conv)}
-                      className={`mb-1 flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition ${
+                      className={`mb-2 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
                         selected
-                          ? "bg-[#404249] shadow-[inset_3px_0_0_0_#5865f2]"
-                          : "hover:bg-[#35373c]"
+                          ? "bg-secondary ring-1 ring-primary"
+                          : "hover:bg-secondary"
                       }`}
                     >
                       <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
                         style={{
                           backgroundColor: conv.avatar ? "transparent" : getAvatarColor(conv.id),
                           overflow: "hidden",
@@ -1742,25 +1745,25 @@ export default function Chat() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex min-w-0 items-center gap-1.5">
-                            <p className="truncate text-sm font-semibold text-slate-100">
+                            <p className="truncate text-sm font-semibold text-foreground">
                               {conv.name || `会话 ${convId}`}
                             </p>
                             {isGroup ? (
-                              <span className="shrink-0 rounded border border-[#4f545c] bg-[#232428] px-1.5 py-0.5 text-[10px] text-slate-400">
+                              <Badge variant="outline" className="shrink-0 border-border bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
                                 群
-                              </span>
+                              </Badge>
                             ) : null}
                           </div>
-                          <span className="text-[11px] text-slate-400">{formatTime(conv.updatedAt)}</span>
+                          <span className="text-[11px] text-muted-foreground">{formatTime(conv.updatedAt)}</span>
                         </div>
-                        <p className="truncate text-xs text-slate-400">
+                        <p className="truncate text-xs text-muted-foreground">
                           {conv.lastMessage?.content || "还没有消息"}
                         </p>
                       </div>
                       {Number(conv.unreadCount || 0) > 0 ? (
-                        <span className="ml-auto rounded-full bg-[#ed4245] px-2 py-0.5 text-[10px] font-bold text-white">
+                        <Badge variant="destructive" className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold text-white">
                           {conv.unreadCount}
-                        </span>
+                        </Badge>
                       ) : null}
                     </button>
                   );
@@ -1770,14 +1773,14 @@ export default function Chat() {
           </div>
         ) : (
           <div className="flex flex-1 flex-col">
-                <div className="grid grid-cols-3 gap-2 p-2">
+                <div className="grid grid-cols-3 gap-2.5 p-3">
                   <button
                 type="button"
                 onClick={() => setRelationTab("following")}
-                className={`rounded-md px-2 py-2 text-xs font-semibold transition ${
+                className={`rounded-lg px-2 py-2 text-xs font-semibold transition ${
                   relationTab === "following"
-                    ? "bg-[#5865f2] text-white"
-                    : "bg-[#35373c] text-slate-300 hover:bg-[#404249]"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-secondary"
                 }`}
               >
                 Following
@@ -1785,10 +1788,10 @@ export default function Chat() {
               <button
                 type="button"
                 onClick={() => setRelationTab("followers")}
-                className={`rounded-md px-2 py-2 text-xs font-semibold transition ${
+                className={`rounded-lg px-2 py-2 text-xs font-semibold transition ${
                   relationTab === "followers"
-                    ? "bg-[#5865f2] text-white"
-                    : "bg-[#35373c] text-slate-300 hover:bg-[#404249]"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-secondary"
                 }`}
                   >
                     Followers
@@ -1796,18 +1799,18 @@ export default function Chat() {
                   <button
                     type="button"
                     onClick={() => setRelationTab("blocked")}
-                    className={`rounded-md px-2 py-2 text-xs font-semibold transition ${
+                    className={`rounded-lg px-2 py-2 text-xs font-semibold transition ${
                       relationTab === "blocked"
-                        ? "bg-[#5865f2] text-white"
-                        : "bg-[#35373c] text-slate-300 hover:bg-[#404249]"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-secondary"
                     }`}
                   >
                     Blocked
                   </button>
                 </div>
-            <div className="flex-1 overflow-y-auto p-2">
+            <div className="flex-1 overflow-y-auto p-3">
               {relationList.length === 0 ? (
-                <div className="rounded-lg border border-[#3a3d43] bg-[#232428] p-3 text-sm text-slate-400">
+                <div className="rounded-xl border border-border bg-muted p-4 text-sm text-muted-foreground">
                   暂无数据
                 </div>
               ) : null}
@@ -1824,7 +1827,7 @@ export default function Chat() {
                 return (
                   <div
                     key={rid}
-                    className="mb-2 rounded-lg border border-[#3a3d43] bg-[#232428] p-3"
+                    className="mb-3 rounded-xl border border-border bg-card p-4"
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -1845,17 +1848,17 @@ export default function Chat() {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-slate-100">
+                        <p className="truncate text-sm font-semibold text-foreground">
                           {relation.user?.nickname || relation.user?.username}
                         </p>
-                        <p className="truncate text-xs text-slate-400">UID: {rid}</p>
+                        <p className="truncate text-xs text-muted-foreground">UID: {rid}</p>
                       </div>
                     </div>
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-3 flex flex-wrap gap-2">
                       <DiscordSecondaryButton
-                        className={`!h-8 !text-xs ${
+                        className={`h-8 text-xs ${
                           isBlocked
-                            ? "!cursor-not-allowed !border-[#3d4047] !bg-[#232428] !text-slate-500 hover:!bg-[#232428]"
+                            ? "cursor-not-allowed border-border bg-muted text-muted-foreground hover:bg-muted"
                             : ""
                         }`}
                         disabled={isBlocked}
@@ -1865,11 +1868,11 @@ export default function Chat() {
                         发消息
                       </DiscordSecondaryButton>
                       <DiscordSecondaryButton
-                        className={`!h-8 !text-xs ${
+                        className={`h-8 text-xs ${
                           isFriend
                             && !isBlocked
                             ? ""
-                            : "!cursor-not-allowed !border-[#3d4047] !bg-[#232428] !text-slate-500 hover:!bg-[#232428]"
+                            : "cursor-not-allowed border-border bg-muted text-muted-foreground hover:bg-muted"
                         }`}
                         disabled={!isFriend || isBlocked}
                         title={
@@ -1881,14 +1884,14 @@ export default function Chat() {
                       </DiscordSecondaryButton>
                       {relationTab === "blocked" ? (
                         <DiscordSecondaryButton
-                          className="!h-8 !text-xs !border-[#305f4a] !bg-[#1f3b30] !text-[#b7f7cc] hover:!bg-[#28503f]"
+                          className="h-8 border-emerald-700/40 bg-emerald-900/30 text-xs text-emerald-100 hover:bg-emerald-900/40"
                           onClick={() => handleUnblockUser(rid)}
                         >
                           取消拉黑
                         </DiscordSecondaryButton>
                       ) : (
                         <DiscordSecondaryButton
-                          className="!h-8 !text-xs !border-[#5f2a33] !bg-[#3b1f24] !text-[#ffb4bf] hover:!bg-[#4a252d]"
+                          className="h-8 border-destructive bg-destructive text-xs text-destructive-foreground hover:bg-destructive"
                           onClick={() => handleBlockUser(rid)}
                         >
                           拉黑
@@ -1896,14 +1899,14 @@ export default function Chat() {
                       )}
                       {relationTab === "following" ? (
                         <DiscordSecondaryButton
-                          className="!h-8 !text-xs !border-[#5f2a33] !bg-[#3b1f24] !text-[#ffb4bf] hover:!bg-[#4a252d]"
+                          className="h-8 border-destructive bg-destructive text-xs text-destructive-foreground hover:bg-destructive"
                           onClick={() => handleUnfollowUser(rid)}
                         >
                           取消关注
                         </DiscordSecondaryButton>
                       ) : !isFollowing && relationTab !== "blocked" ? (
                         <DiscordButton
-                          className="!h-8 !text-xs"
+                          className="h-8 text-xs"
                           onClick={() => handleFollowUser(rid)}
                         >
                           回关
@@ -1914,8 +1917,8 @@ export default function Chat() {
                 );
               })}
             </div>
-            <div className="border-t discord-divider p-2">
-              <DiscordSecondaryButton className="w-full !h-9 !text-xs" onClick={refreshRelationList}>
+            <div className="border-t border-border p-3">
+              <DiscordSecondaryButton className="h-9 w-full text-xs" onClick={refreshRelationList}>
                 刷新列表
               </DiscordSecondaryButton>
             </div>
@@ -1923,15 +1926,15 @@ export default function Chat() {
         )}
       </aside>
 
-      <main className="flex min-h-0 min-w-0 flex-1 bg-[#313338]">
+      <main className="flex min-h-0 min-w-0 flex-1 rounded-2xl border border-border bg-card shadow-sm">
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-14 items-center justify-between border-b discord-divider px-4">
-            <div className="flex min-w-0 items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#232428] text-sm text-slate-300">
+          <header className="flex h-16 items-center justify-between border-b border-border px-5 md:px-6">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-sm text-muted-foreground">
                 #
               </div>
               <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-slate-100">
+                <p className="truncate text-sm font-bold text-foreground">
                   {activeTab === "messages"
                     ? activeTopicRoom
                       ? activeTopicRoom.name || "官方聊天室"
@@ -1940,7 +1943,7 @@ export default function Chat() {
                       ? "My Following"
                       : "My Followers"}
                 </p>
-                <p className="truncate text-xs text-slate-400">
+                <p className="truncate text-xs text-muted-foreground">
                   {activeTab === "messages"
                       ? activeTopicRoomId
                       ? `官方话题 · 在线 ${activeTopicRoom?.onlineCount || topicMembers.length}`
@@ -1951,31 +1954,32 @@ export default function Chat() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <ThemeSwitcher theme={theme} onChange={setTheme} compact />
-              <span className="hidden rounded-full border border-[#41444d] bg-[#232428] px-2 py-1 text-[10px] font-semibold text-slate-300 md:inline-flex">
+              <Badge variant="outline" className="hidden rounded-full border-border bg-muted px-2 py-1 text-[10px] font-semibold text-muted-foreground md:inline-flex">
                 未读 {unreadTotal}
-              </span>
-              <span
+              </Badge>
+              <Badge
+                variant="outline"
                 className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                   wsState === "connected"
-                    ? "bg-[#1f6f43] text-[#b7f7cc]"
-                    : "bg-[#3a3d43] text-slate-300"
+                    ? "border-emerald-700/40 bg-emerald-900/25 text-emerald-100"
+                    : "border-border bg-muted text-muted-foreground"
                 }`}
               >
                 WS: {wsLabel}
-              </span>
+              </Badge>
             </div>
           </header>
 
           {requestError ? (
-            <div className="flex items-center justify-between gap-3 border-b border-[#5f2a33] bg-[#3b1f24] px-4 py-2">
-              <p className="min-w-0 text-xs text-[#ffb4bf]">{requestError}</p>
+            <div className="flex items-center justify-between gap-3 border-b border-destructive bg-destructive px-5 py-2.5 md:px-6">
+              <p className="min-w-0 text-xs text-destructive-foreground">{requestError}</p>
               <button
                 type="button"
                 onClick={() => setRequestError("")}
                 aria-label="关闭提示"
-                className="shrink-0 rounded border border-[#7a3b47] px-1.5 py-0.5 text-[11px] font-semibold text-[#ffb4bf] transition hover:bg-[#4a252d]"
+                className="shrink-0 rounded border border-destructive px-1.5 py-0.5 text-[11px] font-semibold text-destructive-foreground transition hover:bg-destructive"
               >
                 ×
               </button>
@@ -1983,14 +1987,14 @@ export default function Chat() {
           ) : null}
 
           {activeTab === "contacts" ? (
-            <div className="flex flex-1 items-center justify-center px-4 text-sm text-slate-400">
+            <div className="flex flex-1 items-center justify-center px-4 text-sm text-muted-foreground">
               左侧可查看并管理关系链路。
             </div>
           ) : activeTopicRoomId ? (
             <>
-              <div className="flex-1 overflow-y-auto px-4 py-4">
+              <div className="flex-1 overflow-y-auto px-5 py-5 md:px-6">
                 {activeTopicMessages.length === 0 ? (
-                  <div className="rounded-xl border border-[#3a3d43] bg-[#2b2d31] p-4 text-sm text-slate-400">
+                  <div className="rounded-xl border border-border bg-muted p-5 text-sm text-muted-foreground">
                     还没有消息，来发第一条话题消息吧。
                   </div>
                 ) : null}
@@ -2004,7 +2008,7 @@ export default function Chat() {
                   return (
                     <div
                       key={toIdString(msg.id)}
-                      className={`chat-message-row group relative mb-2 flex gap-3 px-2 py-1 ${
+                      className={`chat-message-row group relative mb-3 flex gap-3 px-2.5 py-1.5 ${
                         self ? "flex-row-reverse" : ""
                       }`}
                     >
@@ -2038,9 +2042,9 @@ export default function Chat() {
                 })}
                 <div ref={messagesEndRef} />
               </div>
-              <div className="border-t discord-divider px-4 py-3">
-                <form onSubmit={handleSendMessage} className="flex gap-2">
-                  <textarea
+              <div className="border-t border-border px-5 py-4 md:px-6">
+                <form onSubmit={handleSendMessage} className="flex gap-3">
+                  <DiscordTextarea
                     value={inputText}
                     onChange={(event) => setInputText(event.target.value)}
                     onKeyDown={(event) => {
@@ -2050,9 +2054,9 @@ export default function Chat() {
                       }
                     }}
                     placeholder={`聊聊 ${activeTopicRoom?.name || "这个话题"}`}
-                    className="h-11 min-h-[44px] flex-1 resize-none rounded-md border border-[#3f4248] bg-[#383a40] px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-[#5865f2]"
+                    className="h-11 flex-1 px-3 py-2 text-sm"
                   />
-                  <DiscordButton type="submit" className="!h-11 !min-w-[88px]">
+                  <DiscordButton type="submit" className="h-11 min-w-[94px]">
                     发送
                   </DiscordButton>
                 </form>
@@ -2060,10 +2064,10 @@ export default function Chat() {
             </>
           ) : activeConvId ? (
             <>
-              <div className="flex-1 overflow-y-auto px-4 py-4">
+              <div className="flex-1 overflow-y-auto px-5 py-5 md:px-6">
                 {Number(activeConv?.type) === Number(CONVERSATION_TYPE_GROUP) && activeGroupDetail ? (
-                  <div className="mb-4 rounded-xl border border-[#3a3d43] bg-[#2b2d31] p-4">
-                    <div className="grid gap-3 lg:grid-cols-2">
+                  <div className="mb-5 rounded-xl border border-border bg-muted p-5">
+                    <div className="grid gap-4 lg:grid-cols-2">
                       <GroupProfileCard
                         detail={activeGroupDetail}
                         canManageGroup={canManageGroup}
@@ -2078,7 +2082,7 @@ export default function Chat() {
                         joinModeApproval={GROUP_JOIN_MODE_APPROVAL}
                         joinModePublic={GROUP_JOIN_MODE_PUBLIC}
                       />
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <GroupAnnouncementCard
                           roleLabel={activeGroupRole === GROUP_ROLE_OWNER ? "群主" : activeGroupRole === GROUP_ROLE_ADMIN ? "管理员" : "普通成员"}
                           memberCount={Number(activeGroupDetail.memberCount || 0)}
@@ -2114,9 +2118,9 @@ export default function Chat() {
                             DiscordSecondaryButton={DiscordSecondaryButton}
                           />
                         ) : null}
-                        <div className="flex gap-2">
+                        <div className="flex gap-2.5">
                           {activeGroupRole === GROUP_ROLE_OWNER ? (
-                            <DiscordSecondaryButton className="!border-[#5f2a33] !bg-[#3b1f24] !text-[#ffb4bf] hover:!bg-[#4a252d]" onClick={handleDissolveGroup}>
+                            <DiscordSecondaryButton className="border-destructive bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleDissolveGroup}>
                               解散群
                             </DiscordSecondaryButton>
                           ) : (
@@ -2130,7 +2134,7 @@ export default function Chat() {
                   </div>
                 ) : null}
                 {activeMessages.length === 0 ? (
-                  <div className="rounded-xl border border-[#3a3d43] bg-[#2b2d31] p-4 text-sm text-slate-400">
+                  <div className="rounded-xl border border-border bg-muted p-5 text-sm text-muted-foreground">
                     开始发送第一条消息吧。
                   </div>
                 ) : null}
@@ -2144,7 +2148,7 @@ export default function Chat() {
                   return (
                     <div
                       key={toIdString(msg.id)}
-                      className={`chat-message-row group relative mb-2 flex gap-3 px-2 py-1 ${
+                      className={`chat-message-row group relative mb-3 flex gap-3 px-2.5 py-1.5 ${
                         self ? "flex-row-reverse" : ""
                       }`}
                     >
@@ -2174,14 +2178,14 @@ export default function Chat() {
                         </div>
                       </div>
                       <div
-                        className={`absolute top-0 hidden -translate-y-1/2 items-center gap-1 rounded-md border border-[#42454d] bg-[#222326] px-1 py-1 text-[11px] text-slate-300 shadow-lg group-hover:flex ${
+                        className={`absolute top-0 hidden -translate-y-1/2 items-center gap-1 rounded-md border border-border bg-card px-1 py-1 text-[11px] text-muted-foreground shadow-lg group-hover:flex ${
                           self ? "left-14" : "right-3"
                         }`}
                       >
-                        <button type="button" className="rounded px-1 hover:bg-[#3b3e45]">
+                        <button type="button" className="rounded px-1 hover:bg-secondary">
                           回复
                         </button>
-                        <button type="button" className="rounded px-1 hover:bg-[#3b3e45]">
+                        <button type="button" className="rounded px-1 hover:bg-secondary">
                           更多
                         </button>
                       </div>
@@ -2190,9 +2194,9 @@ export default function Chat() {
                 })}
                 <div ref={messagesEndRef} />
               </div>
-              <div className="border-t discord-divider px-4 py-3">
-                <form onSubmit={handleSendMessage} className="flex gap-2">
-                  <textarea
+              <div className="border-t border-border px-5 py-4 md:px-6">
+                <form onSubmit={handleSendMessage} className="flex gap-3">
+                  <DiscordTextarea
                     value={inputText}
                     onChange={(event) => setInputText(event.target.value)}
                     onKeyDown={(event) => {
@@ -2202,9 +2206,9 @@ export default function Chat() {
                       }
                     }}
                     placeholder={`Message ${activeConv?.name || ""}`}
-                    className="h-11 min-h-[44px] flex-1 resize-none rounded-md border border-[#3f4248] bg-[#383a40] px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-[#5865f2]"
+                    className="h-11 flex-1 px-3 py-2 text-sm"
                   />
-                  <DiscordButton type="submit" className="!h-11 !min-w-[88px]">
+                  <DiscordButton type="submit" className="h-11 min-w-[94px]">
                     Send
                   </DiscordButton>
                 </form>
@@ -2213,26 +2217,26 @@ export default function Chat() {
           ) : (
             <div className="flex flex-1 items-center justify-center px-4 text-center">
               <div>
-                <div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-[#3a3d43]" />
-                <p className="font-display text-xl font-bold text-slate-100">Welcome to Social Chat</p>
-                <p className="mt-1 text-sm text-slate-400">从左侧进入官方话题聊天室，或创建一个新的私聊/群聊。</p>
+                <div className="mx-auto mb-5 h-14 w-14 rounded-2xl bg-muted" />
+                <p className="font-display text-xl font-bold text-foreground">Welcome to Social Chat</p>
+                <p className="mt-2 text-sm text-muted-foreground">从左侧进入官方话题聊天室，或创建一个新的私聊/群聊。</p>
               </div>
             </div>
           )}
         </div>
 
-        <aside className="hidden w-[260px] shrink-0 border-l discord-divider bg-[#2b2d31] xl:flex xl:flex-col">
-          <div className="border-b discord-divider px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <aside className="hidden w-[280px] shrink-0 border-l border-border bg-card xl:flex xl:flex-col">
+          <div className="border-b border-border px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {activeTopicRoomId ? "聊天室在线成员" : "成员列表"}
             </p>
-            <p className="mt-1 text-xs text-slate-500">当前可见 {memberPanelList.length} 人</p>
+            <p className="mt-1 text-xs text-muted-foreground">当前可见 {memberPanelList.length} 人</p>
           </div>
-          <div className="flex-1 overflow-y-auto px-2 py-2">
+          <div className="flex-1 overflow-y-auto px-3 py-3">
             {memberPanelList.map((member) => (
               <div
                 key={member.id}
-                className="mb-1 flex items-center gap-2 rounded-md px-2 py-2 transition hover:bg-[#35373c]"
+                className="mb-2 flex items-center gap-2 rounded-lg px-2.5 py-2.5 transition hover:bg-secondary"
               >
                 <div
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
@@ -2248,41 +2252,41 @@ export default function Chat() {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-semibold text-slate-100">{member.name}</p>
-                  <p className="truncate text-[11px] text-slate-400">UID: {member.id}</p>
+                  <p className="truncate text-xs font-semibold text-foreground">{member.name}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">UID: {member.id}</p>
                 </div>
-                <span className="rounded-full border border-[#41444d] bg-[#232428] px-2 py-0.5 text-[10px] text-slate-400">
+                <Badge variant="outline" className="rounded-full border-border bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">
                   {member.badge}
-                </span>
+                </Badge>
               </div>
             ))}
           </div>
-          <div className="border-t discord-divider px-4 py-3">
+          <div className="border-t border-border px-5 py-4">
             {activeTopicRoomId ? (
               <>
-                <p className="text-[11px] uppercase tracking-wider text-slate-500">聊天室状态</p>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
-                    <p className="text-[10px] text-slate-500">在线人数</p>
-                    <p className="mt-1 font-semibold text-slate-100">{activeTopicRoom?.onlineCount || 0}</p>
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground">聊天室状态</p>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                  <div className="rounded-lg border border-border bg-muted px-2 py-2 text-center">
+                    <p className="text-[10px] text-muted-foreground">在线人数</p>
+                    <p className="mt-1 font-semibold text-foreground">{activeTopicRoom?.onlineCount || 0}</p>
                   </div>
-                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
-                    <p className="text-[10px] text-slate-500">聊天室总数</p>
-                    <p className="mt-1 font-semibold text-slate-100">{topicRooms.length}</p>
+                  <div className="rounded-lg border border-border bg-muted px-2 py-2 text-center">
+                    <p className="text-[10px] text-muted-foreground">聊天室总数</p>
+                    <p className="mt-1 font-semibold text-foreground">{topicRooms.length}</p>
                   </div>
                 </div>
               </>
             ) : (
               <>
-                <p className="text-[11px] uppercase tracking-wider text-slate-500">关系快照</p>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
-                    <p className="text-[10px] text-slate-500">Following</p>
-                    <p className="mt-1 font-semibold text-slate-100">{followingList.length}</p>
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground">关系快照</p>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                  <div className="rounded-lg border border-border bg-muted px-2 py-2 text-center">
+                    <p className="text-[10px] text-muted-foreground">Following</p>
+                    <p className="mt-1 font-semibold text-foreground">{followingList.length}</p>
                   </div>
-                  <div className="rounded-md border border-[#3f4248] bg-[#232428] px-2 py-2 text-center">
-                    <p className="text-[10px] text-slate-500">Followers</p>
-                    <p className="mt-1 font-semibold text-slate-100">{followersList.length}</p>
+                  <div className="rounded-lg border border-border bg-muted px-2 py-2 text-center">
+                    <p className="text-[10px] text-muted-foreground">Followers</p>
+                    <p className="mt-1 font-semibold text-foreground">{followersList.length}</p>
                   </div>
                 </div>
               </>
@@ -2323,16 +2327,16 @@ export default function Chat() {
 
       {followModalOpen ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/65 p-4">
-          <div className="discord-surface w-full max-w-md rounded-xl p-5">
-            <h3 className="font-display text-xl font-bold text-white">关注用户</h3>
-            <p className="mt-1 text-sm text-slate-400">输入 UID 建立关注关系。</p>
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-glow">
+            <h3 className="font-display text-xl font-bold text-foreground">关注用户</h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">输入 UID 建立关注关系。</p>
             <DiscordInput
-              className="mt-4"
+              className="mt-5"
               value={followTargetId}
               onChange={(event) => setFollowTargetId(event.target.value)}
               placeholder="例如 20000002"
             />
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-5 grid grid-cols-2 gap-2.5">
               <DiscordSecondaryButton onClick={() => setFollowModalOpen(false)}>
                 取消
               </DiscordSecondaryButton>
@@ -2344,28 +2348,24 @@ export default function Chat() {
 
       {profileModalOpen ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/65 p-4">
-          <div className="discord-surface w-full max-w-lg rounded-xl p-5">
+          <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-glow">
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-xl font-bold text-white">编辑资料</h3>
+              <h3 className="font-display text-xl font-bold text-foreground">编辑资料</h3>
               <DiscordSecondaryButton
-                className="!h-8 !border-[#5f2a33] !bg-[#3b1f24] !px-3 !text-xs !text-[#ffb4bf] hover:!bg-[#4a252d]"
+                className="h-8 border-destructive bg-destructive px-3 text-xs text-destructive-foreground hover:bg-destructive"
                 onClick={handleLogout}
               >
                 退出登录
               </DiscordSecondaryButton>
             </div>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-5 space-y-4">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-300">头像 URL</label>
+                <label className="mb-1.5 block text-xs font-semibold text-foreground">头像 URL</label>
                 <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="h-10 shrink-0 rounded-md border border-[#4f545c] bg-[#2b2d31] px-3 text-xs text-slate-200 hover:bg-[#32353b]"
-                  >
+                  <Button type="button" variant="secondary" size="sm" className="h-10 shrink-0 rounded-lg px-3 text-xs" onClick={() => fileInputRef.current?.click()}>
                     上传
-                  </button>
+                  </Button>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -2383,7 +2383,7 @@ export default function Chat() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-300">昵称</label>
+                <label className="mb-1.5 block text-xs font-semibold text-foreground">昵称</label>
                 <DiscordInput
                   value={profileForm.nickname}
                   onChange={(event) =>
@@ -2393,19 +2393,19 @@ export default function Chat() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-300">简介</label>
-                <textarea
+                <label className="mb-1.5 block text-xs font-semibold text-foreground">简介</label>
+                <DiscordTextarea
                   rows={3}
                   value={profileForm.bio}
                   onChange={(event) =>
                     setProfileForm((prev) => ({ ...prev, bio: event.target.value }))
                   }
-                  className="w-full rounded-md border border-[#3f4248] bg-[#1e1f22] px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-[#5865f2]"
+                  className="w-full"
                 />
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-6 grid grid-cols-2 gap-2.5">
               <DiscordSecondaryButton onClick={() => setProfileModalOpen(false)}>
                 取消
               </DiscordSecondaryButton>
