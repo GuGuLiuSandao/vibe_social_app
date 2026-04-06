@@ -97,3 +97,5 @@
 ## 9. Commit 记录
 - Commit Hash: `42ead99`
 - Commit Message: `feat: add ai npc chat mvp with persistent memory`
+- Commit Hash: `366313b`
+- Commit Message: `feat: integrate npc replies with chat completions api`
