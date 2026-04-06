@@ -79,6 +79,8 @@ const CONVERSATION_TYPE_PRIVATE =
   ConversationType.PRIVATE ?? ConversationType.CONVERSATION_TYPE_PRIVATE ?? 1;
 const CONVERSATION_TYPE_GROUP =
   ConversationType.GROUP ?? ConversationType.CONVERSATION_TYPE_GROUP ?? 2;
+const CONVERSATION_TYPE_NPC =
+  ConversationType.NPC ?? ConversationType.CONVERSATION_TYPE_NPC ?? 3;
 const MESSAGE_TYPE_TEXT = MessageType.TEXT ?? MessageType.MESSAGE_TYPE_TEXT ?? 1;
 const GROUP_KIND_PLAYER_CREATED = GroupKind.PLAYER_CREATED ?? 2;
 const GROUP_JOIN_MODE_PRIVATE = GroupJoinMode.PRIVATE ?? 1;
@@ -1142,6 +1144,19 @@ export default function Chat() {
     );
   };
 
+  const startNPCConversation = () => {
+    setRequestError("");
+    setActiveTab("messages");
+    const req = create(CreateConversationRequestSchema, {
+      type: CONVERSATION_TYPE_NPC,
+    });
+    sendChatWsRequest(
+      WsMessageType.WS_TYPE_CHAT_CREATE_CONVERSATION,
+      "createConversation",
+      req,
+    );
+  };
+
   const handleCreateConversation = () => {
     const groupName = createGroupName.trim();
     if (!groupName) {
@@ -1511,10 +1526,14 @@ export default function Chat() {
   const privateConversations = conversations.filter(
     (conv) => Number(conv.type) === Number(CONVERSATION_TYPE_PRIVATE),
   );
+  const npcConversations = conversations.filter(
+    (conv) => Number(conv.type) === Number(CONVERSATION_TYPE_NPC),
+  );
   const groupConversations = conversations.filter(
     (conv) => Number(conv.type) === Number(CONVERSATION_TYPE_GROUP),
   );
   const conversationGroups = [
+    { id: "npc", label: "AI NPC", items: npcConversations },
     { id: "group", label: "群聊", items: groupConversations },
     { id: "private", label: "私聊", items: privateConversations },
   ].filter((group) => group.items.length > 0);
@@ -1620,9 +1639,14 @@ export default function Chat() {
               {activeTab === "messages" ? "Conversations" : "Relations"}
             </h2>
             {activeTab === "messages" ? (
-              <Button size="sm" variant="secondary" onClick={openCreateConversationModal} className="h-8 px-3 text-xs">
-                + 群聊
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="secondary" onClick={startNPCConversation} className="h-8 px-3 text-xs">
+                  + AI NPC
+                </Button>
+                <Button size="sm" variant="secondary" onClick={openCreateConversationModal} className="h-8 px-3 text-xs">
+                  + 群聊
+                </Button>
+              </div>
             ) : (
               <Button size="sm" variant="secondary" onClick={() => setFollowModalOpen(true)} className="h-8 px-3 text-xs">
                 + 关注
@@ -1682,7 +1706,7 @@ export default function Chat() {
 
             {conversations.length === 0 ? (
               <div className="rounded-xl border border-border bg-muted p-4 text-sm text-muted-foreground">
-                还没有会话，点击右上角创建私聊或群聊。
+                还没有会话，点击右上角创建 AI NPC 或群聊。
               </div>
             ) : null}
             {myGroupInvitations.length > 0 ? (
@@ -1718,6 +1742,7 @@ export default function Chat() {
                   const convId = toIdString(conv.id);
                   const selected = convId === activeConvId;
                   const isGroup = Number(conv.type) === Number(CONVERSATION_TYPE_GROUP);
+                  const isNPC = Number(conv.type) === Number(CONVERSATION_TYPE_NPC);
                   return (
                     <button
                       key={convId}
@@ -1748,7 +1773,11 @@ export default function Chat() {
                             <p className="truncate text-sm font-semibold text-foreground">
                               {conv.name || `会话 ${convId}`}
                             </p>
-                            {isGroup ? (
+                            {isNPC ? (
+                              <Badge variant="outline" className="shrink-0 border-border bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                                NPC
+                              </Badge>
+                            ) : isGroup ? (
                               <Badge variant="outline" className="shrink-0 border-border bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
                                 群
                               </Badge>
@@ -1948,7 +1977,13 @@ export default function Chat() {
                       ? activeTopicRoomId
                       ? `官方话题 · 在线 ${activeTopicRoom?.onlineCount || topicMembers.length}`
                       : activeConvId
-                      ? `${Number(activeConv?.type) === Number(CONVERSATION_TYPE_GROUP) ? "群聊" : "私聊"} · 频道 ID: ${activeConvId}`
+                      ? `${
+                          Number(activeConv?.type) === Number(CONVERSATION_TYPE_GROUP)
+                            ? "群聊"
+                            : Number(activeConv?.type) === Number(CONVERSATION_TYPE_NPC)
+                              ? "AI NPC"
+                              : "私聊"
+                        } · 频道 ID: ${activeConvId}`
                       : "尚未选择会话"
                     : `${relationList.length} users`}
                 </p>
@@ -2205,7 +2240,11 @@ export default function Chat() {
                         handleSendMessage(event);
                       }
                     }}
-                    placeholder={`Message ${activeConv?.name || ""}`}
+                    placeholder={
+                      Number(activeConv?.type) === Number(CONVERSATION_TYPE_NPC)
+                        ? `和 ${activeConv?.name || "酒馆老板"} 聊聊`
+                        : `Message ${activeConv?.name || ""}`
+                    }
                     className="h-11 flex-1 px-3 py-2 text-sm"
                   />
                   <DiscordButton type="submit" className="h-11 min-w-[94px]">
@@ -2219,7 +2258,7 @@ export default function Chat() {
               <div>
                 <div className="mx-auto mb-5 h-14 w-14 rounded-2xl bg-muted" />
                 <p className="font-display text-xl font-bold text-foreground">Welcome to Social Chat</p>
-                <p className="mt-2 text-sm text-muted-foreground">从左侧进入官方话题聊天室，或创建一个新的私聊/群聊。</p>
+                <p className="mt-2 text-sm text-muted-foreground">从左侧进入官方话题聊天室，或创建一个新的 AI NPC / 私聊 / 群聊。</p>
               </div>
             </div>
           )}

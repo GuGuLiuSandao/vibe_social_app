@@ -56,6 +56,7 @@ func setupWebSocketTestDB(t *testing.T) {
 		&models.Message{},
 		&models.Conversation{},
 		&models.ConversationParticipant{},
+		&models.NPCMemory{},
 		&models.Relation{},
 		&models.BlockRelation{},
 	); err != nil {

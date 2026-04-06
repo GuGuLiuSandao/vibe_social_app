@@ -29,6 +29,7 @@ const (
 	ConversationType_CONVERSATION_TYPE_UNSPECIFIED ConversationType = 0
 	ConversationType_CONVERSATION_TYPE_PRIVATE     ConversationType = 1 // 单聊
 	ConversationType_CONVERSATION_TYPE_GROUP       ConversationType = 2 // 群聊
+	ConversationType_CONVERSATION_TYPE_NPC         ConversationType = 3 // AI NPC 聊天
 )
 
 // Enum value maps for ConversationType.
@@ -37,11 +38,13 @@ var (
 		0: "CONVERSATION_TYPE_UNSPECIFIED",
 		1: "CONVERSATION_TYPE_PRIVATE",
 		2: "CONVERSATION_TYPE_GROUP",
+		3: "CONVERSATION_TYPE_NPC",
 	}
 	ConversationType_value = map[string]int32{
 		"CONVERSATION_TYPE_UNSPECIFIED": 0,
 		"CONVERSATION_TYPE_PRIVATE":     1,
 		"CONVERSATION_TYPE_GROUP":       2,
+		"CONVERSATION_TYPE_NPC":         3,
 	}
 )
 
@@ -5525,11 +5528,12 @@ const file_chat_chat_proto_rawDesc = "" +
 	"\x1fget_topic_room_members_response\x18\x16 \x01(\v2(.social.chat.GetTopicRoomMembersResponseH\x00R\x1bgetTopicRoomMembersResponse\x12Z\n" +
 	"\x17topic_room_message_push\x18\x17 \x01(\v2!.social.chat.TopicRoomMessagePushH\x00R\x14topicRoomMessagePush\x12Z\n" +
 	"\x17topic_room_members_push\x18\x18 \x01(\v2!.social.chat.TopicRoomMembersPushH\x00R\x14topicRoomMembersPushB\t\n" +
-	"\apayload*q\n" +
+	"\apayload*\x8c\x01\n" +
 	"\x10ConversationType\x12!\n" +
 	"\x1dCONVERSATION_TYPE_UNSPECIFIED\x10\x00\x12\x1d\n" +
 	"\x19CONVERSATION_TYPE_PRIVATE\x10\x01\x12\x1b\n" +
-	"\x17CONVERSATION_TYPE_GROUP\x10\x02*_\n" +
+	"\x17CONVERSATION_TYPE_GROUP\x10\x02\x12\x19\n" +
+	"\x15CONVERSATION_TYPE_NPC\x10\x03*_\n" +
 	"\tGroupKind\x12\x1a\n" +
 	"\x16GROUP_KIND_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13GROUP_KIND_OFFICIAL\x10\x01\x12\x1d\n" +

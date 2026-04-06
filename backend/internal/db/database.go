@@ -55,6 +55,7 @@ func autoMigrate() error {
 		&models.ConversationParticipant{},
 		&models.GroupJoinRequest{},
 		&models.GroupInvitation{},
+		&models.NPCMemory{},
 		&models.Relation{},
 		&models.BlockRelation{},
 	)

@@ -30,6 +30,7 @@ func setupChatServiceTestDB(t *testing.T) *ChatService {
 		&models.ConversationParticipant{},
 		&models.GroupJoinRequest{},
 		&models.GroupInvitation{},
+		&models.NPCMemory{},
 		&models.Relation{},
 		&models.BlockRelation{},
 	); err != nil {
@@ -279,5 +280,88 @@ func TestPrivateGroupRejectsJoinRequest(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "private group") {
 		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestCreateNPCConversationReusesExistingConversation(t *testing.T) {
+	chatService := setupChatServiceTestDB(t)
+	user := mustCreateChatTestUser(t, 10000121)
+
+	first, err := chatService.CreateConversation(user.UID, &pb.CreateConversationRequest{
+		Type: pb.ConversationType_CONVERSATION_TYPE_NPC,
+	})
+	if err != nil {
+		t.Fatalf("create npc conversation failed: %v", err)
+	}
+	if first.Type != models.ConversationTypeNPC {
+		t.Fatalf("expected npc conversation type, got %d", first.Type)
+	}
+
+	second, err := chatService.CreateConversation(user.UID, &pb.CreateConversationRequest{
+		Type: pb.ConversationType_CONVERSATION_TYPE_NPC,
+	})
+	if err != nil {
+		t.Fatalf("create npc conversation second call failed: %v", err)
+	}
+	if first.ID != second.ID {
+		t.Fatalf("expected to reuse same conversation, got first=%d second=%d", first.ID, second.ID)
+	}
+
+	var participants []models.ConversationParticipant
+	if err := db.DB.Where("conversation_id = ?", first.ID).Find(&participants).Error; err != nil {
+		t.Fatalf("query participants failed: %v", err)
+	}
+	if len(participants) != 2 {
+		t.Fatalf("expected 2 participants, got %d", len(participants))
+	}
+}
+
+func TestNPCReplyPersistsMemoryAcrossServiceInstances(t *testing.T) {
+	chatService := setupChatServiceTestDB(t)
+	user := mustCreateChatTestUser(t, 10000131)
+
+	conv, err := chatService.CreateConversation(user.UID, &pb.CreateConversationRequest{
+		Type: pb.ConversationType_CONVERSATION_TYPE_NPC,
+	})
+	if err != nil {
+		t.Fatalf("create npc conversation failed: %v", err)
+	}
+
+	_, err = chatService.SendMessage(user.UID, &pb.SendMessageRequest{
+		ConversationId: conv.ID,
+		Content:        "我叫阿尔萨斯，我喜欢副本。",
+		Type:           pb.MessageType_MESSAGE_TYPE_TEXT,
+	})
+	if err != nil {
+		t.Fatalf("send npc user message failed: %v", err)
+	}
+
+	firstReply, err := chatService.GenerateNPCReply(conv.ID, user.UID, "我叫阿尔萨斯，我喜欢副本。")
+	if err != nil {
+		t.Fatalf("generate npc reply failed: %v", err)
+	}
+	if firstReply == nil || strings.TrimSpace(firstReply.Content) == "" {
+		t.Fatalf("expected npc reply content")
+	}
+
+	chatServiceReloaded := NewChatService(NewRelationService(db.DB))
+	_, err = chatServiceReloaded.SendMessage(user.UID, &pb.SendMessageRequest{
+		ConversationId: conv.ID,
+		Content:        "你还记得我吗？",
+		Type:           pb.MessageType_MESSAGE_TYPE_TEXT,
+	})
+	if err != nil {
+		t.Fatalf("send second npc message failed: %v", err)
+	}
+
+	secondReply, err := chatServiceReloaded.GenerateNPCReply(conv.ID, user.UID, "你还记得我吗？")
+	if err != nil {
+		t.Fatalf("generate second npc reply failed: %v", err)
+	}
+	if secondReply == nil {
+		t.Fatalf("expected second npc reply")
+	}
+	if !strings.Contains(secondReply.Content, "阿尔萨斯") {
+		t.Fatalf("expected reply to include remembered name, got: %s", secondReply.Content)
 	}
 }

@@ -130,6 +130,20 @@ M0 目标是把当前“能跑但不稳定”的状态收敛成“可持续迭�
 - 结果（2026-04-04）：通过
 - 说明：该任务映射到 `ROADMAP.md` 的 M1「私聊/群聊体验收敛」，已完成 `npm test` 与 `npm run build` 验证
 
+## T9 M1 功能扩展：AI NPC 聊天 MVP
+- [x] 新增并完成需求与技术方案文档：`docs/features/ai-npc-chat-mvp-v1/`
+- [x] 协议扩展 `ConversationType`：新增 NPC 会话类型
+- [x] 后端完成默认 NPC（魔兽酒馆老板）1v1 会话创建与复用
+- [x] 后端完成 NPC 自动回复 + 跨 Session 记忆持久化
+- [x] 前端聊天页新增 AI NPC 分类与发起入口
+- [x] 完成回归测试并验证不影响既有聊天链路
+
+验收：
+- `cd backend && go test ./...` 全绿
+- `cd frontend && npm test` 全绿
+- 结果（2026-04-06）：通过
+- 说明：MVP 暂不开放 NPC 人设自定义与 NPC 多人群聊，已在功能文档中标注后续版本范围。
+
 ## 3. 执行节奏建议（单人 + AI）
 
 Week 1：

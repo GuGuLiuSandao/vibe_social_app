@@ -1,6 +1,6 @@
 # Social App Roadmap (Web First)
 
-更新时间：2026-04-04
+更新时间：2026-04-06
 
 ## 1. 产品目标与范围
 
@@ -63,6 +63,11 @@ MVP（Web）范围（已确认）：
 - 已新增 UI 重构需求 `docs/features/ui-shadcn-refactor-v1/`，目标是将前端基础组件统一到 `shadcn/ui` 并收敛聊天页视觉密度（增加留白、优化层级）。
 - 该项属于 M1“私聊/群聊体验收敛”执行内容，优先保证不改业务逻辑，仅做组件体系与交互表现层升级。
 - 当前状态：已完成首轮重构（登录页/聊天页/群管理组件），并通过 `cd frontend && npm test` 与 `cd frontend && npm run build`。
+
+当前补充说明（2026-04-06）：
+- 已新增 AI NPC 聊天 MVP 需求：`docs/features/ai-npc-chat-mvp-v1/`。
+- 已落地范围：新增 NPC 会话类型（与官方群/群聊同层）、默认“魔兽酒馆老板”1v1 聊天、跨 Session 记忆持久化、前端 AI NPC 分类与入口。
+- 当前状态：已通过 `cd backend && go test ./...` 与 `cd frontend && npm test`。
 
 验收标准：
 - 拉黑生效矩阵覆盖：发消息、建私聊、拉群邀请

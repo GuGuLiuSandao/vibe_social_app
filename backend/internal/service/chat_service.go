@@ -1,7 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
+	"hash/crc32"
 	"social_app/internal/db"
 	"social_app/internal/models"
 	pb "social_app/internal/proto/chat"
@@ -24,6 +27,20 @@ type groupActorContext struct {
 	Participant  models.ConversationParticipant
 }
 
+type npcMemoryState struct {
+	Name   string   `json:"name,omitempty"`
+	Likes  []string `json:"likes,omitempty"`
+	Topics []string `json:"topics,omitempty"`
+}
+
+const (
+	npcSystemUserID              uint64 = 99000001
+	npcSystemUsername                   = "npc_wow_tavern_keeper"
+	npcDefaultConversationName          = "艾泽拉斯酒馆老板"
+	npcDefaultConversationAvatar        = "https://img.icons8.com/fluency/96/bottle-of-wine.png"
+	npcDefaultConversationDesc          = "常驻酒馆老板，擅长倾听冒险故事，支持跨 Session 长期记忆。"
+)
+
 // NewChatService creates a new ChatService instance
 func NewChatService(relationService *RelationService) *ChatService {
 	return &ChatService{
@@ -39,6 +56,317 @@ func (s *ChatService) GetUser(userID uint64) (*models.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (s *ChatService) ensureDefaultNPCUserTx(tx *gorm.DB) error {
+	var npcUser models.User
+	if err := tx.Where("uid = ?", npcSystemUserID).First(&npcUser).Error; err == nil {
+		return nil
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+
+	now := time.Now()
+	npcUser = models.User{
+		ID:        npcSystemUserID,
+		UID:       npcSystemUserID,
+		Username:  npcSystemUsername,
+		Email:     fmt.Sprintf("%s@npc.local", npcSystemUsername),
+		Password:  "npc_system_password",
+		Nickname:  npcDefaultConversationName,
+		Avatar:    npcDefaultConversationAvatar,
+		Bio:       npcDefaultConversationDesc,
+		Status:    1,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	return tx.Create(&npcUser).Error
+}
+
+func (s *ChatService) getOrCreateNPCMemoryTx(tx *gorm.DB, userID uint64) (*models.NPCMemory, error) {
+	var memory models.NPCMemory
+	err := tx.Where("user_id = ? AND npc_key = ?", userID, models.NPCKeyWowTavernKeeper).First(&memory).Error
+	if err == nil {
+		if strings.TrimSpace(memory.MemoryJSON) == "" {
+			memory.MemoryJSON = "{}"
+		}
+		return &memory, nil
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
+	memory = models.NPCMemory{
+		UserID:     userID,
+		NPCKey:     models.NPCKeyWowTavernKeeper,
+		MemoryJSON: "{}",
+	}
+	if err := tx.Create(&memory).Error; err != nil {
+		return nil, err
+	}
+	return &memory, nil
+}
+
+func decodeNPCMemory(memoryJSON string) npcMemoryState {
+	var state npcMemoryState
+	if strings.TrimSpace(memoryJSON) == "" {
+		return state
+	}
+	if err := json.Unmarshal([]byte(memoryJSON), &state); err != nil {
+		return npcMemoryState{}
+	}
+	return state
+}
+
+func addUniqueLimited(items []string, value string, limit int) []string {
+	normalized := normalizeNPCMemoryToken(value)
+	if normalized == "" {
+		return items
+	}
+	for _, item := range items {
+		if item == normalized {
+			return items
+		}
+	}
+	items = append(items, normalized)
+	if limit > 0 && len(items) > limit {
+		items = items[len(items)-limit:]
+	}
+	return items
+}
+
+func normalizeNPCMemoryToken(raw string) string {
+	token := strings.TrimSpace(raw)
+	token = strings.Trim(token, "，。！？,.!?\"'` ")
+	token = strings.TrimSpace(token)
+	if token == "" {
+		return ""
+	}
+	runes := []rune(token)
+	if len(runes) > 24 {
+		token = string(runes[:24])
+	}
+	return token
+}
+
+func extractAfterKeyword(content, keyword string) string {
+	idx := strings.Index(content, keyword)
+	if idx < 0 {
+		return ""
+	}
+	tail := strings.TrimSpace(content[idx+len(keyword):])
+	if tail == "" {
+		return ""
+	}
+
+	end := len(tail)
+	for _, marker := range []string{"，", "。", "！", "？", ",", ".", "!", "?", "\n"} {
+		if markerIndex := strings.Index(tail, marker); markerIndex >= 0 && markerIndex < end {
+			end = markerIndex
+		}
+	}
+	if end <= 0 {
+		return ""
+	}
+	return normalizeNPCMemoryToken(tail[:end])
+}
+
+func updateNPCMemoryState(state npcMemoryState, userContent string) npcMemoryState {
+	text := strings.TrimSpace(userContent)
+	if text == "" {
+		return state
+	}
+
+	if name := extractAfterKeyword(text, "我叫"); name != "" {
+		state.Name = name
+	}
+	if name := extractAfterKeyword(text, "叫我"); name != "" {
+		state.Name = name
+	}
+
+	for _, keyword := range []string{"我喜欢", "喜欢"} {
+		if like := extractAfterKeyword(text, keyword); like != "" {
+			state.Likes = addUniqueLimited(state.Likes, like, 6)
+			break
+		}
+	}
+
+	for _, topic := range []struct {
+		Keyword string
+		Topic   string
+	}{
+		{Keyword: "副本", Topic: "副本"},
+		{Keyword: "练级", Topic: "练级"},
+		{Keyword: "装备", Topic: "装备"},
+		{Keyword: "公会", Topic: "公会"},
+		{Keyword: "任务", Topic: "任务"},
+		{Keyword: "金币", Topic: "金币"},
+		{Keyword: "PVP", Topic: "PVP"},
+		{Keyword: "pvp", Topic: "PVP"},
+		{Keyword: "PVE", Topic: "PVE"},
+		{Keyword: "pve", Topic: "PVE"},
+		{Keyword: "职业", Topic: "职业"},
+		{Keyword: "升级", Topic: "升级"},
+	} {
+		if strings.Contains(text, topic.Keyword) {
+			state.Topics = addUniqueLimited(state.Topics, topic.Topic, 6)
+		}
+	}
+
+	return state
+}
+
+func buildNPCMemorySummary(state npcMemoryState) string {
+	parts := make([]string, 0, 3)
+	if state.Name != "" {
+		parts = append(parts, fmt.Sprintf("你让我称呼你为%s", state.Name))
+	}
+	if len(state.Likes) > 0 {
+		parts = append(parts, fmt.Sprintf("你偏爱%s", strings.Join(state.Likes, "、")))
+	}
+	if len(state.Topics) > 0 {
+		parts = append(parts, fmt.Sprintf("最近常聊%s", strings.Join(state.Topics, "、")))
+	}
+	return strings.Join(parts, "；")
+}
+
+func generateNPCReplyContent(userContent string, memoryState npcMemoryState) string {
+	text := strings.TrimSpace(userContent)
+	name := memoryState.Name
+	if name == "" {
+		name = "旅人"
+	}
+
+	if strings.Contains(text, "记得") || strings.Contains(text, "记住") {
+		if summary := buildNPCMemorySummary(memoryState); summary != "" {
+			return fmt.Sprintf("%s，当然记得。%s。来，先喝一杯，我们慢慢聊。", name, summary)
+		}
+		return fmt.Sprintf("%s，我会把你说过的话都记在酒馆账本里。你再讲讲，我记得更牢。", name)
+	}
+
+	openingPool := []string{
+		"今晚壁炉火正旺，你这话题来得正好。",
+		"风雪刚停，正适合坐下来聊聊冒险见闻。",
+		"来，杯子给你满上，这事我听着有门道。",
+		"酒馆里最不缺故事，你这段我得认真听。",
+	}
+	closingPool := []string{
+		"要不要再细讲两句？我好给你参谋参谋。",
+		"接着说，我这儿耳朵和酒都给你备着。",
+		"下回你来，我还能接着这个话题聊下去。",
+		"放心说，酒馆老板最擅长给冒险者捋思路。",
+	}
+
+	openingIndex := int(crc32.ChecksumIEEE([]byte(text+"#open")) % uint32(len(openingPool)))
+	closingIndex := int(crc32.ChecksumIEEE([]byte(text+"#close")) % uint32(len(closingPool)))
+	memoryHint := ""
+	if len(memoryState.Likes) > 0 {
+		memoryHint = fmt.Sprintf("我记得你喜欢%s。", memoryState.Likes[len(memoryState.Likes)-1])
+	} else if len(memoryState.Topics) > 0 {
+		memoryHint = fmt.Sprintf("你最近总提%s，我都记着呢。", memoryState.Topics[len(memoryState.Topics)-1])
+	}
+
+	parts := []string{
+		fmt.Sprintf("%s，%s", name, openingPool[openingIndex]),
+	}
+	if memoryHint != "" {
+		parts = append(parts, memoryHint)
+	}
+	parts = append(parts, closingPool[closingIndex])
+	return strings.Join(parts, " ")
+}
+
+func (s *ChatService) GenerateNPCReply(conversationID uint64, userID uint64, userContent string) (*models.Message, error) {
+	if strings.TrimSpace(userContent) == "" {
+		return nil, nil
+	}
+	if userID == npcSystemUserID {
+		return nil, nil
+	}
+
+	var npcReply *models.Message
+
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		var conversation models.Conversation
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&conversation, conversationID).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return errors.New("conversation not found")
+			}
+			return err
+		}
+		if conversation.Type != models.ConversationTypeNPC {
+			return nil
+		}
+
+		var participantCount int64
+		if err := tx.Model(&models.ConversationParticipant{}).
+			Where("conversation_id = ? AND user_id = ?", conversationID, userID).
+			Count(&participantCount).Error; err != nil {
+			return err
+		}
+		if participantCount == 0 {
+			return errors.New("you are not a member of this conversation")
+		}
+
+		if err := s.ensureDefaultNPCUserTx(tx); err != nil {
+			return err
+		}
+		var npcParticipantCount int64
+		if err := tx.Model(&models.ConversationParticipant{}).
+			Where("conversation_id = ? AND user_id = ?", conversationID, npcSystemUserID).
+			Count(&npcParticipantCount).Error; err != nil {
+			return err
+		}
+		if npcParticipantCount == 0 {
+			return errors.New("npc participant missing from conversation")
+		}
+
+		memory, err := s.getOrCreateNPCMemoryTx(tx, userID)
+		if err != nil {
+			return err
+		}
+		memoryState := decodeNPCMemory(memory.MemoryJSON)
+		memoryState = updateNPCMemoryState(memoryState, userContent)
+		memoryData, err := json.Marshal(memoryState)
+		if err != nil {
+			return err
+		}
+		if err := tx.Model(&models.NPCMemory{}).
+			Where("id = ?", memory.ID).
+			Updates(map[string]interface{}{
+				"memory_json": string(memoryData),
+				"summary":     buildNPCMemorySummary(memoryState),
+				"updated_at":  time.Now(),
+			}).Error; err != nil {
+			return err
+		}
+
+		now := time.Now()
+		newLocalID := conversation.LastLocalID + 1
+		npcReply = &models.Message{
+			ConversationID: conversationID,
+			LocalID:        newLocalID,
+			SenderID:       npcSystemUserID,
+			Content:        generateNPCReplyContent(userContent, memoryState),
+			Type:           int(pb.MessageType_MESSAGE_TYPE_TEXT),
+			CreatedAt:      now,
+		}
+		if err := tx.Create(npcReply).Error; err != nil {
+			return err
+		}
+
+		return tx.Model(&conversation).Updates(map[string]interface{}{
+			"last_local_id":   newLocalID,
+			"last_message_id": npcReply.ID,
+			"updated_at":      now,
+		}).Error
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return npcReply, nil
 }
 
 func normalizeGroupKind(kind pb.GroupKind) string {
@@ -775,6 +1103,77 @@ func (s *ChatService) MarkAsRead(userID uint64, req *pb.MarkAsReadRequest) (uint
 
 // CreateConversation 创建会话
 func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConversationRequest) (*models.Conversation, error) {
+	reqType := req.Type
+	if reqType == pb.ConversationType_CONVERSATION_TYPE_UNSPECIFIED {
+		return nil, errors.New("invalid conversation type")
+	}
+
+	if reqType == pb.ConversationType_CONVERSATION_TYPE_NPC {
+		var conversation *models.Conversation
+		err := s.db.Transaction(func(tx *gorm.DB) error {
+			if err := s.ensureDefaultNPCUserTx(tx); err != nil {
+				return err
+			}
+
+			var creatorExists int64
+			if err := tx.Model(&models.User{}).Where("uid = ?", creatorID).Count(&creatorExists).Error; err != nil {
+				return err
+			}
+			if creatorExists == 0 {
+				return errors.New("creator does not exist")
+			}
+
+			var existingConv models.Conversation
+			err := tx.Table("conversations").
+				Joins("JOIN conversation_participants p1 ON conversations.id = p1.conversation_id").
+				Joins("JOIN conversation_participants p2 ON conversations.id = p2.conversation_id").
+				Where("conversations.type = ? AND p1.user_id = ? AND p2.user_id = ?", models.ConversationTypeNPC, creatorID, npcSystemUserID).
+				First(&existingConv).Error
+			if err == nil {
+				conversation = &existingConv
+				return nil
+			}
+			if !errors.Is(err, gorm.ErrRecordNotFound) {
+				return err
+			}
+
+			conversation = &models.Conversation{
+				Type:        models.ConversationTypeNPC,
+				Name:        npcDefaultConversationName,
+				Avatar:      npcDefaultConversationAvatar,
+				Description: npcDefaultConversationDesc,
+			}
+			if err := tx.Create(conversation).Error; err != nil {
+				return err
+			}
+
+			participants := []models.ConversationParticipant{
+				{
+					ConversationID: conversation.ID,
+					UserID:         creatorID,
+					Role:           models.GroupRoleMember,
+					JoinedAt:       time.Now(),
+				},
+				{
+					ConversationID: conversation.ID,
+					UserID:         npcSystemUserID,
+					Role:           models.GroupRoleMember,
+					JoinedAt:       time.Now(),
+				},
+			}
+			if err := tx.Create(&participants).Error; err != nil {
+				return err
+			}
+
+			_, err = s.getOrCreateNPCMemoryTx(tx, creatorID)
+			return err
+		})
+		if err != nil {
+			return nil, err
+		}
+		return conversation, nil
+	}
+
 	// 1. 验证参数
 	if len(req.ParticipantIds) == 0 {
 		return nil, errors.New("participants required")
@@ -803,7 +1202,6 @@ func (s *ChatService) CreateConversation(creatorID uint64, req *pb.CreateConvers
 	}
 
 	var conversation *models.Conversation
-	var reqType = req.Type
 
 	if reqType == pb.ConversationType_CONVERSATION_TYPE_PRIVATE {
 		if len(userIDs) != 2 {
