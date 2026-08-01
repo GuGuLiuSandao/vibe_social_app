@@ -1,0 +1,20 @@
+{
+  "tool": "gremlins",
+  "version": "v0.6.0",
+  "target": "backend/internal/auth/jwt.go",
+  "strong_test": "backend/internal/auth/jwt_test.go",
+  "strong_sha256": "024fe8135caeb7c4f9eee549a065c5e7910315426d13d8f3aec5f53bc6b84de8",
+  "weak_replacement": "scripts/quality/tests/fixtures/weak-suites/backend-jwt-v1.weak.go",
+  "patch": "scripts/quality/tests/fixtures/weak-suites/backend-jwt-v1.patch",
+  "weak_sha256": "89c45e5ea8f7581215cb82c5ef852db1385467e2f1ad59b6506d3ff31464f5b3",
+  "replaced_tests": [
+    "TestDLQ_TC_003_AUTH_001_JWTRoundTrip",
+    "TestDLQ_TC_004_AUTH_001_JWTRejectsInvalidTokens"
+  ],
+  "protective_tests": [
+    {"file": "backend/internal/auth/jwt_test.go", "name": "TestDLQ_TC_003_AUTH_001_JWTRoundTrip"},
+    {"file": "backend/internal/auth/jwt_test.go", "name": "TestDLQ_TC_004_AUTH_001_JWTRejectsInvalidTokens"}
+  ],
+  "weak_test": "TestDLQ_TC_029_WeakJWTBaseline",
+  "allowed_weak_statuses": ["LIVED", "NOT COVERED"]
+}

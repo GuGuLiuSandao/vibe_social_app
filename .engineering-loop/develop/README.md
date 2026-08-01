@@ -21,7 +21,7 @@ Develop Loop 解决需求驱动研发中的两个问题：
 
 | 强度 | 适用条件 | 必需产物 |
 |---|---|---|
-| `quick` | 目标明确、影响局部、容易回滚 | requirement、code review、quality evidence |
+| `quick` | 目标明确、影响局部、容易回滚 | 全部阶段；允许压缩文档，但不省略独立 Test Design、Test Review 和 Code Review |
 | `standard` | 跨模块、改变对外行为或存在兼容风险 | 全部产物 |
 | `critical` | 权限、安全、数据迁移、资金或真实外部写入 | 全部产物，并采用项目声明的额外审批和门禁 |
 
@@ -43,7 +43,7 @@ Preflight
 → Commit / Push / MR or PR / CI
 ```
 
-`quick` 可以把技术设计和测试设计写入 requirement，由协调者直接实现；代码评审和适用的质量门禁仍然执行。
+`quick` 可以压缩 Technical Design 文档；只要变更生产代码或对外行为，仍必须由独立 Test Designer 先定义 Case、由另一独立 Test Reviewer 放行，再进入实现。纯文档、注释或不改变可执行行为的机械变更，可以在 Requirement 中记录“不适用测试”的可审计理由。
 
 ### 3.1 Preflight
 
@@ -89,6 +89,10 @@ Reviewer 独立检查设计是否完整、准确且足以让实现者无需猜�
 
 Test Reviewer 独立检查漏测、滥写、弱断言风险和可自动化程度。存在 blocker 时回到测试设计，默认最多循环三次。
 
+Test Designer 和 Test Reviewer 必须是与协调者/实现者上下文隔离的独立角色。评审结论为 `PASS` 且无 blocker 前，Implementation 不得开始。
+
+通过评审的 Case 是实现契约：Implementer 必须用项目适配的 unit、integration、contract 或 UI 测试实现它们，并让同一测试命令同时服务本地和 CI。Project Profile 声明 Mutation Testing 时，门禁还必须证明测试能杀死适用的生产代码变异；零测试、零 mutant、报告缺失/损坏、工具异常或存活/未覆盖 mutant 均不得成为绿灯。
+
 ### 3.5 Implementation and Review
 
 实现者只实现已通过评审的契约、设计和测试范围，并同步项目的长期行为规格与回归保护。
@@ -127,6 +131,7 @@ Code Reviewer 使用 Requirement Contract、Design、Test Cases、行为规格�
 
 - Requirement Contract 由协调者维护，需求方确认关键产品契约。
 - Design Reviewer 不参与原设计编写。
+- Test Designer 不参与该变更的生产代码实现，并只维护 `testcases.md`。
 - Test Reviewer 不参与原测试设计。
 - Code Reviewer 不修改被评审的业务代码和测试代码。
 - Reviewer 的显式 blocker 优先于分数；评分只帮助稳定评审尺度。
@@ -138,6 +143,7 @@ Code Reviewer 使用 Requirement Contract、Design、Test Cases、行为规格�
 - `change-id`、分支和产物路径规则；
 - 项目结构和长期行为规格位置；
 - 按影响范围选择的质量命令；
+- 普通测试、集成测试、Mutation Testing 的适用规则、机器可读证据和 fail-closed 判定；
 - 外部系统和数据隔离边界；
 - Commit、MR/PR、CI 和合并策略；
 - `critical` 变更需要的额外控制。

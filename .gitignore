@@ -23,3 +23,7 @@ backend/api
 # Logs and coverage
 *.log
 coverage/
+/quality/
+.stryker-tmp/
+frontend/.stryker-tmp/
+**/__pycache__/

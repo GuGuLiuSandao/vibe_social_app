@@ -32,15 +32,16 @@
 
 ## Quality Gates
 
-| Change scope | Command | Required result |
+| Gate | Command | Required result |
 |---|---|---|
-| Any tracked change | `git diff --check` | Exit 0 |
-| Backend Go | `cd backend && go build ./...` | Exit 0 |
-| Backend Go | `cd backend && go vet ./...` | Exit 0 |
-| Frontend | `cd frontend && npm run build` | Exit 0 |
-| Protocol Buffers | `make proto-go && make proto-ts` | 生成成功，并继续执行后端和前端门禁 |
-| Compose / deployment configuration | `docker compose config --quiet` | Exit 0 |
-| Behavior change | 执行 Technical Design 和 Test Cases 声明的回归验证 | 所有适用验证通过并记录证据 |
+| Static/build/traceability | `make quality-static` | diff、Go build/vet、frontend build、两份 Compose、流程契约和追溯全部通过 |
+| Backend unit | `make test-backend` | Go JSONL 可解析；auth/websocket 均执行，至少 6 个测试事件 |
+| Frontend unit | `make test-frontend` | Vitest JSON 可解析；UID/WS 两套测试均执行，至少 6 个 Case |
+| Real integration | `make test-integration` | 隔离 PostgreSQL/Redis/HTTP/WS 流程和清理通过 |
+| Backend mutation | `make mutation-backend` | Gremlins `v0.6.0` 报告非空且无 lived/uncovered/error 状态 |
+| Frontend mutation | `make mutation-frontend` | Stryker `9.6.1` 报告非空且全部 `Killed` |
+| Aggregate | `make quality` | 上述六个门禁全部通过，任何子命令失败均非零退出 |
+| Protocol Buffers | `make proto-go && make proto-ts` | Proto 变更时生成成功，并继续执行 `make quality` |
 
 ## Test Isolation
 
@@ -54,7 +55,7 @@
 - Remote platform: GitHub
 - Target branch: `master`
 - MR/PR creation: 完成独立 Code Review 和本地质量门禁后创建 PR。
-- CI policy: 等待仓库已配置的 PR 检查；PR 记录本地质量证据。
+- CI policy: `.github/workflows/develop-quality.yml` 在 PR、master push 和手动触发上运行与本地相同的六个 Make 门禁并上传 `quality/**` 证据。
 - Merge authority: 由用户决定，Agent 不自动合并。
 
 ## Critical Change Controls

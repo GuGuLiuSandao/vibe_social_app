@@ -12,3 +12,8 @@ COMMUNITY-001
 ```
 
 每条规格描述触发条件、输入、权限、系统行为、输出和错误行为。涉及对外行为的 Develop Loop 变更应更新对应规格，并让 Requirement Contract、Test Cases 和自动化测试引用相同 ID。
+
+- [Authentication](authentication.md)
+- [WebSocket](websocket.md)
+- [Client identity and WebSocket builders](client-identity.md)
+- `traceability.json` 是规格、Test Case 与自动化测试之间的机器可校验映射。

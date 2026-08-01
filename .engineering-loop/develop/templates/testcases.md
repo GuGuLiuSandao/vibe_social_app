@@ -14,6 +14,7 @@
 
 ### TC-001: <name>
 
+- Priority / gate:
 - Level:
 - Acceptance / specification ID:
 - Preconditions:
@@ -21,6 +22,8 @@
 - Expected result:
 - Required assertions:
 - Isolation:
+- Automation location:
+- Mutation relevance:
 
 ## 4. Test Economy
 

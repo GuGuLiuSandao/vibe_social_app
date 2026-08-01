@@ -1,4 +1,4 @@
-.PHONY: proto build clean help
+.PHONY: proto build clean help quality quality-static verify-traceability test-backend test-frontend test-integration mutation-backend mutation-frontend
 
 # Protobuf 编译
 PROTO_DIR = proto
@@ -52,6 +52,38 @@ run-frontend:
 # 构建后端
 build-backend:
 	cd backend && go build -o bin/server cmd/api/main.go
+
+verify-traceability:
+	python3 scripts/quality/verify_traceability.py
+
+quality-static: verify-traceability
+	git diff --check
+	cd backend && go build ./...
+	cd backend && go vet ./...
+	npm --prefix frontend run build
+	docker compose config --quiet
+	docker compose -f docker-compose.integration.yml config --quiet
+	python3 -m unittest discover -s scripts/quality/tests -p 'test_*.py'
+	python3 scripts/quality/write_static_summary.py
+
+test-backend:
+	python3 scripts/quality/run_backend_tests.py
+
+test-frontend:
+	python3 scripts/quality/run_frontend_tests.py
+
+test-integration:
+	bash scripts/quality/run_integration.sh
+	bash scripts/quality/run_integration_isolation.sh
+
+mutation-backend:
+	bash scripts/quality/run_backend_mutation.sh
+
+mutation-frontend:
+	python3 scripts/quality/run_frontend_mutation.py
+
+quality: quality-static test-backend test-frontend test-integration mutation-backend mutation-frontend
+	python3 scripts/quality/write_quality_summary.py
 
 # 清理生成的文件
 clean:
