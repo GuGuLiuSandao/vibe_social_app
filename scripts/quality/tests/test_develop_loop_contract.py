@@ -42,6 +42,15 @@ class DevelopLoopContractTest(unittest.TestCase):
         self.assertIn("blocker", reviewer)
         self.assertIn("三轮", reviewer)
 
+    def test_conditional_grilling_avoids_routine_questionnaires(self):
+        self.assertIn("需求澄清不是每次变更的固定问答", self.readme)
+        self.assertIn("明显改变用户体验", self.readme)
+        self.assertIn("关键边界或异常场景", self.readme)
+        self.assertIn("`$grilling`", self.readme)
+        self.assertIn("一次只问一个决策", self.readme)
+        self.assertIn("能从仓库、运行环境或现有规格查明的事实直接调查", self.readme)
+        self.assertIn("不保存冗长问答过程", self.readme)
+
 
 if __name__ == "__main__":
     unittest.main()
