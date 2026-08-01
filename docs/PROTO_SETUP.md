@@ -20,9 +20,10 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
 ### 3) 安装前端插件（仅生成 TS 时需要）
 ```bash
-cd frontend
-npm install -D @bufbuild/protoc-gen-es @bufbuild/protobuf
+npm ci --prefix frontend
 ```
+
+`@bufbuild/protoc-gen-es` 已由 `frontend/package-lock.json` 锁定，不需要另行修改依赖声明。
 
 ## 编译命令
 
@@ -34,7 +35,7 @@ make proto-ts   # 仅生成前端 TS
 
 说明：
 - `make proto` 当前等价于 `make proto-go`
-- 若修改了 `proto/*.proto`，请至少重新执行对应目标
+- 若修改了 `proto/**/*.proto`，请重新生成两端代码，并按需求变更执行完整质量门禁
 
 ## WebSocket 协议说明（当前实现）
 - 握手地址：`/ws?token=<JWT_TOKEN>`
