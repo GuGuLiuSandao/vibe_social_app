@@ -34,11 +34,22 @@ class MutationTargetDiscoveryTest(unittest.TestCase):
 
     def test_DLQ_TC_023_changed_files_map_to_trusted_targets(self):
         self.commit_file("backend/internal/auth/jwt.go", "package auth\nfunc f(){ _ = 1 + 2 }\n")
+        self.commit_file("frontend/src/lib/value.js", "export const value = 1;\n")
         plan = discover(self.root, self.base)
         self.assertEqual(plan["backend_changed_files"], ["backend/internal/auth/jwt.go"])
         self.assertEqual(plan["backend_packages"], ["social_app/internal/auth"])
         self.assertIn("backend/internal/auth/jwt.go", plan["backend_allowed_files"])
-        self.assertTrue(plan["frontend_smoke"])
+        self.assertEqual(plan["frontend_files"], ["frontend/src/lib/value.js"])
+        self.assertEqual(plan["frontend_mutation_targets"], ["src/lib/value.js:1-1"])
+        self.assertFalse(plan["frontend_smoke"])
+
+    def test_DLQ_TC_023_frontend_targets_only_added_lines(self):
+        self.commit_file("frontend/src/lib/value.js", "export const first = 1;\nexport const second = 2;\n")
+        change_base = self.git("rev-parse", "HEAD").stdout.strip()
+        self.commit_file("frontend/src/lib/value.js", "export const first = 3;\n")
+        plan = discover(self.root, change_base)
+        self.assertEqual(plan["frontend_files"], ["frontend/src/lib/value.js"])
+        self.assertEqual(plan["frontend_mutation_targets"], ["src/lib/value.js:1-1"])
 
     def test_DLQ_TC_023_empty_docs_deleted_and_rename_classes(self):
         self.assertEqual(discover(self.root, self.base)["reason"], "empty")

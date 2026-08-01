@@ -134,7 +134,7 @@ def manifest(name: str) -> dict:
 
 
 def backend_plan(path: Path, payload: dict) -> None:
-    path.write_text(json.dumps({"schema_version": 1, "base_sha": None, "reason": "weak-proof", "backend_changed_files": [], "backend_packages": ["social_app/internal/auth"], "backend_allowed_files": [payload["target"]], "frontend_files": ["frontend/src/lib/uid.js"], "backend_smoke": True, "frontend_smoke": True}))
+    path.write_text(json.dumps({"schema_version": 1, "base_sha": None, "reason": "weak-proof", "backend_changed_files": [], "backend_mutation_targets": {payload["target"]: None}, "backend_packages": ["social_app/internal/auth"], "backend_allowed_files": [payload["target"]], "frontend_files": ["frontend/src/lib/uid.js"], "frontend_mutation_targets": ["src/lib/uid.js"], "backend_smoke": True, "frontend_smoke": True}))
 
 
 def gremlins_command(binary: Path, report: Path) -> list[str]:
@@ -142,7 +142,7 @@ def gremlins_command(binary: Path, report: Path) -> list[str]:
 
 
 def frontend_plan(path: Path, payload: dict) -> None:
-    path.write_text(json.dumps({"schema_version": 1, "base_sha": None, "reason": "weak-proof", "backend_changed_files": [], "backend_packages": ["social_app/internal/auth"], "backend_allowed_files": ["backend/internal/auth/jwt.go"], "frontend_files": [payload["target"]], "backend_smoke": True, "frontend_smoke": True}))
+    path.write_text(json.dumps({"schema_version": 1, "base_sha": None, "reason": "weak-proof", "backend_changed_files": [], "backend_mutation_targets": {"backend/internal/auth/jwt.go": None}, "backend_packages": ["social_app/internal/auth"], "backend_allowed_files": ["backend/internal/auth/jwt.go"], "frontend_files": [payload["target"]], "frontend_mutation_targets": [payload["target"].removeprefix("frontend/")], "backend_smoke": True, "frontend_smoke": True}))
 
 
 def copy_frontend(destination: Path) -> None:
@@ -152,6 +152,14 @@ def copy_frontend(destination: Path) -> None:
         ignore=shutil.ignore_patterns("node_modules", "dist", ".stryker-tmp"),
     )
     os.symlink(ROOT / "frontend/node_modules", destination / "node_modules", target_is_directory=True)
+
+
+def write_frontend_proof_config(sandbox: Path) -> str:
+    name = "vitest.proof.config.mjs"
+    (sandbox / name).write_text(
+        'export default { test: { environment: "jsdom", setupFiles: "./src/test/setup.js", include: ["src/lib/uid.test.js"] } };\n'
+    )
+    return name
 
 
 def retain_report(kind: str, phase: str, source: Path) -> dict[str, str]:
@@ -248,7 +256,7 @@ def frontend_weak() -> dict:
             raise RuntimeError("unpatched frontend ordinary baseline failed in disposable copy")
         strong_report = Path(temp) / "frontend-strong-mutation.json"
         config = sandbox / "stryker.proof.mjs"
-        strong_config = frontend_config(["src/lib/uid.js"], strong_report)
+        strong_config = frontend_config(["src/lib/uid.js"], strong_report, write_frontend_proof_config(sandbox))
         config.write_text(strong_config)
         strong = subprocess.run(["npx", "stryker", "run", str(config)], cwd=sandbox)
         strong_verifier = subprocess.run(
@@ -280,7 +288,7 @@ def frontend_weak() -> dict:
         plan = Path(temp) / "frontend-plan.json"
         frontend_plan(plan, payload)
         config = sandbox / "stryker.proof.mjs"
-        weak_config = frontend_config(["src/lib/uid.js"], report)
+        weak_config = frontend_config(["src/lib/uid.js"], report, write_frontend_proof_config(sandbox))
         config.write_text(weak_config)
         tool = subprocess.run(["npx", "stryker", "run", str(config)], cwd=sandbox)
         evidence = json.loads(report.read_text())

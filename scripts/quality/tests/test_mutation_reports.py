@@ -9,9 +9,11 @@ PLAN = {
     "base_sha": None,
     "reason": "test",
     "backend_changed_files": [],
+    "backend_mutation_targets": {"backend/internal/auth/jwt.go": None},
     "backend_packages": ["social_app/internal/auth"],
     "backend_allowed_files": ["backend/internal/auth/jwt.go"],
     "frontend_files": ["frontend/src/lib/uid.js"],
+    "frontend_mutation_targets": ["src/lib/uid.js"],
     "backend_smoke": True,
     "frontend_smoke": True,
 }
@@ -43,6 +45,8 @@ class MutationReportTest(unittest.TestCase):
     def test_DLQ_TC_026_stryker_matrix_and_exact_scope_fail_closed(self):
         valid = {"files": {"src/lib/uid.js": {"mutants": [{"status": "Killed"}]}}}
         self.assertTrue(frontend(valid, PLAN)[0])
+        plan_with_zero_mutant_target = {**PLAN, "frontend_files": [*PLAN["frontend_files"], "frontend/src/lib/no-operators.js"]}
+        self.assertTrue(frontend(valid, plan_with_zero_mutant_target)[0])
         for state in ("Survived", "NoCoverage", "Timeout", "RuntimeError", "CompileError", "Ignored", "Pending", "Unknown", None):
             with self.subTest(state=state):
                 self.assertFalse(frontend({"files": {"src/lib/uid.js": {"mutants": [{"status": state}]}}}, PLAN)[0])

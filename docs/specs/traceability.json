@@ -37,6 +37,8 @@
     {"acceptance_id":"DLQ-007","case_id":"DLQ-TC-033","test_file":"scripts/quality/tests/test_workflow_contract.py","test_name":"test_DLQ_TC_030_031_032_033_workflow_contract","command":"make quality-static","evidence":"quality/static-contract.json"},
     {"acceptance_id":"DLQ-009","case_id":"DLQ-TC-034","test_file":"scripts/quality/tests/test_workflow_contract.py","test_name":"test_DLQ_TC_034_make_quality_dag","command":"make quality-static","evidence":"quality/static-contract.json"},
     {"acceptance_id":"DLQ-008","case_id":"DLQ-TC-035","test_file":"scripts/quality/tests/test_verify_traceability.py","test_name":"test_DLQ_TC_035_valid_manifest_resolves_all_P0_cases","command":"make quality-static","evidence":"quality/static-contract.json"},
-    {"acceptance_id":"DLQ-008","case_id":"DLQ-TC-036","test_file":"scripts/quality/tests/test_verify_traceability.py","test_name":"test_DLQ_TC_036_negative_manifest_matrix_fails_closed","command":"make quality-static","evidence":"quality/static-contract.json"}
+    {"acceptance_id":"DLQ-008","case_id":"DLQ-TC-036","test_file":"scripts/quality/tests/test_verify_traceability.py","test_name":"test_DLQ_TC_036_negative_manifest_matrix_fails_closed","command":"make quality-static","evidence":"quality/static-contract.json"},
+    {"acceptance_id":"DLQ-003","case_id":"DLQ-TC-037","test_file":"frontend/src/components/chat/GroupManagementComponents.test.jsx","test_name":"DLQ_TC_037 group management component behavior","command":"make mutation-frontend","evidence":"quality/frontend-mutation.json"},
+    {"acceptance_id":"DLQ-003","case_id":"DLQ-TC-038","test_file":"frontend/src/pages/ChatControls.test.jsx","test_name":"DLQ_TC_038 Chat control wiring","command":"make mutation-frontend","evidence":"quality/frontend-mutation.json"}
   ]
 }

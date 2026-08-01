@@ -66,7 +66,7 @@ def validate(root: Path, manifest_path: Path, cases_path: Path, requirement_path
         requirement_text = requirement_path.read_text()
     except OSError as error:
         return [f"contract read error: {error}"]
-    required_cases = set(re.findall(r"^### (DLQ-TC-0(?:0[1-9]|[12][0-9]|3[0-6])):", case_text, re.MULTILINE))
+    required_cases = set(re.findall(r"^### (DLQ-TC-0(?:0[1-9]|[12][0-9]|3[0-8])):", case_text, re.MULTILINE))
     seen_cases = set()
     seen_rows = set()
     covered_specs = set()

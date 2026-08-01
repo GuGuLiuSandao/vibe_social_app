@@ -17,6 +17,7 @@
 | DLQ-002 / WS-001 | Connection replacement, stale unregister protection, and snapshots are correct | DLQ-TC-005, DLQ-TC-006 |
 | DLQ-003 / CLIENT-001 | UID parsing and whitelist boundaries are stable; frontend tests cannot empty-run | DLQ-TC-007, DLQ-TC-008, DLQ-TC-014, DLQ-TC-015 |
 | DLQ-003 / CLIENT-002 | WS URLs safely encode tokens and protobuf request builders preserve IDs/types/payloads | DLQ-TC-009, DLQ-TC-010 |
+| DLQ-003 | Changed group-management controls and Chat page actions retain their user-visible behavior | DLQ-TC-037, DLQ-TC-038 |
 | DLQ-004 / AUTH-HTTP-001 | Real protobuf register/login proves the isolated PostgreSQL auth schema is usable | DLQ-TC-011, DLQ-TC-016 |
 | DLQ-004 / WS-HTTP-001 | Authenticated real WebSocket participates in isolated Redis and returns correlated protobuf pong | DLQ-TC-017 |
 | DLQ-005 | Mutation baseline, target, tool, and report evidence are trustworthy; representative mutants are killed | DLQ-TC-023 through DLQ-TC-028 |
@@ -387,6 +388,26 @@
 - Automation location: `scripts/quality/tests/test_verify_traceability.py`; fixtures under `scripts/quality/tests/fixtures/traceability/`.
 - Mutation relevance: Kills weakened uniqueness/existence/exact-match verifier mutants.
 
+### DLQ-TC-037: Changed group-management controls retain their behavior
+
+- Priority / level: P0; React component behavior and mutation protection.
+- Requirement mapping: DLQ-003, DLQ-005, DLQ-006.
+- Setup: Render create, profile, join-request, and member-management components with neutral `Chat*` controls and role-specific fixtures.
+- Steps: Edit form fields; invoke create/profile/invitation callbacks; exercise owner, admin, member, self, and non-manager branches.
+- Exact assertions: Edited values and IDs reach the correct callbacks; each role sees exactly its permitted actions; every selected diff-line mutant is killed.
+- Automation location: `frontend/src/components/chat/GroupManagementComponents.test.jsx`.
+- Mutation relevance: Kills changed-line callback, equality, logical, and conditional mutants in the group-management components.
+
+### DLQ-TC-038: Changed Chat page controls remain correctly wired
+
+- Priority / level: P0; React page behavior and mutation protection.
+- Requirement mapping: DLQ-003, DLQ-005, DLQ-006.
+- Setup: Render `Chat` with an authentication-error fixture and an authenticated fake WebSocket fixture; inject a protobuf group invitation.
+- Steps: Return to login; open/use/close follow and profile dialogs; accept and reject the invitation.
+- Exact assertions: Login navigation uses replacement; follow target and invitation decision payloads preserve exact values; modal cancel controls close their own dialogs; every selected diff-line mutant is killed.
+- Automation location: `frontend/src/pages/ChatControls.test.jsx`.
+- Mutation relevance: Kills changed-line callback, boolean, object, string, and arrow-function mutants in `Chat.jsx`.
+
 ## 4. P1 follow-up cases
 
 ### DLQ-TC-101: JWT algorithm confusion is rejected explicitly
@@ -446,7 +467,7 @@
 | Develop Loop ordering and independent roles | 001–002 | Process contract test output |
 | Backend JWT auth | 003–004, 011 | Go JSONL + integration report |
 | WebSocket manager | 005–006 | Go JSONL package evidence |
-| Frontend `uid.js` and `ws.js` | 007–010 | Vitest JSON |
+| Frontend `uid.js`, `ws.js`, changed group controls and Chat wiring | 007–010, 037–038 | Vitest JSON + Stryker report |
 | Real PostgreSQL/Redis/HTTP register-login | 011, 016 | Integration JSONL and Compose logs |
 | Real authenticated protobuf WS ping/pong | 017 | Integration JSONL and WS assertions |
 | Non-empty unit/integration reports and negative fixtures | 012–015, 018 | Verifier fixture test reports |

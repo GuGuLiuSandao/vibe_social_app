@@ -10,7 +10,9 @@ def validate_plan(plan: dict) -> tuple[bool, str]:
         "reason": str,
         "backend_packages": list,
         "backend_allowed_files": list,
+        "backend_mutation_targets": dict,
         "frontend_files": list,
+        "frontend_mutation_targets": list,
         "backend_smoke": bool,
         "frontend_smoke": bool,
     }
@@ -21,7 +23,7 @@ def validate_plan(plan: dict) -> tuple[bool, str]:
             return False, f"mutation plan field {field} has invalid type"
     if plan["schema_version"] != 1:
         return False, "unsupported mutation plan schema"
-    for field in ("backend_packages", "backend_allowed_files", "frontend_files"):
+    for field in ("backend_packages", "backend_allowed_files", "frontend_files", "frontend_mutation_targets"):
         values = plan[field]
         if not values or any(type(value) is not str or not value for value in values) or len(values) != len(set(values)):
             return False, f"mutation plan field {field} is empty, duplicated, or invalid"
@@ -82,8 +84,9 @@ def frontend(payload: dict, plan: dict | None = None) -> tuple[bool, str]:
         return False, "Stryker files object is missing"
     expected = {path.removeprefix("frontend/") for path in plan["frontend_files"]}
     actual = set(files)
-    if actual != expected:
-        return False, f"Stryker target mismatch: expected={sorted(expected)}, actual={sorted(actual)}"
+    unexpected = actual - expected
+    if unexpected:
+        return False, f"Stryker reported files outside planned scope: {sorted(unexpected)}"
     mutants = []
     for file in files.values():
         if not isinstance(file, dict) or not isinstance(file.get("mutants"), list):

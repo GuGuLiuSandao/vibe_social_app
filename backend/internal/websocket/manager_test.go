@@ -1,9 +1,39 @@
 package websocket
 
-import "testing"
+import (
+	"io"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"social_app/internal/logger"
+	internalredis "social_app/internal/redis"
+
+	miniredis "github.com/alicebob/miniredis/v2"
+	goredis "github.com/redis/go-redis/v9"
+)
 
 func newManagerTestServer() *Server {
-	return &Server{Clients: make(map[uint]*Client)}
+	return &Server{
+		Clients:       make(map[uint]*Client),
+		Broadcast:     make(chan []byte),
+		Register:      make(chan *Client),
+		Unregister:    make(chan *Client),
+		topicRooms:    make(map[string]*topicRoomState),
+		topicUserRoom: make(map[uint]string),
+	}
+}
+
+func waitForManagerState(t *testing.T, condition func() bool) {
+	t.Helper()
+	deadline := time.Now().Add(time.Second)
+	for !condition() {
+		if time.Now().After(deadline) {
+			t.Fatal("manager state did not converge before timeout")
+		}
+		time.Sleep(time.Millisecond)
+	}
 }
 
 func TestDLQ_TC_005_WS_001_RegisterReplacesCurrentClient(t *testing.T) {
@@ -68,5 +98,72 @@ func TestDLQ_TC_006_WS_001_SnapshotIsDetached(t *testing.T) {
 	snapshot[0] = nil
 	if server.Clients[42] != client {
 		t.Fatal("mutating snapshot changed manager state")
+	}
+}
+
+func TestDLQ_TC_006_WS_001_RunRegistersReplacesAndDisconnects(t *testing.T) {
+	redisServer := miniredis.RunT(t)
+	previousRedis := internalredis.Client
+	internalredis.Client = goredis.NewClient(&goredis.Options{Addr: redisServer.Addr()})
+	defer func() {
+		internalredis.Client.Close()
+		internalredis.Client = previousRedis
+	}()
+
+	reader, writer, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	previousStdout := os.Stdout
+	os.Stdout = writer
+	logger.Init()
+	defer func() {
+		writer.Close()
+		os.Stdout = previousStdout
+		logger.Init()
+		reader.Close()
+	}()
+
+	server := newManagerTestServer()
+	first := &Client{ID: 42, Send: make(chan []byte, 1)}
+	second := &Client{ID: 42, Send: make(chan []byte, 1)}
+	currentClient := func() *Client {
+		server.Mutex.RLock()
+		defer server.Mutex.RUnlock()
+		return server.Clients[42]
+	}
+	go server.Run()
+
+	server.Register <- first
+	waitForManagerState(t, func() bool { return currentClient() == first })
+	server.Register <- second
+	waitForManagerState(t, func() bool { return currentClient() == second })
+	server.Unregister <- second
+	waitForManagerState(t, func() bool {
+		server.Mutex.RLock()
+		defer server.Mutex.RUnlock()
+		_, ok := server.Clients[42]
+		return !ok
+	})
+
+	var online bool
+	waitForManagerState(t, func() bool {
+		if !redisServer.Exists("online:users") {
+			online = false
+			return true
+		}
+		online, _ = redisServer.SIsMember("online:users", "42")
+		return !online
+	})
+	if online {
+		t.Fatal("disconnect left the user marked online")
+	}
+	writer.Close()
+	logOutput, err := io.ReadAll(reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(logOutput), "Failed to") {
+		t.Fatalf("successful lifecycle logged an error: %s", logOutput)
 	}
 }

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+HUNK = re.compile(r"^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@")
 
 
 class DiscoveryError(ValueError):
@@ -34,15 +36,50 @@ def package_files(root: Path, package: str) -> list[str]:
     return sorted(files)
 
 
+def added_line_ranges(root: Path, base: str, path: str) -> list[tuple[int, int]]:
+    result = git(root, "diff", "--unified=0", "--no-ext-diff", f"{base}...HEAD", "--", path)
+    ranges = []
+    for line in result.stdout.splitlines():
+        match = HUNK.match(line)
+        if not match:
+            continue
+        start = int(match.group(1))
+        count = int(match.group(2) or "1")
+        if count:
+            ranges.append((start, start + count - 1))
+    merged = []
+    for start, end in ranges:
+        if merged and start <= merged[-1][1] + 1:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+        else:
+            merged.append((start, end))
+    return merged
+
+
+def frontend_targets(root: Path, base: str, paths: list[str]) -> tuple[list[str], list[str]]:
+    files = []
+    targets = []
+    for path in paths:
+        ranges = added_line_ranges(root, base, path)
+        if not ranges:
+            continue
+        files.append(path)
+        relative = path.removeprefix("frontend/")
+        targets.extend(f"{relative}:{start}-{end}" for start, end in ranges)
+    return files, targets
+
+
 def smoke_plan(reason: str, base: str | None = None) -> dict:
     return {
         "schema_version": 1,
         "base_sha": base,
         "reason": reason,
         "backend_changed_files": [],
+        "backend_mutation_targets": {"backend/internal/auth/jwt.go": None},
         "backend_packages": ["social_app/internal/auth"],
         "backend_allowed_files": ["backend/internal/auth/jwt.go"],
         "frontend_files": ["frontend/src/lib/uid.js"],
+        "frontend_mutation_targets": ["src/lib/uid.js"],
         "backend_smoke": True,
         "frontend_smoke": True,
     }
@@ -100,25 +137,36 @@ def discover(root: Path, base: str) -> dict:
     else:
         reason = "changed"
     backend = sorted(set(backend))
+    backend_mutation_targets = {
+        path: ranges
+        for path in backend
+        if (ranges := added_line_ranges(root, base, path))
+    }
+    backend = list(backend_mutation_targets)
     frontend = sorted(set(frontend))
+    frontend, frontend_mutation_targets = frontend_targets(root, base, frontend)
     packages = sorted({package_for(path) for path in backend})
     backend_smoke = not backend
     frontend_smoke = not frontend
     if backend_smoke:
         packages = ["social_app/internal/auth"]
         allowed = ["backend/internal/auth/jwt.go"]
+        backend_mutation_targets = {"backend/internal/auth/jwt.go": None}
     else:
         allowed = sorted({path for package in packages for path in package_files(root, package)})
     if frontend_smoke:
         frontend = ["frontend/src/lib/uid.js"]
+        frontend_mutation_targets = ["src/lib/uid.js"]
     return {
         "schema_version": 1,
         "base_sha": base,
         "reason": reason,
         "backend_changed_files": backend,
+        "backend_mutation_targets": backend_mutation_targets,
         "backend_packages": packages,
         "backend_allowed_files": allowed,
         "frontend_files": frontend,
+        "frontend_mutation_targets": frontend_mutation_targets,
         "backend_smoke": backend_smoke,
         "frontend_smoke": frontend_smoke,
     }

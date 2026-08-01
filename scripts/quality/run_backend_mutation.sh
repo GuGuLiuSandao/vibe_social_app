@@ -24,7 +24,7 @@ cd "$ROOT/backend"
 if [ "$smoke" = "true" ]; then
   "$BIN" unleash ./internal/auth --exclude-files 'handler\.go' --output "$REPORT" --threshold-efficacy 100 --threshold-mcover 100 --workers 1 --timeout-coefficient 20 --silent
 else
-  "$BIN" unleash ./... --diff "$base" --output "$REPORT" --threshold-efficacy 100 --threshold-mcover 100 --workers 1 --timeout-coefficient 20 --silent
+  python3 "$ROOT/scripts/quality/run_backend_gremlins.py" "$BIN" "$PLAN" "$REPORT"
 fi
 python3 "$ROOT/scripts/quality/verify_mutation_report.py" backend "$REPORT" "$PLAN" | tee "$ROOT/quality/backend-mutation-summary.txt"
 python3 "$ROOT/scripts/quality/verify_weak_mutation.py" backend

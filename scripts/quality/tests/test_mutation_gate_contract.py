@@ -21,11 +21,12 @@ class MutationGateContractTest(unittest.TestCase):
         self.assertIn('verify_weak_mutation.py" backend', wrapper)
         self.assertIn("--threshold-mcover 100", wrapper)
         self.assertIn("go version -m", wrapper)
+        self.assertIn("run_backend_gremlins.py", wrapper)
 
     def test_DLQ_TC_028_frontend_wrapper_binds_plan_report_and_weak_proof(self):
         wrapper = (ROOT / "scripts/quality/run_frontend_mutation.py").read_text()
         self.assertIn('"frontend", str(REPORT), str(PLAN)', wrapper)
-        self.assertIn('plan["frontend_files"]', wrapper)
+        self.assertIn('plan["frontend_mutation_targets"]', wrapper)
         self.assertIn("verify_weak_mutation.py", wrapper)
         changed_targets = [path.removeprefix("frontend/") for path in ["frontend/src/lib/ws.js"]]
         config = frontend_config(changed_targets, Path("changed-report.json"))
@@ -38,8 +39,10 @@ class MutationGateContractTest(unittest.TestCase):
             captured = []
             plan = {
                 "schema_version": 1,
+                "backend_mutation_targets": {"backend/internal/auth/jwt.go": None},
                 "frontend_smoke": False,
                 "frontend_files": ["frontend/src/lib/ws.js"],
+                "frontend_mutation_targets": ["src/lib/ws.js:20-20"],
             }
 
             def fake_run(command, **kwargs):
@@ -61,7 +64,7 @@ class MutationGateContractTest(unittest.TestCase):
             ):
                 self.assertEqual(frontend_runner.main(), 0)
             self.assertEqual(len(captured), 1)
-            self.assertIn('["src/lib/ws.js"]', captured[0])
+            self.assertIn('["src/lib/ws.js:20-20"]', captured[0])
             self.assertNotIn("src/lib/uid.js", captured[0])
 
     def test_DLQ_TC_029_weak_manifests_patch_exact_strong_tests(self):

@@ -30,9 +30,7 @@ def main() -> int:
     PLAN.parent.mkdir(parents=True, exist_ok=True)
     PLAN.write_text(target.stdout)
     plan = json.loads(target.stdout)
-    targets = ["src/lib/uid.js"] if plan["frontend_smoke"] else [
-        path.removeprefix("frontend/") for path in plan["frontend_files"]
-    ]
+    targets = plan["frontend_mutation_targets"]
     if not targets:
         print("frontend mutation plan selected no targets", file=sys.stderr)
         return 2
