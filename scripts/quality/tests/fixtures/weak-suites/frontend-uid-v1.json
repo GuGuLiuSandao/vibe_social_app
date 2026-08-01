@@ -1,0 +1,33 @@
+{
+  "tool": "stryker",
+  "version": "9.6.1",
+  "target": "frontend/src/lib/uid.js",
+  "strong_test": "frontend/src/lib/uid.test.js",
+  "strong_sha256": "c2386a46725633778723899cb0791fd36ebb2275c2cd0a853aba09a3fa4bc4bb",
+  "weak_replacement": "scripts/quality/tests/fixtures/weak-suites/frontend-uid-v1.weak.js",
+  "patch": "scripts/quality/tests/fixtures/weak-suites/frontend-uid-v1.patch",
+  "weak_sha256": "958e233e9709cdb271c67dd26b96afd1c0b56214a84bb0683dbf7fb01605483b",
+  "replaced_tests": [
+    "DLQ_TC_007_CLIENT_001 parseUid",
+    "DLQ_TC_008_CLIENT_001 isWhitelistUid"
+  ],
+  "protective_tests": [
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid parses 10000000 without changing digit text"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid parses 10000000n without changing digit text"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid parses  0010000000  without changing digit text"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid rejects"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid rejects abc"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid rejects -1"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid rejects 1.2"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid rejects 0"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_007_CLIENT_001 parseUid rejects 0n"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_008_CLIENT_001 isWhitelistUid classifies 9999999"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_008_CLIENT_001 isWhitelistUid classifies 10000000"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_008_CLIENT_001 isWhitelistUid classifies 20000000"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_008_CLIENT_001 isWhitelistUid classifies 20000001"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_008_CLIENT_001 isWhitelistUid classifies not-a-number"},
+    {"file": "frontend/src/lib/uid.test.js", "name": "DLQ_TC_008_CLIENT_001 isWhitelistUid rejects values that cannot be converted to Number"}
+  ],
+  "weak_test": "DLQ_TC_029 weak UID baseline",
+  "allowed_weak_statuses": ["Survived", "NoCoverage"]
+}

@@ -19,8 +19,11 @@ npm-debug.log*
 # Go binaries / build outputs
 backend/bin/
 backend/api
-backend/test_chat_client
 
 # Logs and coverage
 *.log
 coverage/
+/quality/
+.stryker-tmp/
+frontend/.stryker-tmp/
+**/__pycache__/

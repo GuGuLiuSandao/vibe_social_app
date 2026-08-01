@@ -2,9 +2,6 @@ export const WHITELIST_MIN = 10000000;
 export const WHITELIST_MAX = 20000000;
 
 export function parseUid(value) {
-  if (typeof value === 'bigint') {
-    return value.toString();
-  }
   const str = String(value).trim();
   if (!/^\d+$/.test(str)) {
     return null;

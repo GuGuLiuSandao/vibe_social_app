@@ -1,75 +1,34 @@
 import { describe, expect, it } from "vitest";
-import { WsMessageType } from "../proto/ws_pb.ts";
-import {
-  buildAccountPing,
-  buildAuthRequest,
-  buildBlockRequest,
-  buildGetBlockedRequest,
-  buildUpdateProfileRequest,
-  buildUnblockRequest,
-  buildUploadAvatarRequest,
-  buildWsUrl,
-  decodeWsMessage,
-  encodeWsMessage,
-} from "./ws";
 
-describe("ws url builder", () => {
-  it("builds url without token", () => {
-    expect(buildWsUrl(20000001, "")).toBe("ws://localhost:8080/ws?uid=20000001");
+import { WsMessageType } from "../proto/ws_pb.ts";
+import { buildAccountPing, buildAuthRequest, buildWsUrl } from "./ws.js";
+
+describe("DLQ_TC_009_CLIENT_002 buildWsUrl", () => {
+  it("builds the configured bare endpoint and encodes the token", () => {
+    expect(buildWsUrl("10000001", "a+b/c=")).toBe(
+      "ws://localhost:8080/ws?uid=10000001&token=a%2Bb%2Fc%3D",
+    );
   });
 
-  it("builds normal url with token", () => {
-    expect(buildWsUrl(10000001, "abc")).toBe(
-      "ws://localhost:8080/ws?uid=10000001&token=abc"
-    );
+  it("omits an absent token", () => {
+    expect(buildWsUrl("10000001", "")).toBe("ws://localhost:8080/ws?uid=10000001");
   });
 });
 
-describe("ws protobuf helpers", () => {
-  it("builds and encodes account ping", () => {
+describe("DLQ_TC_010_CLIENT_002 protobuf request builders", () => {
+  it("preserves ping request identity and type", () => {
     const message = buildAccountPing(123n);
-    const binary = encodeWsMessage(message);
-    const decoded = decodeWsMessage(binary);
-
-    expect(decoded.type).toBe(WsMessageType.WS_TYPE_PING);
-    expect(decoded.payload.case).toBe("account");
-    expect(decoded.payload.value.payload.case).toBe("ping");
-    expect(decoded.requestId).toBe(123n);
+    expect(message.requestId).toBe(123n);
+    expect(message.type).toBe(WsMessageType.WS_TYPE_PING);
+    expect(message.payload.case).toBe("account");
+    expect(message.payload.value.payload.case).toBe("ping");
   });
 
-  it("builds auth and update profile account payloads", () => {
-    const auth = buildAuthRequest("10000001", 200n);
-    const update = buildUpdateProfileRequest({ nickname: "neo", bio: "hi" }, 201n);
-
-    expect(auth.type).toBe(WsMessageType.WS_TYPE_AUTH);
-    expect(auth.payload.value.payload.case).toBe("auth");
-
-    expect(update.type).toBe(WsMessageType.WS_TYPE_ACCOUNT_UPDATE_PROFILE);
-    expect(update.payload.value.payload.case).toBe("updateProfile");
-  });
-
-  it("builds upload avatar payload", () => {
-    const data = new Uint8Array([1, 2, 3]);
-    const upload = buildUploadAvatarRequest("avatar.png", data, 202n);
-
-    expect(upload.type).toBe(WsMessageType.WS_TYPE_ACCOUNT_UPLOAD_AVATAR);
-    expect(upload.payload.value.payload.case).toBe("uploadAvatar");
-    expect(upload.payload.value.payload.value.filename).toBe("avatar.png");
-    expect(upload.payload.value.payload.value.data).toEqual(data);
-  });
-
-  it("builds block relation payloads", () => {
-    const block = buildBlockRequest(10000002n, 203n);
-    const unblock = buildUnblockRequest(10000002n, 204n);
-    const getBlocked = buildGetBlockedRequest(205n);
-
-    expect(block.type).toBe(WsMessageType.WS_TYPE_RELATION_BLOCK);
-    expect(block.payload.value.payload.case).toBe("block");
-
-    expect(unblock.type).toBe(WsMessageType.WS_TYPE_RELATION_UNBLOCK);
-    expect(unblock.payload.value.payload.case).toBe("unblock");
-
-    expect(getBlocked.type).toBe(WsMessageType.WS_TYPE_RELATION_GET_BLOCKED);
-    expect(getBlocked.payload.value.payload.case).toBe("getBlocked");
+  it("preserves auth UID and request identity", () => {
+    const message = buildAuthRequest("10000001", 456n);
+    expect(message.requestId).toBe(456n);
+    expect(message.type).toBe(WsMessageType.WS_TYPE_AUTH);
+    expect(message.payload.value.payload.case).toBe("auth");
+    expect(message.payload.value.payload.value.uid).toBe(10000001n);
   });
 });

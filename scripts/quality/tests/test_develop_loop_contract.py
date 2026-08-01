@@ -1,0 +1,66 @@
+import re
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+class DevelopLoopContractTest(unittest.TestCase):
+    def setUp(self):
+        self.instructions = (ROOT / "AGENTS.md").read_text()
+
+    def test_DLQ_TC_001_standard_order_and_no_quick_bypass(self):
+        expected = [
+            "Requirement Contract",
+            "Technical Design",
+            "Design Review",
+            "Test Design",
+            "Test Review",
+            "Implementation",
+            "Code Review",
+            "Local Quality Gates",
+        ]
+        flow = re.search(r"```text\n(.*?)\n```", self.instructions, re.DOTALL).group(1)
+        positions = [flow.index(stage) for stage in expected]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("independent Code Review", self.instructions)
+        self.assertIn("PASS", self.instructions)
+
+    def test_DLQ_TC_002_independent_roles_are_write_bounded(self):
+        designer = (ROOT / ".codex/agents/develop-test-designer.toml").read_text()
+        reviewer = (ROOT / ".codex/agents/develop-test-reviewer.toml").read_text()
+        design_reviewer = (ROOT / ".codex/agents/develop-design-reviewer.toml").read_text()
+        implementer = (ROOT / ".codex/agents/develop-implementer.toml").read_text()
+        code_reviewer = (ROOT / ".codex/agents/develop-code-reviewer.toml").read_text()
+        self.assertIn("只维护当前 change 的 testcases.md", designer)
+        self.assertIn("只维护当前 change 的 testcases-review.md", reviewer)
+        self.assertIn("不修改测试设计或代码", reviewer)
+        self.assertIn("只维护当前 change 的 design-review.md", design_reviewer)
+        self.assertIn("已通过的 design/design-review", implementer)
+        self.assertIn("testcases/testcases-review", implementer)
+        self.assertIn("不修改", code_reviewer)
+        self.assertIn("blocker", reviewer)
+        self.assertIn("三轮", reviewer)
+
+    def test_conditional_grilling_avoids_routine_questionnaires(self):
+        self.assertIn("not a routine questionnaire", self.instructions)
+        self.assertIn("materially change user experience", self.instructions)
+        self.assertIn("acceptance boundaries", self.instructions)
+        self.assertIn("`$grilling`", self.instructions)
+        self.assertIn("one decision at a time", self.instructions)
+        self.assertIn("Investigate facts available from the repository", self.instructions)
+        self.assertIn("not the full question-and-answer transcript", self.instructions)
+
+    def test_change_classification_and_master_policy_are_recorded(self):
+        for classification in ("`docs`", "`engineering`", "`develop`"):
+            self.assertIn(classification, self.instructions)
+        self.assertIn("label is a declaration that may increase checks", self.instructions)
+        self.assertIn("require the `develop-loop` label", self.instructions)
+        self.assertIn("unknown path", self.instructions)
+        self.assertIn("must fail closed", self.instructions)
+        self.assertIn("fixed `quality-gate`", self.instructions)
+        self.assertIn("Master accepts changes through PRs only", self.instructions)
+
+
+if __name__ == "__main__":
+    unittest.main()

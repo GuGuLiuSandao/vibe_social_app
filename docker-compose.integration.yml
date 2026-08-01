@@ -1,0 +1,64 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: social_test
+      POSTGRES_PASSWORD: social_test_password
+      POSTGRES_DB: social_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U social_test -d social_test"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - db-test-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - redis-test-data:/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: social_test
+      DB_PASSWORD: social_test_password
+      DB_NAME: social_test
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      SERVER_PORT: 8080
+      JWT_SECRET: integration-only-jwt-secret
+    ports:
+      - "127.0.0.1::8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  tester:
+    image: golang:1.25.3
+    working_dir: /workspace/backend
+    environment:
+      INTEGRATION_BASE_URL: http://backend:8080
+      INTEGRATION_WS_URL: ws://backend:8080/ws
+      INTEGRATION_REDIS_ADDR: redis:6379
+    volumes:
+      - .:/workspace:ro
+    depends_on:
+      - backend
+    command: ["go", "test", "-tags=integration", "-json", "./integration"]
+
+volumes:
+  db-test-data:
+  redis-test-data:

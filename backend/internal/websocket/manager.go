@@ -70,46 +70,86 @@ func (s *Server) Run() {
 	for {
 		select {
 		case client := <-s.Register:
-			s.Mutex.Lock()
-			s.Clients[client.ID] = client
-			s.Mutex.Unlock()
+			replacedClient, total := s.registerClient(client)
+			if replacedClient != nil && replacedClient.Conn != nil {
+				replacedClient.Conn.Close()
+			}
 
 			if err := redis.SetUserOnline(client.ID); err != nil {
 				logger.Error("Failed to set user %d online: %v", client.ID, err)
 			}
-			logger.Info("User %d connected, total online: %d", client.ID, len(s.Clients))
+			logger.Info("User %d connected, total online: %d", client.ID, total)
 
 		case client := <-s.Unregister:
-			s.Mutex.Lock()
-			if _, ok := s.Clients[client.ID]; ok {
-				delete(s.Clients, client.ID)
-				close(client.Send)
-			}
-			s.Mutex.Unlock()
-
-			if _, err := s.LeaveTopicRoom(client.ID, ""); err != nil {
-				logger.Error("Failed to cleanup topic room for user %d: %v", client.ID, err)
-			}
-
-			if err := redis.SetUserOffline(client.ID); err != nil {
-				logger.Error("Failed to set user %d offline: %v", client.ID, err)
-			}
-			logger.Info("User %d disconnected, total online: %d", client.ID, len(s.Clients))
+			s.disconnectClient(client)
 
 		case message := <-s.Broadcast:
-			logger.Debug("Broadcasting message to %d clients", len(s.Clients))
-			s.Mutex.RLock()
-			for _, client := range s.Clients {
+			clients := s.clientSnapshot()
+			logger.Debug("Broadcasting message to %d clients", len(clients))
+			for _, client := range clients {
 				select {
 				case client.Send <- message:
 				default:
-					close(client.Send)
-					delete(s.Clients, client.ID)
+					s.disconnectClient(client)
 				}
 			}
-			s.Mutex.RUnlock()
 		}
 	}
+}
+
+func (s *Server) registerClient(client *Client) (*Client, int) {
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+
+	replacedClient := s.Clients[client.ID]
+	s.Clients[client.ID] = client
+	if replacedClient == client {
+		replacedClient = nil
+	}
+	return replacedClient, len(s.Clients)
+}
+
+func (s *Server) unregisterClient(client *Client) (bool, int) {
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+
+	currentClient, ok := s.Clients[client.ID]
+	if !ok || currentClient != client {
+		return false, len(s.Clients)
+	}
+
+	delete(s.Clients, client.ID)
+	return true, len(s.Clients)
+}
+
+func (s *Server) clientSnapshot() []*Client {
+	s.Mutex.RLock()
+	defer s.Mutex.RUnlock()
+
+	clients := make([]*Client, 0, len(s.Clients))
+	for _, client := range s.Clients {
+		clients = append(clients, client)
+	}
+	return clients
+}
+
+func (s *Server) disconnectClient(client *Client) bool {
+	removed, total := s.unregisterClient(client)
+	if !removed {
+		return false
+	}
+
+	if client.Conn != nil {
+		client.Conn.Close()
+	}
+	if _, err := s.LeaveTopicRoom(client.ID, ""); err != nil {
+		logger.Error("Failed to cleanup topic room for user %d: %v", client.ID, err)
+	}
+	if err := redis.SetUserOffline(client.ID); err != nil {
+		logger.Error("Failed to set user %d offline: %v", client.ID, err)
+	}
+	logger.Info("User %d disconnected, total online: %d", client.ID, total)
+	return true
 }
 
 func (s *Server) SendToUser(userID uint, message []byte) {
@@ -198,10 +238,7 @@ func (c *Client) WritePump() {
 				return
 			}
 
-			var messageType int
-			messageType = websocket.BinaryMessage
-
-			err := c.Conn.WriteMessage(messageType, message)
+			err := c.Conn.WriteMessage(websocket.BinaryMessage, message)
 			if err != nil {
 				logger.Error("WebSocket write error for user %d: %v", c.ID, err)
 				return
@@ -214,5 +251,3 @@ func (c *Client) WritePump() {
 		}
 	}
 }
-
-// isJSON helper removed - JSON protocol is no longer supported

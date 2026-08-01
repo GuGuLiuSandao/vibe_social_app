@@ -6,8 +6,8 @@ export default function GroupProfileCard({
   onChangeInviteTarget,
   onSaveProfile,
   onInvite,
-  DiscordButton,
-  DiscordInput,
+  ChatButton,
+  ChatInput,
   joinModePrivate,
   joinModeApproval,
   joinModePublic,
@@ -18,11 +18,11 @@ export default function GroupProfileCard({
     <div className="space-y-4 rounded-lg border border-border bg-card p-4">
       <div>
         <label className="mb-1.5 block text-xs font-semibold text-foreground">群名称</label>
-        <DiscordInput value={detail.name || ""} onChange={(event) => onChangeDetail({ name: event.target.value })} />
+        <ChatInput value={detail.name || ""} onChange={(event) => onChangeDetail({ name: event.target.value })} />
       </div>
       <div>
         <label className="mb-1.5 block text-xs font-semibold text-foreground">群头像 URL</label>
-        <DiscordInput value={detail.avatar || ""} onChange={(event) => onChangeDetail({ avatar: event.target.value })} />
+        <ChatInput value={detail.avatar || ""} onChange={(event) => onChangeDetail({ avatar: event.target.value })} />
       </div>
       <div>
         <label className="mb-1.5 block text-xs font-semibold text-foreground">群简介</label>
@@ -44,13 +44,13 @@ export default function GroupProfileCard({
           <option value={joinModePublic}>公开群</option>
         </select>
       </div>
-      {canManageGroup ? <DiscordButton className="w-full" onClick={onSaveProfile}>保存群资料</DiscordButton> : null}
+      {canManageGroup ? <ChatButton className="w-full" onClick={onSaveProfile}>保存群资料</ChatButton> : null}
       {canManageGroup ? (
         <div>
           <label className="mb-1.5 block text-xs font-semibold text-foreground">邀请成员（输入 UID）</label>
           <div className="flex gap-2">
-            <DiscordInput value={inviteTargetId} onChange={(event) => onChangeInviteTarget(event.target.value)} placeholder="输入 UID" />
-            <DiscordButton className="px-3" onClick={onInvite}>邀请</DiscordButton>
+            <ChatInput value={inviteTargetId} onChange={(event) => onChangeInviteTarget(event.target.value)} placeholder="输入 UID" />
+            <ChatButton className="px-3" onClick={onInvite}>邀请</ChatButton>
           </div>
         </div>
       ) : null}

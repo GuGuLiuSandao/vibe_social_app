@@ -142,7 +142,7 @@ function isTokenValid(token) {
   }
 }
 
-function DiscordButton({ className = "", ...props }) {
+function ChatButton({ className = "", ...props }) {
   return (
     <Button
       className={`h-10 rounded-lg px-4 text-sm font-semibold shadow-none ${className}`}
@@ -151,7 +151,7 @@ function DiscordButton({ className = "", ...props }) {
   );
 }
 
-function DiscordSecondaryButton({ className = "", ...props }) {
+function ChatSecondaryButton({ className = "", ...props }) {
   return (
     <Button
       variant="secondary"
@@ -161,7 +161,7 @@ function DiscordSecondaryButton({ className = "", ...props }) {
   );
 }
 
-function DiscordInput(props) {
+function ChatInput(props) {
   const { className, ...rest } = props;
   return (
     <Input
@@ -171,7 +171,7 @@ function DiscordInput(props) {
   );
 }
 
-function DiscordTextarea(props) {
+function ChatTextarea(props) {
   const { className, ...rest } = props;
   return (
     <Textarea
@@ -1478,9 +1478,9 @@ export default function Chat() {
       <div className="theme-page-bg flex h-screen items-center justify-center p-4">
         <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-8 text-center shadow-glow">
           <p className="text-sm text-destructive-foreground">Error: {authError}</p>
-          <DiscordButton className="mt-5 w-full" onClick={() => navigate("/login", { replace: true })}>
+          <ChatButton className="mt-5 w-full" onClick={() => navigate("/login", { replace: true })}>
             返回登录页
-          </DiscordButton>
+          </ChatButton>
         </div>
       </div>
     );
@@ -1629,7 +1629,7 @@ export default function Chat() {
               </Button>
             )}
           </div>
-          <DiscordInput className="mt-4 h-10" placeholder="搜索会话 / UID..." />
+          <ChatInput className="mt-4 h-10" placeholder="搜索会话 / UID..." />
         </div>
 
         {activeTab === "messages" ? (
@@ -1695,12 +1695,12 @@ export default function Chat() {
                     <p className="font-semibold text-foreground">{invitation.groupName || `群 ${toIdString(invitation.conversationId)}`}</p>
                     <p className="mt-1 text-muted-foreground">邀请人：{invitation.inviterNickname || invitation.inviterUsername || invitation.inviterId}</p>
                     <div className="mt-3 flex gap-2">
-                      <DiscordButton className="h-8 px-3 text-xs" onClick={() => handleRespondInvitation(invitation.id, true)}>
+                      <ChatButton className="h-8 px-3 text-xs" onClick={() => handleRespondInvitation(invitation.id, true)}>
                         接受
-                      </DiscordButton>
-                      <DiscordSecondaryButton className="h-8 px-3 text-xs" onClick={() => handleRespondInvitation(invitation.id, false)}>
+                      </ChatButton>
+                      <ChatSecondaryButton className="h-8 px-3 text-xs" onClick={() => handleRespondInvitation(invitation.id, false)}>
                         拒绝
-                      </DiscordSecondaryButton>
+                      </ChatSecondaryButton>
                     </div>
                   </div>
                 ))}
@@ -1855,7 +1855,7 @@ export default function Chat() {
                       </div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <DiscordSecondaryButton
+                      <ChatSecondaryButton
                         className={`h-8 text-xs ${
                           isBlocked
                             ? "cursor-not-allowed border-border bg-muted text-muted-foreground hover:bg-muted"
@@ -1866,8 +1866,8 @@ export default function Chat() {
                         onClick={() => startPrivateConversation(rid)}
                       >
                         发消息
-                      </DiscordSecondaryButton>
-                      <DiscordSecondaryButton
+                      </ChatSecondaryButton>
+                      <ChatSecondaryButton
                         className={`h-8 text-xs ${
                           isFriend
                             && !isBlocked
@@ -1881,36 +1881,36 @@ export default function Chat() {
                         onClick={openCreateConversationModal}
                       >
                         拉群
-                      </DiscordSecondaryButton>
+                      </ChatSecondaryButton>
                       {relationTab === "blocked" ? (
-                        <DiscordSecondaryButton
+                        <ChatSecondaryButton
                           className="h-8 border-emerald-700/40 bg-emerald-900/30 text-xs text-emerald-100 hover:bg-emerald-900/40"
                           onClick={() => handleUnblockUser(rid)}
                         >
                           取消拉黑
-                        </DiscordSecondaryButton>
+                        </ChatSecondaryButton>
                       ) : (
-                        <DiscordSecondaryButton
+                        <ChatSecondaryButton
                           className="h-8 border-destructive bg-destructive text-xs text-destructive-foreground hover:bg-destructive"
                           onClick={() => handleBlockUser(rid)}
                         >
                           拉黑
-                        </DiscordSecondaryButton>
+                        </ChatSecondaryButton>
                       )}
                       {relationTab === "following" ? (
-                        <DiscordSecondaryButton
+                        <ChatSecondaryButton
                           className="h-8 border-destructive bg-destructive text-xs text-destructive-foreground hover:bg-destructive"
                           onClick={() => handleUnfollowUser(rid)}
                         >
                           取消关注
-                        </DiscordSecondaryButton>
+                        </ChatSecondaryButton>
                       ) : !isFollowing && relationTab !== "blocked" ? (
-                        <DiscordButton
+                        <ChatButton
                           className="h-8 text-xs"
                           onClick={() => handleFollowUser(rid)}
                         >
                           回关
-                        </DiscordButton>
+                        </ChatButton>
                       ) : null}
                     </div>
                   </div>
@@ -1918,9 +1918,9 @@ export default function Chat() {
               })}
             </div>
             <div className="border-t border-border p-3">
-              <DiscordSecondaryButton className="h-9 w-full text-xs" onClick={refreshRelationList}>
+              <ChatSecondaryButton className="h-9 w-full text-xs" onClick={refreshRelationList}>
                 刷新列表
-              </DiscordSecondaryButton>
+              </ChatSecondaryButton>
             </div>
           </div>
         )}
@@ -2044,7 +2044,7 @@ export default function Chat() {
               </div>
               <div className="border-t border-border px-5 py-4 md:px-6">
                 <form onSubmit={handleSendMessage} className="flex gap-3">
-                  <DiscordTextarea
+                  <ChatTextarea
                     value={inputText}
                     onChange={(event) => setInputText(event.target.value)}
                     onKeyDown={(event) => {
@@ -2056,9 +2056,9 @@ export default function Chat() {
                     placeholder={`聊聊 ${activeTopicRoom?.name || "这个话题"}`}
                     className="h-11 flex-1 px-3 py-2 text-sm"
                   />
-                  <DiscordButton type="submit" className="h-11 min-w-[94px]">
+                  <ChatButton type="submit" className="h-11 min-w-[94px]">
                     发送
-                  </DiscordButton>
+                  </ChatButton>
                 </form>
               </div>
             </>
@@ -2076,8 +2076,8 @@ export default function Chat() {
                         onChangeInviteTarget={setGroupInviteTargetId}
                         onSaveProfile={handleSaveGroupProfile}
                         onInvite={() => handleInviteToGroup()}
-                        DiscordButton={DiscordButton}
-                        DiscordInput={DiscordInput}
+                        ChatButton={ChatButton}
+                        ChatInput={ChatInput}
                         joinModePrivate={GROUP_JOIN_MODE_PRIVATE}
                         joinModeApproval={GROUP_JOIN_MODE_APPROVAL}
                         joinModePublic={GROUP_JOIN_MODE_PUBLIC}
@@ -2091,7 +2091,7 @@ export default function Chat() {
                           canManageGroup={canManageGroup}
                           onChangeAnnouncement={setGroupAnnouncementDraft}
                           onSaveAnnouncement={handleSaveGroupAnnouncement}
-                          DiscordButton={DiscordButton}
+                          ChatButton={ChatButton}
                         />
                         <GroupMembersCard
                           members={activeGroupMembers}
@@ -2106,7 +2106,7 @@ export default function Chat() {
                           onUnsetAdmin={(memberId) => handleUpdateMemberRole(memberId, GROUP_ROLE_MEMBER)}
                           onTransferOwnership={handleTransferOwnership}
                           onRemoveMember={handleRemoveMember}
-                          DiscordSecondaryButton={DiscordSecondaryButton}
+                          ChatSecondaryButton={ChatSecondaryButton}
                         />
                         {canManageGroup ? (
                           <GroupJoinRequestsCard
@@ -2114,19 +2114,19 @@ export default function Chat() {
                             pendingStatus={GROUP_JOIN_REQUEST_PENDING}
                             onApprove={(requestId) => handleReviewJoinRequest(requestId, true)}
                             onReject={(requestId) => handleReviewJoinRequest(requestId, false)}
-                            DiscordButton={DiscordButton}
-                            DiscordSecondaryButton={DiscordSecondaryButton}
+                            ChatButton={ChatButton}
+                            ChatSecondaryButton={ChatSecondaryButton}
                           />
                         ) : null}
                         <div className="flex gap-2.5">
                           {activeGroupRole === GROUP_ROLE_OWNER ? (
-                            <DiscordSecondaryButton className="border-destructive bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleDissolveGroup}>
+                            <ChatSecondaryButton className="border-destructive bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleDissolveGroup}>
                               解散群
-                            </DiscordSecondaryButton>
+                            </ChatSecondaryButton>
                           ) : (
-                            <DiscordSecondaryButton onClick={handleLeaveGroup}>
+                            <ChatSecondaryButton onClick={handleLeaveGroup}>
                               退群
-                            </DiscordSecondaryButton>
+                            </ChatSecondaryButton>
                           )}
                         </div>
                       </div>
@@ -2196,7 +2196,7 @@ export default function Chat() {
               </div>
               <div className="border-t border-border px-5 py-4 md:px-6">
                 <form onSubmit={handleSendMessage} className="flex gap-3">
-                  <DiscordTextarea
+                  <ChatTextarea
                     value={inputText}
                     onChange={(event) => setInputText(event.target.value)}
                     onKeyDown={(event) => {
@@ -2208,9 +2208,9 @@ export default function Chat() {
                     placeholder={`Message ${activeConv?.name || ""}`}
                     className="h-11 flex-1 px-3 py-2 text-sm"
                   />
-                  <DiscordButton type="submit" className="h-11 min-w-[94px]">
+                  <ChatButton type="submit" className="h-11 min-w-[94px]">
                     Send
-                  </DiscordButton>
+                  </ChatButton>
                 </form>
               </div>
             </>
@@ -2314,9 +2314,9 @@ export default function Chat() {
         onToggleMember={toggleCreateGroupMember}
         onClose={closeCreateConversationModal}
         onSubmit={handleCreateConversation}
-        DiscordButton={DiscordButton}
-        DiscordSecondaryButton={DiscordSecondaryButton}
-        DiscordInput={DiscordInput}
+        ChatButton={ChatButton}
+        ChatSecondaryButton={ChatSecondaryButton}
+        ChatInput={ChatInput}
         getAvatarColor={getAvatarColor}
         getInitials={getInitials}
         toIdString={toIdString}
@@ -2330,17 +2330,17 @@ export default function Chat() {
           <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-glow">
             <h3 className="font-display text-xl font-bold text-foreground">关注用户</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">输入 UID 建立关注关系。</p>
-            <DiscordInput
+            <ChatInput
               className="mt-5"
               value={followTargetId}
               onChange={(event) => setFollowTargetId(event.target.value)}
               placeholder="例如 20000002"
             />
             <div className="mt-5 grid grid-cols-2 gap-2.5">
-              <DiscordSecondaryButton onClick={() => setFollowModalOpen(false)}>
+              <ChatSecondaryButton onClick={() => setFollowModalOpen(false)}>
                 取消
-              </DiscordSecondaryButton>
-              <DiscordButton onClick={() => handleFollowUser()}>确认关注</DiscordButton>
+              </ChatSecondaryButton>
+              <ChatButton onClick={() => handleFollowUser()}>确认关注</ChatButton>
             </div>
           </div>
         </div>
@@ -2351,12 +2351,12 @@ export default function Chat() {
           <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-glow">
             <div className="flex items-center justify-between">
               <h3 className="font-display text-xl font-bold text-foreground">编辑资料</h3>
-              <DiscordSecondaryButton
+              <ChatSecondaryButton
                 className="h-8 border-destructive bg-destructive px-3 text-xs text-destructive-foreground hover:bg-destructive"
                 onClick={handleLogout}
               >
                 退出登录
-              </DiscordSecondaryButton>
+              </ChatSecondaryButton>
             </div>
 
             <div className="mt-5 space-y-4">
@@ -2373,7 +2373,7 @@ export default function Chat() {
                     accept="image/*"
                     onChange={handleFileUpload}
                   />
-                  <DiscordInput
+                  <ChatInput
                     value={profileForm.avatar}
                     onChange={(event) =>
                       setProfileForm((prev) => ({ ...prev, avatar: event.target.value }))
@@ -2384,7 +2384,7 @@ export default function Chat() {
 
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-foreground">昵称</label>
-                <DiscordInput
+                <ChatInput
                   value={profileForm.nickname}
                   onChange={(event) =>
                     setProfileForm((prev) => ({ ...prev, nickname: event.target.value }))
@@ -2394,7 +2394,7 @@ export default function Chat() {
 
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-foreground">简介</label>
-                <DiscordTextarea
+                <ChatTextarea
                   rows={3}
                   value={profileForm.bio}
                   onChange={(event) =>
@@ -2406,10 +2406,10 @@ export default function Chat() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-2.5">
-              <DiscordSecondaryButton onClick={() => setProfileModalOpen(false)}>
+              <ChatSecondaryButton onClick={() => setProfileModalOpen(false)}>
                 取消
-              </DiscordSecondaryButton>
-              <DiscordButton onClick={handleUpdateProfile}>保存修改</DiscordButton>
+              </ChatSecondaryButton>
+              <ChatButton onClick={handleUpdateProfile}>保存修改</ChatButton>
             </div>
           </div>
         </div>

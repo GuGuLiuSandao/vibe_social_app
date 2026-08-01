@@ -7,9 +7,9 @@ export default function GroupCreateModal({
   onToggleMember,
   onClose,
   onSubmit,
-  DiscordButton,
-  DiscordSecondaryButton,
-  DiscordInput,
+  ChatButton,
+  ChatSecondaryButton,
+  ChatInput,
   getAvatarColor,
   getInitials,
   toIdString,
@@ -28,11 +28,11 @@ export default function GroupCreateModal({
           <div className="space-y-4">
             <div>
               <label className="mb-1.5 block text-xs font-semibold text-foreground">群聊名称</label>
-              <DiscordInput value={form.name} onChange={(event) => onChangeForm({ name: event.target.value })} placeholder="例如 产品讨论组" />
+              <ChatInput value={form.name} onChange={(event) => onChangeForm({ name: event.target.value })} placeholder="例如 产品讨论组" />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-semibold text-foreground">群头像 URL（可选）</label>
-              <DiscordInput value={form.avatar} onChange={(event) => onChangeForm({ avatar: event.target.value })} placeholder="https://..." />
+              <ChatInput value={form.avatar} onChange={(event) => onChangeForm({ avatar: event.target.value })} placeholder="https://..." />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-semibold text-foreground">群简介</label>
@@ -79,8 +79,8 @@ export default function GroupCreateModal({
           </div>
         </div>
         <div className="mt-6 grid grid-cols-2 gap-2.5">
-          <DiscordSecondaryButton onClick={onClose}>取消</DiscordSecondaryButton>
-          <DiscordButton onClick={onSubmit}>创建群聊</DiscordButton>
+          <ChatSecondaryButton onClick={onClose}>取消</ChatSecondaryButton>
+          <ChatButton onClick={onSubmit}>创建群聊</ChatButton>
         </div>
       </div>
     </div>

@@ -20,7 +20,7 @@ import {
 } from "../proto/relation/relation_pb.ts";
 import { WsMessageSchema, WsMessageType } from "../proto/ws_pb.ts";
 
-const WS_BASE = "ws://localhost:8080/ws";
+const WS_BASE = import.meta.env.VITE_WS_BASE || "ws://localhost:8080/ws";
 
 export function buildWsUrl(uid, token) {
   // Always attach token if available, regardless of whitelist status
