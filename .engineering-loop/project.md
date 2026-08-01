@@ -40,8 +40,9 @@
 | Real integration | `make test-integration` | 隔离 PostgreSQL/Redis/HTTP/WS 流程和清理通过 |
 | Backend mutation | `make mutation-backend` | Gremlins `v0.6.0` 报告非空且无 lived/uncovered/error 状态 |
 | Frontend mutation | `make mutation-frontend` | Stryker `9.6.1` 报告非空且全部 `Killed` |
-| Aggregate | `make quality` | 上述六个门禁全部通过，任何子命令失败均非零退出 |
-| Protocol Buffers | `make proto-go && make proto-ts` | Proto 变更时生成成功，并继续执行 `make quality` |
+| Full Develop Loop aggregate | `make quality-develop` | 上述六个门禁全部通过，任何子命令失败均非零退出 |
+| Classified local entry | `make quality` | 基于相对 `origin/master` 的实际 diff 选择 docs、engineering 或 develop 门禁；需求变更使用 `CHANGE_LABELS=develop-loop make quality` |
+| Protocol Buffers | `make proto-go && make proto-ts` | Proto 变更时生成成功，并继续执行 `CHANGE_LABELS=develop-loop make quality` |
 
 ## Test Isolation
 
@@ -55,7 +56,8 @@
 - Remote platform: GitHub
 - Target branch: `master`
 - MR/PR creation: 完成独立 Code Review 和本地质量门禁后创建 PR。
-- CI policy: `.github/workflows/develop-quality.yml` 在 PR、master push 和手动触发上运行与本地相同的六个 Make 门禁并上传 `quality/**` 证据。
+- CI policy: `.github/workflows/develop-quality.yml` 对 PR 实际 diff 做 docs、engineering、develop 分类。docs 和 engineering 分别执行适用门禁；带 `develop-loop` 标签的需求变更执行完整六项门禁。固定 `quality-gate` 汇总结果；master 合并后的 push 再执行完整六项门禁。
+- Branch policy: `master` 只接受 PR 合并，`quality-gate` 是必需状态检查，禁止直接 push。
 - Merge authority: 由用户决定，Agent 不自动合并。
 
 ## Critical Change Controls

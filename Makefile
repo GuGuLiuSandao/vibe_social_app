@@ -1,4 +1,4 @@
-.PHONY: proto build clean help quality quality-static verify-traceability test-backend test-frontend test-integration mutation-backend mutation-frontend
+.PHONY: proto build clean help quality quality-docs quality-engineering quality-develop quality-static verify-traceability test-backend test-frontend test-integration mutation-backend mutation-frontend
 
 # Protobuf 编译
 PROTO_DIR = proto
@@ -56,6 +56,14 @@ build-backend:
 verify-traceability:
 	python3 scripts/quality/verify_traceability.py
 
+quality-docs:
+	git diff --check
+
+quality-engineering: quality-docs
+	docker compose config --quiet
+	docker compose -f docker-compose.integration.yml config --quiet
+	python3 -m unittest discover -s scripts/quality/tests -p 'test_*.py'
+
 quality-static: verify-traceability
 	git diff --check
 	cd backend && go build ./...
@@ -82,8 +90,11 @@ mutation-backend:
 mutation-frontend:
 	python3 scripts/quality/run_frontend_mutation.py
 
-quality: quality-static test-backend test-frontend test-integration mutation-backend mutation-frontend
+quality-develop: quality-static test-backend test-frontend test-integration mutation-backend mutation-frontend
 	python3 scripts/quality/write_quality_summary.py
+
+quality:
+	python3 scripts/quality/run_local_quality.py
 
 # 清理生成的文件
 clean:
@@ -101,5 +112,7 @@ help:
 	@echo "  run-backend   - Run backend server"
 	@echo "  run-frontend  - Run frontend dev server"
 	@echo "  build-backend - Build backend binary"
+	@echo "  quality       - Classify the current diff and run applicable quality gates"
+	@echo "  quality-develop - Run the complete six-gate Develop Loop suite"
 	@echo "  clean         - Clean generated files"
 	@echo "  help          - Show this help message"

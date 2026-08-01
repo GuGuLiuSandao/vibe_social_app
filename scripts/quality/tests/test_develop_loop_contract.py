@@ -51,6 +51,16 @@ class DevelopLoopContractTest(unittest.TestCase):
         self.assertIn("Investigate facts available from the repository", self.instructions)
         self.assertIn("not the full question-and-answer transcript", self.instructions)
 
+    def test_change_classification_and_master_policy_are_recorded(self):
+        for classification in ("`docs`", "`engineering`", "`develop`"):
+            self.assertIn(classification, self.instructions)
+        self.assertIn("label is a declaration that may increase checks", self.instructions)
+        self.assertIn("require the `develop-loop` label", self.instructions)
+        self.assertIn("unknown path", self.instructions)
+        self.assertIn("must fail closed", self.instructions)
+        self.assertIn("fixed `quality-gate`", self.instructions)
+        self.assertIn("Master accepts changes through PRs only", self.instructions)
+
 
 if __name__ == "__main__":
     unittest.main()

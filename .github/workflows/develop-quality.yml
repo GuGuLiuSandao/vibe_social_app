@@ -2,13 +2,19 @@ name: Develop Quality
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   push:
     branches: [master]
   workflow_dispatch:
     inputs:
       base_sha:
-        description: Trusted ancestor commit used for mutation targeting
+        description: Trusted ancestor commit used for classification and mutation targeting
         required: true
+        type: string
+      change_labels:
+        description: Comma-separated labels; use develop-loop for a requirement change
+        required: false
+        default: develop-loop
         type: string
 
 permissions:
@@ -19,16 +25,66 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  CHANGE_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event_name == 'push' && github.event.before || inputs.base_sha }}
+  CHANGE_HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+  CHANGE_LABELS: ${{ github.event_name == 'pull_request' && toJSON(github.event.pull_request.labels.*.name) || github.event_name == 'push' && 'develop-loop' || inputs.change_labels }}
   MUTATION_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event_name == 'push' && github.event.before || inputs.base_sha }}
 
 jobs:
-  static:
+  classify:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    outputs:
+      classification: ${{ steps.classifier.outputs.classification }}
+      reason: ${{ steps.classifier.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: classifier
+        run: >-
+          python3 scripts/quality/change_classifier.py
+          --base "$CHANGE_BASE_SHA"
+          --head "$CHANGE_HEAD_SHA"
+          --labels "$CHANGE_LABELS"
+          --github-output "$GITHUB_OUTPUT"
+
+  docs:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'docs' }}
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: make quality-docs
+
+  engineering:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'engineering' }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --prefix frontend
+      - run: make quality-engineering
+
+  static:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'develop' }}
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
@@ -48,12 +104,13 @@ jobs:
           if-no-files-found: ignore
 
   backend:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'develop' }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
@@ -67,12 +124,13 @@ jobs:
           if-no-files-found: ignore
 
   frontend:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'develop' }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -89,12 +147,13 @@ jobs:
           if-no-files-found: ignore
 
   integration:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'develop' }}
     timeout-minutes: 25
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - run: make test-integration
       - uses: actions/upload-artifact@v4
@@ -105,12 +164,13 @@ jobs:
           if-no-files-found: ignore
 
   backend-mutation:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'develop' }}
     timeout-minutes: 25
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
@@ -124,12 +184,13 @@ jobs:
           if-no-files-found: ignore
 
   frontend-mutation:
+    needs: classify
+    if: ${{ needs.classify.outputs.classification == 'develop' }}
     timeout-minutes: 25
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -144,3 +205,23 @@ jobs:
           name: frontend-mutation
           path: quality/**
           if-no-files-found: ignore
+
+  quality-gate:
+    if: ${{ always() }}
+    needs: [classify, docs, engineering, static, backend, frontend, integration, backend-mutation, frontend-mutation]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: >-
+          python3 scripts/quality/verify_quality_gate.py
+          --classification "${{ needs.classify.outputs.classification }}"
+          --result "classify=${{ needs.classify.result }}"
+          --result "docs=${{ needs.docs.result }}"
+          --result "engineering=${{ needs.engineering.result }}"
+          --result "static=${{ needs.static.result }}"
+          --result "backend=${{ needs.backend.result }}"
+          --result "frontend=${{ needs.frontend.result }}"
+          --result "integration=${{ needs.integration.result }}"
+          --result "backend-mutation=${{ needs['backend-mutation'].result }}"
+          --result "frontend-mutation=${{ needs['frontend-mutation'].result }}"

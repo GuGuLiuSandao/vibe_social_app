@@ -18,13 +18,17 @@ class WorkflowContractTest(unittest.TestCase):
             stderr=subprocess.PIPE,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("six always-running jobs", result.stdout)
+        self.assertIn("classified DAG and stable quality-gate", result.stdout)
 
     def test_DLQ_TC_034_make_quality_dag(self):
         makefile = (ROOT / "Makefile").read_text()
         expected_targets = ["quality-static", "test-backend", "test-frontend", "test-integration", "mutation-backend", "mutation-frontend"]
-        quality_line = next(line for line in makefile.splitlines() if line.startswith("quality:"))
-        self.assertEqual(quality_line.split()[1:], expected_targets)
+        develop_line = next(line for line in makefile.splitlines() if line.startswith("quality-develop:"))
+        self.assertEqual(develop_line.split()[1:], expected_targets)
+        quality_recipe = makefile.split("quality:\n", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("run_local_quality.py", quality_recipe)
+        self.assertIn("quality-docs:", makefile)
+        self.assertIn("quality-engineering: quality-docs", makefile)
         self.assertIn("quality-static: verify-traceability", makefile)
         for command in (
             "git diff --check",
@@ -46,11 +50,11 @@ class WorkflowContractTest(unittest.TestCase):
             make = shutil.which("make")
             overrides = bin_dir / "overrides.mk"
             override_recipes = "\n".join(f"{target}:\n\t@true" for target in expected_targets[1:])
-            overrides.write_text(override_recipes + "\nquality:\n\t@true\n")
+            overrides.write_text(override_recipes + "\nquality-develop:\n\t@true\n")
             for failed in ("python3", "git", "go", "npm", "docker"):
                 with self.subTest(failed=failed):
                     env["FAKE_FAIL_COMMAND"] = failed
-                    result = subprocess.run([make, "-f", "Makefile", "-f", str(overrides), "quality"], cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    result = subprocess.run([make, "-f", "Makefile", "-f", str(overrides), "quality-develop"], cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     self.assertNotEqual(result.returncode, 0)
             aggregate = bin_dir / "aggregate.mk"
             aggregate.write_text(
@@ -58,13 +62,13 @@ class WorkflowContractTest(unittest.TestCase):
                     f"{target}:\n\t@test \"$@\" != \"$(FAIL_TARGET)\" || exit 41"
                     for target in expected_targets
                 )
-                + "\nquality:\n\t@true\n"
+                + "\nquality-develop:\n\t@true\n"
             )
             env["FAKE_FAIL_COMMAND"] = ""
             for failed in expected_targets:
                 with self.subTest(aggregate_child=failed):
                     result = subprocess.run(
-                        [make, "-f", "Makefile", "-f", str(aggregate), "quality", f"FAIL_TARGET={failed}"],
+                        [make, "-f", "Makefile", "-f", str(aggregate), "quality-develop", f"FAIL_TARGET={failed}"],
                         cwd=ROOT,
                         env=env,
                         stdout=subprocess.PIPE,
