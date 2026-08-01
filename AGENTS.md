@@ -27,3 +27,16 @@ This repository is a split frontend/backend social app with shared Protocol Buff
 - Frontend UI components must default to `shadcn/ui` primitives under `frontend/src/components/ui`; avoid introducing new third-party UI kits for core controls.
 - Match existing JS style in this repo: ESM imports, double quotes, semicolons.
 - Do not hand-edit generated protobuf output under `backend/internal/proto` or `frontend/src/proto`; regenerate from `proto/`.
+
+## Develop Loop
+
+Requirement-driven changes follow the repository Develop Loop:
+
+- Core process: `.engineering-loop/develop/README.md`
+- Project adapter: `.engineering-loop/project.md`
+- Change artifacts: `docs/changes/<change-id>/`
+- Long-term behavior specifications: `docs/specs/`
+
+Before implementation, establish the change ID and rigor level, then create the artifacts required by the core process. Standard and critical changes proceed through Requirement Contract, Technical Design Review, Test Cases Review, implementation, independent Code Review, local quality gates, and PR/CI delivery. Quick changes may combine design and test notes into the requirement, while independent Code Review and applicable quality gates remain required.
+
+When implementation would change confirmed product rules, scope, or acceptance criteria, update the Requirement Contract and reconfirm the affected decision before continuing.

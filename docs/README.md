@@ -14,6 +14,8 @@
 - `PROTO_SETUP.md`：Proto 编译与使用说明
 - `DEPENDENCIES.md`：依赖说明
 - `backend/websocket-implementation.md`：WebSocket 模块实现说明
+- `specs/`：跨版本稳定的产品行为规格
+- `../.engineering-loop/`：Develop Loop 核心流程与本项目适配配置
 
 ## 当前建议阅读顺序
 1. `../README.md`
