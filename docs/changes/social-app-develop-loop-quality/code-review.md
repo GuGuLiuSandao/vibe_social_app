@@ -321,7 +321,7 @@ Retain auditable TC-029 evidence outside the disposable copies: for each backend
 
 - Read the complete Requirement, Design, Design Review (including PASS re-review), Test Cases, Test Cases Review (including PASS re-review), and all prior Code Review text.
 - At review start, independently verified the aggregate worktree digest, full porcelain snapshot, HEAD, and all 10 artifact hashes before inspecting current diffs.
-- Inspected current tracked and untracked diffs in both the application repository and the reusable process repository, plus ignored `quality/**` evidence. The three Engineering Loop source files are byte-identical to their installed application copies.
+- Inspected current tracked and untracked diffs in both the application repository and the reusable process repository, plus ignored `quality/**` evidence.
 - Permitted targeted tests: `python3 -m unittest -v scripts.quality.tests.test_mutation_gate_contract scripts.quality.tests.test_verify_traceability` — **PASS, 5 tests**.
 - Direct traceability verifier: **PASS, 36 P0 Case links**. Workflow contract verifier: **PASS, six always-running jobs**.
 - `git diff --check` in both repositories: **PASS**.

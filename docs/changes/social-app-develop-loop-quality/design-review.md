@@ -89,7 +89,7 @@ Test Mapping 给出了 ID 到目标文件的计划，但没有定义测试名称
 
 ### N5 — 安装源与项目副本一致性缺少判定细节
 
-风险项要求同步 `engineering-loop` 源并用 installer `--update` 校验，但没有定义比较范围、允许差异及失败输出。应规定可重复的检查命令和字节级/语义级一致性规则，否则 Develop Loop 核心仍可能漂移。
+风险项要求核对独立 `engineering-loop` 方法源，但没有定义采用版本和差异处理方式。应在接入或更新时明确来源，并由 AI 结合业务仓库重新生成项目适配，避免静默改变 Develop Loop 口径。
 
 ## 4. Score Breakdown
 

@@ -15,7 +15,8 @@
 - `DEPENDENCIES.md`：依赖说明
 - `backend/websocket-implementation.md`：WebSocket 模块实现说明
 - `specs/`：跨版本稳定的产品行为规格
-- `../.engineering-loop/`：Develop Loop 核心流程与本项目适配配置
+- `../.engineering-loop/project.md`：Social App 的 Develop Loop 项目适配配置
+- `../.codex/agents/`：本项目可直接加载的 Develop Loop Agent 配置
 
 ## 当前建议阅读顺序
 1. `../README.md`

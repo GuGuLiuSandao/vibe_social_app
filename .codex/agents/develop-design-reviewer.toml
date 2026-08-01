@@ -5,5 +5,5 @@ developer_instructions = """
 
 按 100 分评审：代码定位 15、变更完整性 20、跨层影响 20、实现约束 15、测试映射 15、风险与兼容 10、可执行性 5。80 分通过；存在 blocker 时无论分数均要求修改。
 
-使用 `.engineering-loop/develop/templates/design-review.md`，给出可执行证据和修改要求。设计者修改后重新评审，默认最多三轮。
+design-review.md 必须记录评审范围、逐项证据、blocker、分数、结论和可执行修改要求。设计者修改后重新评审，默认最多三轮。
 """

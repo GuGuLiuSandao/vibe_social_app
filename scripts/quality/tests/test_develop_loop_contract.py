@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 class DevelopLoopContractTest(unittest.TestCase):
     def setUp(self):
-        self.readme = (ROOT / ".engineering-loop/develop/README.md").read_text()
+        self.instructions = (ROOT / "AGENTS.md").read_text()
 
     def test_DLQ_TC_001_standard_order_and_no_quick_bypass(self):
         expected = [
@@ -20,11 +20,11 @@ class DevelopLoopContractTest(unittest.TestCase):
             "Code Review",
             "Local Quality Gates",
         ]
-        flow = re.search(r"```text\n(.*?)\n```", self.readme, re.DOTALL).group(1)
+        flow = re.search(r"```text\n(.*?)\n```", self.instructions, re.DOTALL).group(1)
         positions = [flow.index(stage) for stage in expected]
         self.assertEqual(positions, sorted(positions))
-        self.assertIn("不省略独立 Test Design、Test Review 和 Code Review", self.readme)
-        self.assertIn("PASS", self.readme)
+        self.assertIn("independent Code Review", self.instructions)
+        self.assertIn("PASS", self.instructions)
 
     def test_DLQ_TC_002_independent_roles_are_write_bounded(self):
         designer = (ROOT / ".codex/agents/develop-test-designer.toml").read_text()
@@ -43,13 +43,13 @@ class DevelopLoopContractTest(unittest.TestCase):
         self.assertIn("三轮", reviewer)
 
     def test_conditional_grilling_avoids_routine_questionnaires(self):
-        self.assertIn("需求澄清不是每次变更的固定问答", self.readme)
-        self.assertIn("明显改变用户体验", self.readme)
-        self.assertIn("关键边界或异常场景", self.readme)
-        self.assertIn("`$grilling`", self.readme)
-        self.assertIn("一次只问一个决策", self.readme)
-        self.assertIn("能从仓库、运行环境或现有规格查明的事实直接调查", self.readme)
-        self.assertIn("不保存冗长问答过程", self.readme)
+        self.assertIn("not a routine questionnaire", self.instructions)
+        self.assertIn("materially change user experience", self.instructions)
+        self.assertIn("acceptance boundaries", self.instructions)
+        self.assertIn("`$grilling`", self.instructions)
+        self.assertIn("one decision at a time", self.instructions)
+        self.assertIn("Investigate facts available from the repository", self.instructions)
+        self.assertIn("not the full question-and-answer transcript", self.instructions)
 
 
 if __name__ == "__main__":

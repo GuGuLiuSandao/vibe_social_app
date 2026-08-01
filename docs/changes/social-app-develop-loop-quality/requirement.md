@@ -9,7 +9,7 @@
 
 ## 1. Requirement Facts
 
-- Original request: 在 `social_app` 中完整落实从需求到 MR/PR 的 Develop Loop，纳入独立测试设计、测试评审、测试实现、单元/集成门禁和 Mutation Testing，而不是只安装文档流程。
+- Original request: 在 `social_app` 中完整落实从需求到 MR/PR 的 Develop Loop，纳入独立测试设计、测试评审、测试实现、单元/集成门禁和 Mutation Testing，而不是只记录文档流程。
 - Goal and successful outcome:
   - Requirement 确认后，由独立 Test Designer 编写 Cases，并由独立 Test Reviewer 放行。
   - Implementer 同时实现生产变更与 Cases 对应的自动化测试。

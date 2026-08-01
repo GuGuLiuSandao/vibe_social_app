@@ -11,7 +11,7 @@
 
 | Area | File | Current responsibility | Change |
 |---|---|---|---|
-| Develop core | `.engineering-loop/develop/README.md` | 通用需求交付流程 | 明确独立 Test Design/Review、测试实现、unit/integration/mutation 和 CI 同构门禁为代码变更必经环节 |
+| Develop instructions | `AGENTS.md` and `.codex/agents/` | 本项目采用的需求交付流程和可执行角色 | 明确独立 Test Design/Review、测试实现、unit/integration/mutation 和 CI 同构门禁为代码变更必经环节 |
 | Project profile | `.engineering-loop/project.md` | social_app 适配 | 用可执行测试命令替换泛化的“按设计验证”入口 |
 | Backend auth | `backend/internal/auth/jwt.go`、`handler.go` | JWT 与 HTTP 认证行为 | 以规格 ID 建立 Go 测试；不因测试引入业务行为变化 |
 | WebSocket | `backend/internal/websocket/handler.go`、`manager.go` | 握手、心跳和连接管理 | 建立包级测试与真实 WS 黑盒测试 |
@@ -88,7 +88,7 @@ Mutation 目标规则：
 | 集成测试污染开发数据 | 复用默认 compose | 专用 compose、随机 project name、独立凭据和 `down -v` trap |
 | CI 假绿 | 零测试、零目标误判 | 测试收集计数、mutation 明确 skipped/failed 状态、wrapper 自测 |
 | WS 测试竞态 | 后端启动或异步注册未完成 | 有界 readiness 和消息 deadline，禁止固定长 sleep |
-| Develop core 与安装源漂移 | 只改 social_app 副本 | 同步修改 `engineering-loop` 源并用 installer `--update` 校验一致性 |
+| Develop 方法来源变化 | 业务仓库静默采用不同口径 | 接入或更新时向 AI 提供明确的 `engineering-loop` 来源，由 AI 重新核对项目适配和角色配置 |
 
 ## 7. Implementation Tasks
 

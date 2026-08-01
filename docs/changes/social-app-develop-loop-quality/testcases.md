@@ -32,7 +32,7 @@
 
 - Priority / level: P0; process contract/static.
 - Requirement mapping: DLQ-001.
-- Setup: Load the installed Develop Loop README, agent role definitions, and artifact templates as text; use a fixture change classified `standard`.
+- Setup: Load the repository Develop Loop instructions and Agent role definitions as text; use a fixture change classified `standard`.
 - Steps: Parse the documented standard-flow stages and role start conditions; locate any quick-flow exception.
 - Exact assertions: The ordered subsequence is exactly `Requirement confirmation -> Technical Design -> Design Review PASS -> Test Design -> Test Review PASS -> Implementation -> Code Review -> Local Quality Gates -> PR/CI`; Implementation cannot start on a missing or failed Design Review or Test Review; `quick` may compress design/test documentation but cannot remove independent Code Review or applicable executable gates.
 - Automation location: `scripts/quality/tests/test_develop_loop_contract.py`.

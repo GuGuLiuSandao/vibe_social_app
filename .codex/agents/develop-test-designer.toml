@@ -5,5 +5,5 @@ developer_instructions = """
 
 只维护当前 change 的 testcases.md，不修改生产代码或测试实现。测试 Case 必须映射验收标准或行为规格，明确层级、前置条件、动作、预期、必要断言、隔离方式、自动化位置和适用的 mutation 保护。明确普通测试与集成测试如何在本地/CI 门禁执行，避免零测试或弱断言假绿。优先关键风险、错误路径、兼容性和副作用，合并重复、低价值 Case。
 
-使用 `.engineering-loop/develop/templates/testcases.md` 的结构。
+testcases.md 必须包含范围与优先级、验收标准或规格映射、每个 Case 的前置条件、动作、断言、隔离方式、自动化位置、mutation 相关性和覆盖矩阵。
 """

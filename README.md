@@ -33,7 +33,7 @@ proto/                   前后端共享的 Protobuf 源定义
 docs/plans/              产品 Roadmap
 docs/specs/              跨版本稳定的产品行为规格
 docs/changes/            每次研发变更的需求、设计、测试与评审记录
-.engineering-loop/       Develop Loop 核心流程和项目适配配置
+.engineering-loop/       Social App 的 Develop Loop 项目适配
 scripts/quality/         本地与 CI 共用的质量门禁脚本
 ```
 
@@ -101,7 +101,9 @@ make proto-ts
 
 ## 研发流程
 
-本项目采用 Requirement-driven Develop Loop。标准变更依次经过：
+本项目采用 Requirement-driven Develop Loop。通用方法维护在独立的 `engineering-loop` 仓库中；接入或更新时，将该仓库地址或路径与业务仓库一起交给 AI 阅读。本仓库只保存项目适配、Codex Agent 配置和已经填写的变更产物。
+
+标准变更依次经过：
 
 ```text
 需求确认
@@ -115,8 +117,8 @@ make proto-ts
 
 开始变更前需要确定稳定的 change ID 和严谨度，并在 `docs/changes/<change-id>/` 维护对应产物。对外行为变更同步维护 `docs/specs/`，Requirement、Test Case 和自动化测试通过稳定 ID 建立追溯关系。
 
-- 核心流程：[Develop Loop](.engineering-loop/develop/README.md)
 - 项目适配：[Project Profile](.engineering-loop/project.md)
+- Agent 配置：`.codex/agents/`
 - 文档索引：[Docs Index](docs/README.md)
 
 ## 质量门禁

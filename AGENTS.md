@@ -32,11 +32,28 @@ This repository is a split frontend/backend social app with shared Protocol Buff
 
 Requirement-driven changes follow the repository Develop Loop:
 
-- Core process: `.engineering-loop/develop/README.md`
 - Project adapter: `.engineering-loop/project.md`
 - Change artifacts: `docs/changes/<change-id>/`
 - Long-term behavior specifications: `docs/specs/`
 
+The general methodology is maintained in the separate `engineering-loop` repository. When adopting or updating the methodology, provide that repository URL or path to the AI so it can read the source process, roles, and templates alongside this repository. This repository keeps only its project adapter, executable Agent definitions, and completed change artifacts.
+
+The standard project flow is:
+
+```text
+Requirement Contract
+→ Technical Design
+→ Design Review PASS
+→ Test Design
+→ Test Review PASS
+→ Implementation
+→ Code Review
+→ Local Quality Gates
+→ PR / CI
+```
+
 Before implementation, establish the change ID and rigor level, then create the artifacts required by the core process. Standard and critical changes proceed through Requirement Contract, Technical Design Review, Test Cases Review, implementation, independent Code Review, local quality gates, and PR/CI delivery. Quick changes may combine design and test notes into the requirement, while independent Code Review and applicable quality gates remain required.
+
+Requirement clarification is not a routine questionnaire. Use `$grilling` one decision at a time only when an unresolved choice would materially change user experience, architecture, data, permissions, acceptance boundaries, or important failure behavior. Investigate facts available from the repository, runtime, and existing specifications directly. Record confirmed decisions and rationale in the Requirement Contract, not the full question-and-answer transcript.
 
 When implementation would change confirmed product rules, scope, or acceptance criteria, update the Requirement Contract and reconfirm the affected decision before continuing.
