@@ -19,20 +19,11 @@
 - `google.golang.org/protobuf`
 - `github.com/joho/godotenv`
 
-测试/本地辅助也使用：
-- `gorm.io/driver/sqlite`
-
 ## 前端核心依赖
 - `react` / `react-dom`（当前为 19.x）
 - `react-router-dom`（当前为 7.x）
 - `vite`（当前为 6.x）
 - `@bufbuild/protobuf`（Protobuf 编解码）
-
-测试依赖：
-- `vitest`
-- `@testing-library/react`
-- `@testing-library/jest-dom`
-- `jsdom`
 
 ## Protobuf 生成工具
 

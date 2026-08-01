@@ -63,7 +63,7 @@ WebSocket 模块采用 Hub-Client 模型：
   - 用户搜索
 
 说明：
-- 当前只支持二进制 Protobuf，不再处理 JSON 文本协议
+- 业务消息采用二进制 Protobuf 协议
 
 ## 5. 在线状态与 Redis
 
