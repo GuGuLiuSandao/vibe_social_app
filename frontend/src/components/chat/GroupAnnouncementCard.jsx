@@ -6,7 +6,7 @@ export default function GroupAnnouncementCard({
   canManageGroup,
   onChangeAnnouncement,
   onSaveAnnouncement,
-  DiscordButton,
+  ChatButton,
 }) {
   return (
     <div className="space-y-4 rounded-lg border border-border bg-card p-4">
@@ -23,7 +23,7 @@ export default function GroupAnnouncementCard({
           className="min-h-[150px] w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
         />
       </div>
-      {canManageGroup ? <DiscordButton className="w-full" onClick={onSaveAnnouncement}>保存群公告</DiscordButton> : null}
+      {canManageGroup ? <ChatButton className="w-full" onClick={onSaveAnnouncement}>保存群公告</ChatButton> : null}
     </div>
   );
 }

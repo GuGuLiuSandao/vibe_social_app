@@ -11,7 +11,7 @@ export default function GroupMembersCard({
   onUnsetAdmin,
   onTransferOwnership,
   onRemoveMember,
-  DiscordSecondaryButton,
+  ChatSecondaryButton,
 }) {
   return (
     <div className="rounded-lg border border-border bg-card p-4">
@@ -31,10 +31,10 @@ export default function GroupMembersCard({
               </div>
               {canManageGroup && !isSelf ? (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {activeGroupRole === groupRoleOwner && memberRole === groupRoleMember ? <DiscordSecondaryButton className="h-8 px-3 text-xs" onClick={() => onSetAdmin(memberId)}>设为管理员</DiscordSecondaryButton> : null}
-                  {activeGroupRole === groupRoleOwner && memberRole === groupRoleAdmin ? <DiscordSecondaryButton className="h-8 px-3 text-xs" onClick={() => onUnsetAdmin(memberId)}>取消管理员</DiscordSecondaryButton> : null}
-                  {canTransferOwnership && memberRole !== groupRoleOwner ? <DiscordSecondaryButton className="h-8 px-3 text-xs" onClick={() => onTransferOwnership(memberId)}>转让群主</DiscordSecondaryButton> : null}
-                  {((activeGroupRole === groupRoleOwner && memberRole !== groupRoleOwner) || (activeGroupRole === groupRoleAdmin && memberRole === groupRoleMember)) ? <DiscordSecondaryButton className="h-8 border-destructive bg-destructive px-3 text-xs text-destructive-foreground hover:bg-destructive" onClick={() => onRemoveMember(memberId)}>移出群聊</DiscordSecondaryButton> : null}
+                  {activeGroupRole === groupRoleOwner && memberRole === groupRoleMember ? <ChatSecondaryButton className="h-8 px-3 text-xs" onClick={() => onSetAdmin(memberId)}>设为管理员</ChatSecondaryButton> : null}
+                  {activeGroupRole === groupRoleOwner && memberRole === groupRoleAdmin ? <ChatSecondaryButton className="h-8 px-3 text-xs" onClick={() => onUnsetAdmin(memberId)}>取消管理员</ChatSecondaryButton> : null}
+                  {canTransferOwnership && memberRole !== groupRoleOwner ? <ChatSecondaryButton className="h-8 px-3 text-xs" onClick={() => onTransferOwnership(memberId)}>转让群主</ChatSecondaryButton> : null}
+                  {((activeGroupRole === groupRoleOwner && memberRole !== groupRoleOwner) || (activeGroupRole === groupRoleAdmin && memberRole === groupRoleMember)) ? <ChatSecondaryButton className="h-8 border-destructive bg-destructive px-3 text-xs text-destructive-foreground hover:bg-destructive" onClick={() => onRemoveMember(memberId)}>移出群聊</ChatSecondaryButton> : null}
                 </div>
               ) : null}
             </div>
