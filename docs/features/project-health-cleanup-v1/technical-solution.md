@@ -83,4 +83,5 @@
 
 ## 7. 提交追踪
 
-- 待最终提交完成后补充提交哈希与消息。
+- 实现提交：`f242ca0 refactor: streamline project baseline`
+- 该提交包含仓库精简、WebSocket 连接管理修复、前端 WS 配置修复、测试和交付文档。
