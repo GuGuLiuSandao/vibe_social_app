@@ -45,7 +45,7 @@
   - `docs/features/block-system-v1/*`
   - `docs/plans/ROADMAP.md`
   - `docs/plans/M0_TASKS.md`
-  - `TEMP_STATUS.md`
+  - `docs/plans/ROADMAP.md`
 
 ## 5. 数据结构 / 接口 / 协议变更
 - 数据表：新增 `block_relations`

@@ -10,7 +10,7 @@
 - [x] 群管理弹窗与卡片区域样式不统一，视觉层级不稳定。
 
 ## 3. 处理结果
-- 新增 `shadcn/ui` 基础组件目录：`frontend/src/components/ui/`（Button/Input/Textarea/Card/Badge/Label/Separator）。
+- 新增 `shadcn/ui` 基础组件目录：`frontend/src/components/ui/`（Button/Input/Textarea/Card/Badge/Label；未使用的 Separator 已在后续健康检查中移除）。
 - 聊天页与登录页改为使用 shadcn 组件，并移除 `frontend/src/lib/vercel-ui.js`。
 - 已移除 `@vercel/examples-ui` 依赖，Tailwind 配置切换到本地主题变量体系。
 - 聊天三栏与弹窗完成留白调整：边距、内边距、列表项间距、按钮尺寸与状态色统一。

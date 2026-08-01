@@ -5,7 +5,7 @@
 ### 项目总览
 - `../AGENTS.md`：仓库协作规则、开发流程、交付要求
 - `../README.md`：项目对外说明、技术栈、启动与测试方式
-- `../TEMP_STATUS.md`：当前项目状态、已实现能力、剩余风险
+- `plans/ROADMAP.md`：当前项目状态、已实现能力、剩余风险与后续里程碑
 
 ### 规划与执行
 - `plans/ROADMAP.md`：产品版本口径、里程碑、阶段目标
@@ -36,6 +36,6 @@
 ## 当前建议阅读顺序
 1. `../README.md`
 2. `plans/ROADMAP.md`
-3. `../TEMP_STATUS.md`
+3. `plans/M0_TASKS.md`
 4. `features/README.md`
 5. 具体功能目录文档

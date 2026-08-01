@@ -19,7 +19,6 @@ npm-debug.log*
 # Go binaries / build outputs
 backend/bin/
 backend/api
-backend/test_chat_client
 
 # Logs and coverage
 *.log

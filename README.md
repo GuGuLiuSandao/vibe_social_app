@@ -9,11 +9,15 @@
 
 ## 目录结构
 ```
-proto/      Protobuf 定义
-backend/    Go 后端
-frontend/   React 前端
-docs/       项目文档
+proto/              Protobuf 源定义
+backend/cmd/api/     Go API 服务入口
+backend/internal/    后端领域实现与生成协议
+frontend/src/        React 页面、组件与客户端逻辑
+docs/plans/          当前 Roadmap、任务和 QA 清单
+docs/features/       按需求归档的设计、方案与 Review
 ```
+
+当前能力、剩余风险和后续里程碑以 `docs/plans/ROADMAP.md` 为准。
 
 ## 快速开始（本地）
 
