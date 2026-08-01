@@ -123,7 +123,21 @@ make proto-ts
 
 ## 质量门禁
 
-本地与 GitHub Actions 使用同一组 Make 目标：
+本地与 GitHub Actions 使用同一套变更分类规则：
+
+| 分类 | 典型变更 | 执行方式 |
+|---|---|---|
+| `docs` | README、普通说明和 Roadmap | `make quality-docs` |
+| `engineering` | CI、质量脚本、流程配置、规格和变更产物 | `make quality-engineering` |
+| `develop` | 带 `develop-loop` 标签的产品代码或协议变更 | 完整六项质量门禁 |
+
+`make quality` 会比较当前分支和工作区相对 `origin/master` 的真实 diff，并自动选择适用门禁。需求变更在完成 Develop Loop 产物后运行：
+
+```bash
+CHANGE_LABELS=develop-loop make quality
+```
+
+完整 `develop` 门禁包括：
 
 | 门禁 | 命令 | 内容 |
 |---|---|---|
@@ -134,13 +148,13 @@ make proto-ts
 | 后端变异测试 | `make mutation-backend` | Gremlins 检查实际变更的 Go 行 |
 | 前端变异测试 | `make mutation-frontend` | Stryker 检查实际变更的前端行 |
 
-交付前运行完整门禁：
+需要直接复验完整六项时也可运行：
 
 ```bash
-make quality
+make quality-develop
 ```
 
-GitHub Actions 在 Pull Request、`master` push 和手动触发时并行执行上述六类门禁，并上传 `quality/**` 机器可读证据。
+GitHub Actions 对每个 Pull Request 的实际 diff 和标签独立分类，只执行对应分支，并由固定的 `quality-gate` 汇总结果。产品路径没有 `develop-loop` 标签或出现未知路径时分类失败；标签只能增加检查。合并到 `master` 后会再执行完整六项门禁，并上传 `quality/**` 机器可读证据。
 
 ## 常用命令
 

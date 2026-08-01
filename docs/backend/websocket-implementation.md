@@ -33,7 +33,7 @@ WebSocket 模块采用 Hub-Client 模型：
 ## 3. 连接生命周期
 
 ### 3.1 ReadPump
-- `SetReadLimit(512)`
+- `SetReadLimit(8 MiB)`，用于容纳当前允许的 WebSocket 头像上传帧
 - `SetReadDeadline(pongWait)`，默认 `60s`
 - 收到 Pong 时刷新读超时
 - 收到 Ping 时返回 Pong 控制帧
@@ -49,18 +49,12 @@ WebSocket 模块采用 Hub-Client 模型：
 统一信封：`proto/ws.proto` 中的 `WsMessage`。
 
 目前路由的业务类型：
-- `WS_TYPE_PING` -> `WS_TYPE_PONG`
-- Chat:
-  - 发送消息
-  - 获取会话列表
-  - 获取消息列表
-  - 标记已读
-  - 创建会话
-- Relation:
-  - follow / unfollow
-  - following / followers / friends 查询
-- Account:
-  - 用户搜索
+- 基础：应用层 `PING` / `PONG`
+- Account：连接内认证、用户搜索、资料更新、头像上传
+- Relation：follow、unfollow、following、followers、friends、block、unblock、blocked list
+- Chat：发送消息、会话列表、消息列表、已读和创建会话
+- Group：群详情、资料与公告、成员与角色、邀请、入群申请审批、群主转让、移除成员、退群和解散
+- Topic room：房间列表、加入、离开、成员列表和消息
 
 说明：
 - 业务消息采用二进制 Protobuf 协议
@@ -77,11 +71,9 @@ WebSocket 模块采用 Hub-Client 模型：
 
 ## 6. 关系推送与会话推送
 
-已实现：
 - follow / unfollow 后，向目标用户推送 `WS_TYPE_RELATION_PUSH`
-
-已实现：
-- 创建会话后会向其他参与者推送 `WS_TYPE_CHAT_CONVERSATION_PUSH`
+- 创建会话后，向其他参与者推送 `WS_TYPE_CHAT_CONVERSATION_PUSH`
+- 普通消息、群资料和群成员变化会向相关在线用户发送对应 push
 
 ## 7. 参数与默认值
 
@@ -90,6 +82,7 @@ WebSocket 模块采用 Hub-Client 模型：
 | `writeWait` | 10s | 单次写操作超时 |
 | `pongWait` | 60s | 读取超时窗口 |
 | `pingPeriod` | 54s | 服务端主动心跳间隔 |
+| `maxWSMessageSize` | 8 MiB | 单个入站 WebSocket 帧上限 |
 | `ReadBufferSize` | 1024 | Gorilla Upgrader 读缓冲 |
 | `WriteBufferSize` | 1024 | Gorilla Upgrader 写缓冲 |
 

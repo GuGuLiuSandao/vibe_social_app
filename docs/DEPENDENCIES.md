@@ -7,7 +7,7 @@
 - PostgreSQL 16+
 - Redis 7+
 - protoc 3.21+（本地示例为 `libprotoc 33.x`）
-- Docker / Docker Compose（可选，用于一键启动）
+- Docker / Docker Compose（本地容器启动和 `make test-integration` 必需；仅连接自备 PostgreSQL/Redis 运行应用时可不安装）
 
 ## 后端核心依赖
 - `github.com/gin-gonic/gin`
@@ -32,8 +32,7 @@ Go 代码生成：
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 ```
 
-前端 TypeScript 代码生成（可选）：
+前端 TypeScript 代码生成插件已锁定在 `frontend/package-lock.json`。在仓库根目录安装锁定依赖：
 ```bash
-cd frontend
-npm install -D @bufbuild/protoc-gen-es @bufbuild/protobuf
+npm ci --prefix frontend
 ```
