@@ -9,15 +9,11 @@
 
 ## 目录结构
 ```
-proto/              Protobuf 源定义
-backend/cmd/api/     Go API 服务入口
-backend/internal/    后端领域实现与生成协议
-frontend/src/        React 页面、组件与客户端逻辑
-docs/plans/          当前 Roadmap、任务和 QA 清单
-docs/features/       按需求归档的设计、方案与 Review
+proto/      Protobuf 定义
+backend/    Go 后端
+frontend/   React 前端
+docs/       项目文档
 ```
-
-当前能力、剩余风险和后续里程碑以 `docs/plans/ROADMAP.md` 为准。
 
 ## 快速开始（本地）
 
@@ -45,11 +41,6 @@ go run cmd/api/main.go
 ```
 - HTTP API: `http://localhost:8080/api/v1`
 - WebSocket: `ws://localhost:8080/ws?token=<JWT>`
-- AI NPC 模型调用（OpenAI 兼容 `chat/completions`）：
-  - `LLM_BASE_URL`（默认 `https://api.openai.com/v1`）
-  - `LLM_API_KEY`（必填才会启用外部模型）
-  - `LLM_MODEL`（默认 `gpt-4o-mini`）
-  - `LLM_TIMEOUT_SECONDS`（默认 `20`）
 
 ### 4) 启动前端
 ```bash
@@ -84,23 +75,9 @@ make proto-ts
 make run-backend
 make run-frontend
 
-cd backend && go test ./...
-cd frontend && npm test
+cd backend && go build ./...
+cd frontend && npm run build
 ```
-
-## M0 测试基线要求
-
-每次功能改动后至少执行以下验证：
-
-```bash
-cd backend && go test ./...
-cd frontend && npm test
-```
-
-通过标准：
-- 后端测试全绿
-- 前端测试全绿
-- 若涉及聊天链路，按 `docs/plans/M0_MANUAL_QA.md` 完成最小手工回归
 
 ## 许可证
 MIT

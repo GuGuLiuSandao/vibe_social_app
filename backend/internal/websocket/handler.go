@@ -433,48 +433,6 @@ func (s *Server) handleChatMessage(client *Client, msg *proto.WsMessage, payload
 			}
 		}
 
-		npcReply, npcErr := s.chatService.GenerateNPCReply(message.ConversationID, uint64(client.ID), message.Content)
-		if npcErr != nil {
-			logger.Error("Failed to generate npc reply for conversation %d: %v", message.ConversationID, npcErr)
-		} else if npcReply != nil {
-			npcPush := &proto.WsMessage{
-				Type:      proto.WsMessageType_WS_TYPE_CHAT_MESSAGE_PUSH,
-				Timestamp: time.Now().UnixMilli(),
-				Payload: &proto.WsMessage_Chat{
-					Chat: &chatpb.ChatPayload{
-						Payload: &chatpb.ChatPayload_MessagePush{
-							MessagePush: &chatpb.MessagePush{
-								Message: &chatpb.Message{
-									Id:             npcReply.ID,
-									LocalId:        npcReply.LocalID,
-									ConversationId: npcReply.ConversationID,
-									SenderId:       npcReply.SenderID,
-									Content:        npcReply.Content,
-									Type:           chatpb.MessageType(npcReply.Type),
-									CreatedAt:      timestamppb.New(npcReply.CreatedAt),
-								},
-							},
-						},
-					},
-				},
-			}
-
-			if npcSender, err := s.chatService.GetUser(npcReply.SenderID); err == nil {
-				npcPush.GetChat().GetMessagePush().Message.Sender = &chatpb.SenderInfo{
-					Id:       npcSender.UID,
-					Username: npcSender.Username,
-					Nickname: npcSender.Nickname,
-					Avatar:   npcSender.Avatar,
-				}
-			}
-
-			if npcData, err := goproto.Marshal(npcPush); err == nil {
-				s.SendToUser(client.ID, npcData)
-			} else {
-				logger.Error("Failed to marshal npc reply push: %v", err)
-			}
-		}
-
 		return &proto.WsMessage{
 			RequestId: msg.RequestId,
 			Type:      proto.WsMessageType_WS_TYPE_CHAT_SEND_MESSAGE_RESPONSE,

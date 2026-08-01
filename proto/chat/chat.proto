@@ -11,7 +11,6 @@ enum ConversationType {
   CONVERSATION_TYPE_UNSPECIFIED = 0;
   CONVERSATION_TYPE_PRIVATE = 1; // 单聊
   CONVERSATION_TYPE_GROUP = 2;   // 群聊
-  CONVERSATION_TYPE_NPC = 3;     // AI NPC 聊天
 }
 
 enum GroupKind {

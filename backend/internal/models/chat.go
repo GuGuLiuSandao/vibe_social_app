@@ -10,7 +10,6 @@ type ConversationType int
 const (
 	ConversationTypePrivate ConversationType = 1
 	ConversationTypeGroup   ConversationType = 2
-	ConversationTypeNPC     ConversationType = 3
 )
 
 const (
@@ -38,8 +37,6 @@ const (
 	GroupInvitationStatusRejected  = "rejected"
 	GroupInvitationStatusCancelled = "cancelled"
 	GroupInvitationStatusExpired   = "expired"
-
-	NPCKeyWowTavernKeeper = "wow_tavern_keeper"
 )
 
 // Conversation 会话基础表
@@ -126,15 +123,4 @@ type GroupInvitation struct {
 	RespondedAt    *time.Time
 	CreatedAt      time.Time `gorm:"not null;index"`
 	UpdatedAt      time.Time `gorm:"not null"`
-}
-
-// NPCMemory 保存 NPC 对用户的长期记忆（跨 Session）
-type NPCMemory struct {
-	ID         uint64    `gorm:"primaryKey;autoIncrement"`
-	UserID     uint64    `gorm:"not null;uniqueIndex:idx_npc_memory_user_key"`
-	NPCKey     string    `gorm:"size:64;not null;uniqueIndex:idx_npc_memory_user_key"`
-	MemoryJSON string    `gorm:"type:text;not null;default:'{}'"`
-	Summary    string    `gorm:"type:text"`
-	CreatedAt  time.Time `gorm:"not null"`
-	UpdatedAt  time.Time `gorm:"not null"`
 }
