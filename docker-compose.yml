@@ -51,7 +51,6 @@ services:
         condition: service_healthy
     volumes:
       - ./backend/uploads:/app/uploads
-    restart: unless-stopped
 
   frontend:
     build:
@@ -64,7 +63,6 @@ services:
       - "5173:5173"
     depends_on:
       - backend
-    restart: unless-stopped
 
 volumes:
   db_data:
